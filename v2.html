@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite International School of Gabon - L'Excellence du Futur à La Sablière</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* Modern & Professional Color Palette (Dark Mode Inspired) */
+        :root {
+            --elite-blue-dark: #0A192F; /* Deep Navy/Future Dark */
+            --elite-gold: #FFC300; /* Vibrant Gold/Accent */
+            --elite-blue-light: #64FFDA; /* Neon Blue/Primary Accent (Futuristic) */
+            --elite-text-light: #CCD6F6; /* Light Gray Text */
+          /*  --elite-bg-secondary: #112240; /* Slightly Lighter Dark Background */
+           --elite-bg-secondary:	#ffffff; /* white */
+            --elite-vibrant-header: #14D8C4; /* Bright Teal/Colorful Accent */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--elite-blue-dark);
+            color: var(--elite-text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER & NAVBAR */
+        .navbar {
+          /*  background-color: #1E90FF;*/
+            background-color: #ffffff;
+           /* background-color: var(--elite-vibrant-header); /* Vibrant Teal Header */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+        .nav-link, .btn-outline-light {
+            color: var(--elite-blue-dark) !important;
+            transition: color 0.3s ease;
+            font-weight: 600;
+        }
+        .nav-link:hover, .nav-link.active-page {
+            color: var(--elite-blue-dark);
+            border-bottom: 3px solid var(--elite-gold);
+        }
+        .navbar-brand img {
+            height: 150px; /* Adjusted slightly for better overall balance */
+            width: 300px;
+          //  border-radius: 50%;
+        }
+        .navbar-brand .ms-2.fw-bold.text-uppercase {
+            color: var(--elite-blue-dark) !important;
+            font-size: 1.5rem;
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgb(10, 25, 47)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* MARQUEE BAR */
+        .announcement-bar {
+            background-color: var(--elite-gold);
+            color: var(--elite-blue-dark);
+            padding: 8px 0;
+            text-align: center;
+            font-weight: 700;
+            z-index: 1020;
+            border-bottom: 2px solid var(--elite-blue-dark);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            padding-left: 100%;
+            will-change: transform;
+            animation: marquee 25s linear infinite;
+        }
+        .announcement-bar:hover .marquee-content {
+            animation-play-state: paused;
+        }
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        
+        /* VIDEO HERO SECTION (ONLY FOR HOME PAGE) */
+        .video-hero-section {
+            position: relative;
+            height: 70vh; /* Slightly reduced height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            border-bottom: 8px solid var(--elite-gold);
+        }
+        .video-hero-section video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            filter: brightness(0.7); /* Darken video for better text visibility */
+        }
+        .video-hero-content {
+            z-index: 1;
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.5); 
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 90%;
+        }
+
+        /* PILLARS & CARDS */
+        .card-pillar {
+            background-color: var(--elite-bg-secondary);
+            border: 1px solid var(--elite-blue-light);
+            border-top: 5px solid var(--elite-blue-light);
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-pillar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 218, 0.15);
+        }
+        .card-title {
+            color: var(--elite-blue-light);
+        }
+        
+        /* GENERAL CONTENT STYLING */
+        #main-content {
+            flex-grow: 1;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+        .page-section {
+            padding: 40px 0;
+            background-color: var(--elite-blue-dark);
+        }
+        .section-header {
+            border-bottom: 4px solid var(--elite-gold);
+            color: var(--elite-blue-light);
+            font-weight: 700;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+        .list-group-item {
+            background-color: var(--elite-bg-secondary);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        .text-gold {
+            color: var(--elite-gold) !important;
+        }
+
+        /* CONTACT FORM */
+        .form-control, .form-select, .btn-primary {
+            border-radius: 8px;
+        }
+        .form-control, .form-select {
+            background-color: var(--elite-bg-secondary);
+            border: 1px solid var(--elite-blue-light);
+            color: var(--elite-text-light);
+        }
+        .form-control:focus {
+            background-color: var(--elite-blue-dark);
+            border-color: var(--elite-gold);
+            box-shadow: 0 0 0 0.25rem rgba(255, 195, 0, 0.25);
+        }
+        
+        /* FOOTER MAP ADJUSTMENT */
+        .map-container {
+            width: 100%;
+            height: 400px; /* Fixed height for the map iframe */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+    </style>
+</head>
+<body>
+<div style="background-color:#06436c; " class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div style="margin-left: 45%;">
+
+     <a href="https://facebook.com/kiddyplanetgabon" target="_blank" class="text-black me-3 fs-4"><i class="bi bi-facebook footer-link"></i></a>
+                        <a href="https://instagram.com/elite_isg" target="_blank" class="text-black me-3 fs-4"><i class="bi bi-instagram footer-link"></i></a>
+                        <a href="#" target="_blank" class="text-black fs-4"><i class="bi bi-linkedin footer-link"></i></a>
+<img src="https://ia601409.us.archive.org/19/items/images-removebg-preview-1/images-removebg-preview%20%281%29.png" alt="pronote" height="50px"  >
+         <!--ul class="sub-menu"  #1E90FF    #002244>
+	<li class="lang-item lang-item-11 lang-item-fr lang-item-first menu-item menu-item-type-custom menu-item-object-custom menu-item-28756-fr"><a href="" hreflang="fr-FR" lang="fr-FR"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAMAAABBPP0LAAAAbFBMVEVzldTg4ODS0tLxDwDtAwDjAADD0uz39/fy8vL3k4nzgna4yOixwuXu7u7s6+zn5+fyd2rvcGPtZljYAABrjNCpvOHrWkxegsqfs93NAADpUUFRd8THAABBa7wnVbERRKa8vLyxsLCoqKigoKClCvcsAAAAXklEQVR4AS3JxUEAQQAEwZo13Mk/R9w5/7UERJCIGIgj5qfRJZEpPyNfCgJTjMR1eRRnJiExFJz5Mf1PokWr/UztIjRGQ3V486u0HO55m634U6dMcf0RNPfkVCTvKjO16xHA8miowAAAAABJRU5ErkJggg==" alt="" width="16" height="11" style="width: 16px; height: 11px;" /><span style="margin-left:0.3em;">Français</span></a></li>
+	<li class="lang-item lang-item-14 lang-item-en current-lang menu-item menu-item-type-custom menu-item-object-custom current_page_item menu-item-home menu-item-28756-en"><a href="" hreflang="en-GB" lang="en-GB"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAMAAABBPP0LAAAAt1BMVEWSmb66z+18msdig8La3u+tYX9IaLc7W7BagbmcUW+kqMr/q6n+//+hsNv/lIr/jIGMnNLJyOP9/fyQttT/wb3/////aWn+YWF5kNT0oqz0i4ueqtIZNJjhvt/8gn//WVr/6+rN1+o9RKZwgcMPJpX/VFT9UEn+RUX8Ozv2Ly+FGzdYZrfU1e/8LS/lQkG/mbVUX60AE231hHtcdMb0mp3qYFTFwNu3w9prcqSURGNDaaIUMX5FNW5wYt7AAAAAjklEQVR4AR3HNUJEMQCGwf+L8RR36ajR+1+CEuvRdd8kK9MNAiRQNgJmVDAt1yM6kSzYVJUsPNssAk5N7ZFKjVNFAY4co6TAOI+kyQm+LFUEBEKKzuWUNB7rSH/rSnvOulOGk+QlXTBqMIrfYX4tSe2nP3iRa/KNK7uTmWJ5a9+erZ3d+18od4ytiZdvZyuKWy8o3UpTVAAAAABJRU5ErkJggg==" alt="" width="16" height="11" style="width: 16px; height: 11px;" /><span style="margin-left:0.3em;">English</span></a></li>
+</ul -->
+
+  </div>
+        </div>
+
+
+    <!-- NAVBAR & HEADER -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+
+        
+        <div class="container">
+            <a class="navbar-brand" href="#" data-page="accueil">
+                <img src="https://ia803201.us.archive.org/22/items/elite-1_202511/ELITE%20%281%29.png" alt="Logo Elite International School of Gabon">
+                <span class="ms-2 fw-bold text-uppercase" style="color: var(--elite-blue-dark);"></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Nav Items - Added data-page for SPA routing -->
+                    <li class="nav-item"><a class="nav-link fw-bold active-page" href="#" data-page="accueil">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="apropos">Nous</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="programmes">Programmes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="viescolaire">Scolaire</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="technologie">Innovation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="durabilite">Durabilité</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="admissions">Admissions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="communaute">Communauté</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-page="contact">Contact</a></li>
+                </ul>
+                <a href="https://kiddy-planet.com/Admission-en-ligne/" target="_blank" class="btn btn-warning fw-bold ms-lg-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);">CANDIDATER</a>
+            </div>
+           <div> </div>
+         <img src="https://lh3.googleusercontent.com/zhUtYZVQJlE2vIh2DYFNWVWpGhIdc9YaWLw-nFakxXozCE8OYIH1l1FjnK8VwPp7bruBzMXZIxxLdiAJuw=s265-w265-h265" alt="Kiddy Planet"  height="50px"  style="margin-left: 5%;">
+        </div>
+
+    </nav>
+
+    <!-- ANNOUNCEMENT BAR (MARQUEE) -->
+    <div class="announcement-bar">
+        <p class="m-0 marquee-content">
+            <i class="bi bi-megaphone-fill me-3"></i> **ANNONCE SPÉCIALE :** Les inscriptions pour l'année scolaire 2025/2026 sont ouvertes. Places très limitées !
+            <a href="https://kiddy-planet.com/Admission-en-ligne/" target="_blank" class="text-decoration-underline mx-5" style="color: var(--elite-blue-dark);">Cliquez ici pour candidater.</a>
+
+            <i class="bi bi-calendar-check-fill me-3 ms-5"></i> **RAPPEL :** Nos journées portes ouvertes auront lieu les 15 et 16 octobre. Inscrivez-vous vite !
+            <a href="#" class="text-decoration-underline mx-5" style="color: var(--elite-blue-dark);">Voir les détails.</a>
+
+            <i class="bi bi-award-fill me-3 ms-5"></i> **EXCELLENCE :** Elite ISG est accréditée pour le Continuum de l'IB. Le meilleur pour vos enfants !
+        </p>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER (SPA AREA) -->
+    <main id="main-content">
+        <!-- Content will be dynamically loaded here by JavaScript -->
+    </main>
+    
+    <!-- FOOTER -->
+    <footer>
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold" style="color: var(--elite-blue-light);">Elite International School (P&S)</h5>
+                    <p class="h6 text-gold mb-3">Inspiring Global Learners for a Better Tomorrow.</p>
+                    <address class="text-start">
+                        <p class="mb-1"><i class="bi bi-geo-alt-fill me-2"></i> Sablière, Libreville, Gabon. BP: 3490</p>
+                        <p class="mb-1"><i class="bi bi-telephone-fill me-2"></i> Téléphone : +241 66 70 41 66 - 011 73 39 89</p>
+                        <p class="mb-1"><i class="bi bi-envelope-fill me-2"></i> Email : Eliteschoolgabon@gmail.com</p>
+                    </address>
+                    <div class="mt-3">
+                        <a href="https://facebook.com/kiddyplanetgabon" target="_blank" class="text-white me-3 fs-4"><i class="bi bi-facebook footer-link"></i></a>
+                        <a href="https://instagram.com/elite_isg" target="_blank" class="text-white me-3 fs-4"><i class="bi bi-instagram footer-link"></i></a>
+                        <a href="#" target="_blank" class="text-white fs-4"><i class="bi bi-linkedin footer-link"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold" style="color: var(--elite-blue-light);">Navigation Rapide</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" data-page="programmes" class="text-decoration-none footer-link">Programmes IB</a></li>
+                        <li><a href="#" data-page="viescolaire" class="text-decoration-none footer-link">Vie Scolaire & Clubs</a></li>
+                        <li><a href="#" data-page="admissions" class="text-decoration-none footer-link">Procédure d'Admission</a></li>
+                        <li><a href="#" data-page="technologie" class="text-decoration-none footer-link">Innovation Numérique</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold" style="color: var(--elite-blue-light);">Le Réseau Kiddy Planet</h5>
+                    <p>Découvrez notre établissement précurseur pour la maternelle et le pré-primaire, assurant une continuité éducative parfaite.</p>
+                    <a href="https://kiddy-planet.com/" target="_blank" class="btn btn-sm btn-outline-warning fw-bold footer-link">Visiter Kiddy Planet</a>
+                </div>
+            </div>
+
+            <div class="text-center pt-3 mt-4 border-top" style="border-color: var(--elite-bg-secondary) !important;">
+                <p class="text-muted">© 2024 Elite International School of Gabon. Conçu pour le Futur.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Custom Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- Single Page Application (SPA) Logic ---
+
+        // 1. Content Definition (HTML strings for each page)
+        const pageContent = {
+            // =========================================================================================================
+            // 1. ACCUEIL
+            // =========================================================================================================
+            accueil: `
+                <!-- HERO SECTION -->
+                <header class="video-hero-section">
+                    <video autoplay muted loop id="heroVideo">
+                        <source src="https://kiddy-planet.com/wp-content/uploads/2024/06/website-video-1-1.mp4" type="video/mp4">
+                        <!-- Fallback image -->
+                        <img src="https://kiddy-planet.com/wp-content/uploads/2024/08/extrasciolaire-4.jpg" alt="Campus Elite International School" style="width: 100%; height: 100%; object-fit: cover;">
+                    </video>
+                    
+                    <div class="container video-hero-content">
+                         <p class="display-6 fw-light mb-1" ><span class="text-gold">De Kiddy Planet à l'Excellence </span></p>
+                        <h1 class="display-1 fw-bolder">ELITE International School of Gabon</h1>
+                        <h2 class="h3 mb-4">"Inspiring Global Learners for a Better Tomorrow"</h2>
+                        <a href="https://kiddy-planet.com/Admission-en-ligne/" data-page="programmes" class="btn btn-lg fw-bold border-2" style="background-color: var(--elite-blue-light); color: var(--elite-blue-dark); border-color: var(--elite-blue-light);">POSTULEZ MAINTENANT <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </header>
+
+
+
+                  <div class="row mb-5">
+                  <center>
+                            <div >
+                                <h3 class="text-gold"><i class="bi bi-check2-square me-2"></i> Notre Mission et Vision</h3>
+
+
+
+                              <p class="lead" style="color: var(--elite-text-light);">
+                                   Notre mission est d’offrir une éducation holistique et internationale qui soutient le développement intellectuel, émotionnel, social et physique de chaque enfant. Nous croyons en la formation d’individus complets, autonomes et bienveillants, capables de réussir dans un monde en constante évolution.
+                               
+                                <br><br>
+                                    Notre vision est de préparer des citoyens du monde conscients, responsables et engagés, en valorisant la diversité, la coopération, la pensée critique et le respect de l’environnement.
+À travers des pratiques pédagogiques inspirées de l’IB, nous favorisons la curiosité, l’action, la réflexion et l’apprentissage durable.
+                                </p>
+                                </div>
+                                </center>
+                                </div>
+
+
+
+                <!-- KIDDY PLANET CONTINUITY -->
+                <section class="page-section text-center py-5" style="background-color: var(--elite-bg-secondary); color:black;">
+                    <div class="container">
+                        <h3 class="mb-3"><i class="bi bi-link-45deg me-2 text-gold"></i> Le Pont Kiddy Planet : Une Éducation Sans Rupture</h3>
+                        <p class="lead mb-4">Elite International School of Gabon assure la continuité parfaite du projet éducatif commencé à <span class="fw-bold text-gold;">Kiddy Planet (Maternelle)</span>. Nous prenons le relais en Primaire et Secondaire avec la même vision bilingue, internationale et axée sur l'innovation.</p>
+
+
+                        <a href="https://kiddy-planet.com/" target="_blank" class="btn btn-lg fw-bold" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);">Découvrir Kiddy Planet <i class="bi bi-box-arrow-up-right"></i></a>
+                       <br><br>
+                       <p class="lead mb-4">A ELITE International School of Gabon, nous nous engageons à offrir une expérience éducative exceptionnelle qui inspire la croissance, 
+                       encourage la créativité et prépare les élèves à réussir dans un monde globalisé. Notre école propose un environnement d'apprentissage stimulant où les élèves sont encouragés à explorer leurs passions, 
+                       à embrasser la diversité et à devenir des leaders compatissants de demain. </p> 
+
+                    </div>
+                </section>
+
+                <!-- PILLARS  var(--elite-blue-light) -->
+                <section class="page-section pt-5 pb-5">
+                    <div class="container">
+                        <h2 class="text-center mb-5 fw-bold display-5 section-header">Nos Piliers pour un Avenir Global</h2>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4 h-100 shadow-lg card-pillar">
+                                    <i class="bi bi-globe display-4 mb-3" style="color:#06436c ;"></i> 
+                                    <h4 class="card-title fw-bold"  style="color:#06436c ;">Immersion Bilingue Totale</h4>
+                                    <p class="card-text">Double curriculum Francophone et Anglophone, essentiel pour les carrières internationales, avec l'espagnol en 3eme langue.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4 h-100 shadow-lg card-pillar">
+                                    <i class="bi bi-cpu display-4 mb-3" style="color:#06436c ;"></i>
+                                    <h4 class="card-title fw-bold"  style="color:#06436c ;" >Pédagogie 4.0 & Futuriste</h4>
+                                    <p class="card-text">Intégration du STEAM, de la robotique, et des outils numériques pour préparer aux métiers innovants du XXIe siècle.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4 h-100 shadow-lg card-pillar">
+                                    <i class="bi bi-geo-alt display-4 mb-3" style="color:#06436c ;"></i>
+                                    <h4 class="card-title fw-bold"  style="color:#06436c ;">Le Campus de La Sablière</h4>
+                                    <p class="card-text">Un cadre d'apprentissage moderne, éco-responsable et ultra-sécurisé, idéalement situé à Libreville.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- MEDIA GALLERY -->
+                <section class="page-section py-5" style="background-color: var(--elite-bg-secondary);">
+                    <div class="container">
+                        <h2 class="text-center mb-5 fw-bold display-5 section-header" style="border-color: var(--elite-blue-light); color: var(--elite-gold);">Explorer notre Environnement d'Apprentissage</h2>
+                        <div class="row">
+                            <div class="col-lg-6 mb-4">
+                                <!--h4 class="text-center mb-3">Vidéo de Présentation de l'École <i class="bi bi-youtube text-danger"></i></h4 -->
+                                <!-- div class="embed-responsive shadow-lg rounded-3" style="padding-top: 56.25%;" -->
+                                    <iframe class="embed-responsive-item" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/05VUHyIyV0Y?si=49fQL87-WVGwyjmY" allowfullscreen></iframe>
+                                    
+                                <!-- /div  -->
+                                
+                            </div>
+                            <div class="col-lg-6 mb-4">
+                                <h4 class="text-center mb-3">Photos du Campus et des Activités <i class="bi bi-images"></i></h4>
+                                <div id="schoolCarousel" class="carousel slide shadow-lg rounded-3" data-bs-ride="carousel">
+                                    <div class="carousel-inner" style="height: 300px;">
+                                        <div class="carousel-item active">
+                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwvy2u8vxwE0gHtuCjbJhNBkJbwEBl-RV_Tg&s" class="d-block w-100" alt="Salle de classe moderne Elite ISG" style="height: 300px; object-fit: cover;">
+                                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
+                                                <h5 style="color: var(--elite-blue-light);">Laboratoires Technologiques</h5>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="https://kiddy-planet.com/wp-content/uploads/2024/08/extrasciolaire-4.jpg" class="d-block w-100" alt="Élèves Kiddy Planet et Elite" style="height: 300px; object-fit: cover;">
+                                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
+                                                <h5 style="color: var(--elite-gold);">Le Chemin Kiddy Planet - Elite</h5>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="https://kiddy-planet.com/wp-content/uploads/2024/08/60ad49ec-744c-4021-b67e-e28555c03e0d-1.jpg" class="d-block w-100" alt="Vue extérieure du campus de la Sablière" style="height: 300px; object-fit: cover;">
+                                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
+                                                <h5 style="color: var(--elite-blue-light);">Architecture Innovante</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#schoolCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#schoolCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- CTA -->
+                <section class="py-5 text-center" style="background-color: var(--elite-vibrant-header);">
+                    <div class="container">
+                        <h3 class="mb-3 fw-bold text-dark">L'Avenir de votre Enfant Commence Maintenant.</h3>
+                        <p class="lead text-dark">Inscriptions ouvertes pour l'année [2025-2026] - Places limitées.</p>
+                        <a href="https://kiddy-planet.com/Admission-en-ligne/" target="_blank" class="btn btn-lg fw-bold shadow-lg" style="background-color: var(--elite-gold); border-color: var(--elite-gold); color: var(--elite-blue-dark);">Accéder au Portail d'Admission <i class="bi bi-journal-check"></i></a>
+                    </div>
+                </section>
+            `,
+
+            // =========================================================================================================
+            // 2. À PROPOS
+            // =========================================================================================================
+            apropos: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">À Propos de ELITE International School of Gabon</h2>
+                        
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <h3 class="text-gold"><i class="bi bi-check2-square me-2"></i> Notre Mission et Vision</h3>
+
+
+
+                              <p class="lead" style="color: var(--elite-text-light);">
+                                   Notre mission est d’offrir une éducation holistique et internationale qui soutient le développement intellectuel, émotionnel, social et physique de chaque enfant. Nous croyons en la formation d’individus complets, autonomes et bienveillants, capables de réussir dans un monde en constante évolution.
+                               
+                                <br><br>
+                                    Notre vision est de préparer des citoyens du monde conscients, responsables et engagés, en valorisant la diversité, la coopération, la pensée critique et le respect de l’environnement.
+À travers des pratiques pédagogiques inspirées de l’IB, nous favorisons la curiosité, l’action, la réflexion et l’apprentissage durable.
+                                </p>
+
+
+                                  <br>
+                                  <h3 class="text-gold"><i class="bi bi-check2-square me-2"></i> Ensemble, créons un avenir meilleur pour nos enfants et notre planète.
+</h3>
+
+                                
+                                <br>
+
+                                <p class="lead" style="color: var(--elite-text-light);">
+                                    Nous sommes dévoués fournir un environnement d'apprentissage bilingue et stimulant, ancré dans les valeurs de l'IB, afin de développer des apprenants curieux, informés et attentionnés qui contribuent à rendre le monde meilleur et plus pacifique.
+                              <br><br>
+                                    La seconde vision d'Elite ISG est d'être l'école de référence en Afrique centrale pour l'excellence éducative internationale, préparant chaque élève à naviguer et à exceller dans un monde globalisé en constante évolution.
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="text-gold"><i class="bi bi-lightbulb-fill me-2"></i> Philosophie Éducative</h3>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-book me-3 text-gold fs-5"></i> Apprentissage par l'Enquête (Inquiry-Based Learning)</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-translate me-3 text-gold fs-5"></i> Bilinguisme et Multiculturalisme Inclusif</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-people-fill me-3 text-gold fs-5"></i> Développement du Profil de l'Apprenant IB</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-tree-fill me-3 text-gold fs-5"></i> Durabilité et Citoyenneté Mondiale</li>
+                                </ul>
+
+
+                             <br> <br>
+                                  <h3 class="text-gold"><i class="bi bi-check2-square me-2"></i> Installations et Ressources.</h3>
+
+                                
+                                <br>
+
+                                <p class="lead" style="color: var(--elite-text-light);">
+                                  À Elite International School of Gabon, nous mettons à disposition des installations, comprenant des salles de classe modernes, une salle d’informatique, une bibliothèque et des installations sportives, pour soutenir l'apprentissage et la croissance de nos élèves. Nos enseignants dévoués sont des éducateurs expérimentés passionnés par le développement des talents et du potentiel de chaque élève.
+                                </p>
+                               
+
+
+                            </div>
+                        </div>
+
+                        <h3 class="text-gold section-header">Nos Valeurs Fondamentales</h3>
+                        <div class="row text-center">
+                            <div class="col-sm-2 mb-3"><span class="badge rounded-pill p-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);"><i class="bi bi-shield-lock-fill"></i> Intégrité</span></div>
+                            <div class="col-sm-2 mb-3"><span class="badge rounded-pill p-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);"><i class="bi bi-box-arrow-in-right"></i> Ouverture</span></div>
+                            <div class="col-sm-2 mb-3"><span class="badge rounded-pill p-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);"><i class="bi bi-hand-thumbs-up-fill"></i> Responsabilité</span></div>
+                            <div class="col-sm-3 mb-3"><span class="badge rounded-pill p-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);"><i class="bi bi-lightning-charge-fill"></i> Innovation</span></div>
+                            <div class="col-sm-3 mb-3"><span class="badge rounded-pill p-3" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);"><i class="bi bi-heart-fill"></i> Bien-Être</span></div>
+                        </div>
+
+                        <div class="mt-5">
+                            <h3 class="text-gold section-header">Équipe de Direction et Enseignants</h3>
+                            <p>Notre équipe est composée d'éducateurs expérimentés et passionnés, experts dans la pédagogie de l'IB et engagés dans le développement personnel et académique de chaque enfant. Leur expertise bilingue assure la richesse de notre double programme.</p>
+                            <p class="text-muted fst-italic">*(Photos et Biographies de l'équipe disponibles prochainement.)*</p>
+                        </div>
+                    </div>
+                </section>
+            `,
+
+            // =========================================================================================================
+            // 3. PROGRAMMES
+            // =========================================================================================================
+            programmes: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Nos Programmes : Le Continuum IB Complet</h2>
+
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="alert shadow-lg" style="background-color: var(--elite-bg-secondary); border-left: 5px solid var(--elite-gold); color: black;">
+                                    <h4 class="text-gold"><i class="bi bi-award-fill me-2"></i> Parcours Bilingue International</h4>
+                                    ELITE International School of Gabon est accréditée pour offrir le Continuum du Programme de Baccalauréat International (IB), assurant une transition harmonieuse de la Maternelle (Kiddy Planet) au Diplôme de fin d'études.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- PYP -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold"  style="color:#06436c ;" ><i class="bi bi-easel-fill me-2"></i> Programme Primaire (PYP)</h3>
+                            <p class="lead">Le PYP s'adresse aux élèves de 3 à 12 ans (à Elite ISG : Primaire). Il est centré sur l'enfant, encourageant l'exploration et la découverte par l'intermédiaire de **six thèmes transdisciplinaires**.</p>
+                            
+                            
+                            <h5 class="text-gold mt-3">Caractéristiques principales:</h5>
+                        <i class="bi bi-award-fill"></i> <b> Apprentissage transdisciplinaire :</b> les matières ne sont pas cloisonnées, elles sont explorées à travers 6 grands thèmes transdisciplinaires (Qui nous sommes, Où nous nous situons dans l’espace et le temps, Comment nous nous exprimons, Comment le monde fonctionne, Comment nous nous organisons, Partager la planète).
+                       <br><br>
+                         <i class="bi bi-award-fill"></i>Développement global de l’enfant :</b> l’accent est mis sur l’élève en tant qu’<b>apprenant, individu et membre d’une communauté.</b>
+                         <br>
+                         <i class="bi bi-award-fill"></i> <b>Pédagogie de l’enquête :</b> les élèves construisent leurs apprentissages à partir de leurs questions et explorations.
+                         <br><br>
+                         <i class="bi bi-award-fill"></i> <b> Compétences et attitudes IB :</b>  autonomie, communication, pensée critique, curiosité, collaboration.
+                          <br><br>
+                         <i class="bi bi-award-fill"></i> <b>Projet final :</b>  Exposition PP en dernière année du programme (équivalent CM2/P5), où les élèves mènent une enquête approfondie sur un sujet qui leur tient à cœur.
+                            <p class="mt-3">L'exposition finale (Exhibition) en dernière année de PYP est le point culminant, permettant aux élèves de démontrer leur profil d'apprenant IB.</p>
+                        </div>
+                        
+                        <!-- MYP -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-bezier me-2"></i> Programme d'Éducation Intermédiaire (MYP)</h3>
+                            <p class="lead">Le MYP s'adresse aux élèves de 11 à 16 ans (Collège/Premières années du Secondaire). Il se concentre sur l'**interdisciplinarité** et la connexion entre les matières traditionnelles et le monde réel.</p>
+                            <h5 class="text-gold mt-3">Éléments Distinctifs :</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-puzzle-fill me-3 text-gold"></i> Approches de l'Apprentissage (ATL) : Compétences de communication, de pensée, de recherche, sociales et d'autogestion.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-person-workspace me-3 text-gold"></i> Le Projet Personnel : Un travail de recherche approfondi sur un thème choisi par l'élève, essentiel pour la transition vers le DP.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-people-fill me-3 text-gold"></i> Service et Action : Engagement actif dans la communauté.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Secondary Programs -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-book-half me-2"></i> Programme Français Intégré & Trilinguisme</h3>
+                            <p class="lead">Nous assurons une base solide dans le programme national gabonais tout en offrant les perspectives internationales de l'IB. Ce double socle prépare les élèves pour les études locales et mondiales.</p>
+                            <h5 class="text-gold mt-3">Langues :</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><span class="fw-bold">Français et Anglais :</span> Langues d'enseignement principales (Immersion Totale).</li>
+                                <li class="list-group-item"><span class="fw-bold">Espagnol :</span> Introduction en tant que Troisième Langue dès l'intermédiaire.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            `,
+
+            // =========================================================================================================
+            // 4. VIE SCOLAIRE
+            // =========================================================================================================
+            viescolaire: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">La Vie Scolaire : Épanouissement et Bien-Être</h2>
+
+                        <!-- Parascolaire -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;" ><i class="bi bi-rocket-takeoff-fill me-2"></i> Activités Parascolaires (Clubs et Ateliers)</h3>
+                            <p class="lead">L'apprentissage s'étend au-delà de la salle de classe. Nos activités extra-muros sont conçues pour développer les talents, les passions et l'esprit d'équipe.</p>
+                            <div class="row mt-3">
+                                <div class="col-md-4"><p class="mb-1"><i class="bi bi-palette-fill me-2 text-gold"></i> Arts & Culture (Peinture, Théâtre, Musique)</p></div>
+                                <div class="col-md-4"><p class="mb-1"><i class="bi bi-dribbble me-2 text-gold"></i> Sports (Football, Basketball, Natation)</p></div>
+                                <div class="col-md-4"><p class="mb-1"><i class="bi bi-lightbulb-fill me-2 text-gold"></i> Clubs Académiques (Robotique, Codage, MUN)</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Leadership & Projets -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;" ><i class="bi bi-person-lines-fill me-2"></i> Leadership Étudiant et Engagement</h3>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-mic-fill me-3 text-gold"></i> Conseil des Élèves : Former les futurs leaders de la communauté.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-chat-dots-fill me-3 text-gold"></i> Modèle des Nations Unies (MUN) et Débats.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-binoculars-fill me-3 text-gold"></i> Sorties Pédagogiques et Projets de Terrain : Connecter l'apprentissage au contexte gabonais et mondial.</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Bien-Être -->
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-heart-pulse-fill me-2"></i> Bien-être, Inclusion et Communication Positive</h3>
+                            <p>Le bien-être socio-émotionnel est au cœur de notre environnement sécurisant. Nous offrons un soutien complet pour garantir que chaque enfant s'épanouisse.</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-person-check-fill me-3 text-gold"></i> Soutien psychologique et orthophonique disponible sur site.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-star-fill me-3 text-gold"></i> Pédagogie Différenciée : Adaptation des méthodes pour les besoins individuels.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-chat-square-text-fill me-3 text-gold"></i> Cercles de Parole et Ateliers sur la Communication Non-Violente.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            `,
+
+            // =========================================================================================================
+            // 5. TECHNOLOGIE ET INNOVATION
+            // =========================================================================================================
+            technologie: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Technologie et Innovation : Préparer l'Ère Numérique</h2>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card card-pillar p-4 h-100">
+                                    <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-laptop me-2"></i> Intégration Numérique et STEAM</h3>
+                                    <p class="lead">L'innovation est un pilier. Nous intégrons les outils numériques comme un vecteur d'apprentissage, pas seulement comme un sujet.</p>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-code-slash me-3 text-gold"></i> Coding et Robotique : Introduction au codage (Scratch, Python) dès le Primaire.</li>
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-tools me-3 text-gold"></i> Projets STEAM (Science, Technology, Engineering, Arts, Math).</li>
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-search me-3 text-gold"></i> Bibliothèque Numériques et laboratoire virtuel de sciences et mathématiques.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card card-pillar p-4 h-100">
+                                    <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-key-fill me-2"></i> Citoyenneté et Sécurité Numérique</h3>
+                                    <p class="lead">Nous enseignons l'utilisation responsable et éthique de la technologie.</p>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-lock-fill me-3 text-gold"></i> Éducation à la Cybersécurité et au Comportement en Ligne.</li>
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-person-x-fill me-3 text-gold"></i> Gestion de l'Identité Numérique.</li>
+                                        <li class="list-group-item d-flex align-items-center"><i class="bi bi-lightbulb-fill me-3 text-gold"></i> Développement des Compétences du 21e Siècle (Pensée Critique, Collaboration).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+            
+            // =========================================================================================================
+            // 6. DURABILITÉ ET ENGAGEMENT
+            // =========================================================================================================
+            durabilite: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Durabilité et Engagement : Agir pour un Avenir Responsable</h2>
+
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-tree-fill me-2"></i> Projets Écologiques du Campus</h3>
+                            <p class="lead">L'éducation au développement durable (EDD) est vécue au quotidien sur notre campus à La Sablière.</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-flower1 me-3 text-gold"></i> Jardin Scolaire : Apprentissage pratique de la biodiversité et de l'agriculture urbaine.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-recycle me-3 text-gold"></i> Programmes de Recyclage et de Réduction des Déchets.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-thermometer-half me-3 text-gold"></i> Sensibilisation au changement climatique à travers le thème IB "Partager la planète".</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card card-pillar p-4 mb-4">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-hand-thumbs-up-fill me-2"></i> Service Communautaire et Action Sociale</h3>
+                            <p class="lead">Le Service et l'Action (PYP & MYP) et le Service comme composante du DP sont obligatoires pour développer l'empathie et la citoyenneté active.</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-heart-fill me-3 text-gold"></i> Projets de Solidarité Locale.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-people-fill me-3 text-gold"></i> Partenariats avec des ONG Gabonaises.</li>
+                                <li class="list-group-item d-flex align-items-center"><i class="bi bi-megaphone-fill me-3 text-gold"></i> Campagnes de Sensibilisation pour les Objectifs de Développement Durable (ODD).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            `,
+            
+            // =========================================================================================================
+            // 7. ADMISSIONS
+            // =========================================================================================================
+            admissions: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Processus d'Admissions (2025-2026)</h2>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h3 class="text-gold"><i class="bi bi-list-ol me-2"></i> Procédure d'Inscription (Étapes Claires)</h3>
+                                <ul class="list-group list-group-numbered">
+                                    <li class="list-group-item fw-bold">Étape 1 : Candidature en Ligne. <a href="https://kiddy-planet.com/Admission-en-ligne/" target="_blank" class="badge bg-warning text-dark ms-2">Accéder au Portail</a></li>
+                                    <li class="list-group-item">Étape 2 : Entretien Parents & Évaluation de l'Élève (pour déterminer le niveau de bilinguisme et les besoins).</li>
+                                    <li class="list-group-item">Étape 3 : Examen du Dossier (Relevés de notes antérieurs, documents d'identité).</li>
+                                    <li class="list-group-item">Étape 4 : Notification d'Admission et Finalisation de l'Inscription (Paiement des frais).</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h3 class="text-gold"><i class="bi bi-person-fill-check me-2"></i> Critères d'Admission</h3>
+                                <p>Nous recherchons des élèves prêts à s'engager dans un environnement international et bilingue exigeant.</p>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-check-circle-fill me-3 text-gold"></i> Âge en conformité avec le niveau scolaire demandé.</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-check-circle-fill me-3 text-gold"></i> Compétences démontrées dans les deux langues (Français et Anglais).</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-check-circle-fill me-3 text-gold"></i> Volonté d'adhérer à la philosophie de l'IB (curiosité et ouverture d'esprit).</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5">
+                            <h3 class="text-gold section-header">Témoignages et FAQ</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card p-3" style="background-color: var(--elite-bg-secondary);">
+                                        <p class="fst-italic">"Le passage de Kiddy Planet à Elite ISG fut d'une fluidité incroyable. Notre fille est stimulée par le bilinguisme et les projets de robotique." - Mme. Oloba, Parent d'élève PYP.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="mt-3 mt-md-0">FAQ Parents :</h5>
+                                    <p  style="color:white;">Questions fréquentes concernant le transport, les uniformes, le suivi académique bilingue, etc. <a href="#" class="text-gold">Consultez la section complète ici.</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+            
+            // =========================================================================================================
+            // 8. COMMUNAUTÉ
+            // =========================================================================================================
+            communaute: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Notre Communauté : Partenaires Essentiels de l'Apprentissage</h2>
+
+                        <div class="card card-pillar p-4 mb-4 text-center">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;" ><i class="bi bi-people-fill me-2"></i> Le Rôle des Parents : Partenaires Fondateurs</h3>
+                            <p class="lead">Nous considérons les parents comme des co-éducateurs. L'engagement familial est crucial pour le succès du parcours IB.</p>
+                        </div>
+
+                        <div class="card card-pillar p-4 mb-4 text-center">
+                            <h3 class="card-title fw-bold" style="color:#06436c ;"><i class="bi bi-people-fill me-2"></i> Rejoignez Notre Communauté</h3>
+                            <p class="lead">Nous vous invitons à rejoindre notre communauté dynamique et inclusive à Elite International School of Gabon. Que vous soyez un élève potentiel, un parent ou un éducateur, nous vous invitons à explorer notre site web, à en apprendre davantage sur nos programmes et à découvrir les opportunités qui vous attendent dans notre école.
+                            <br><br>
+                            <i class="bi bi-house-check-fill"></i><b> À Elite International School</b>, Nous offrons une éducation trilingue : le français et l’anglais sont enseignés comme langues principales, garantissant un niveau académique complet et équilibré dans les deux langues. L’espagnol, qui est introduit progressivement comme troisième langue, vient enrichir l’ouverture culturelle pour développer les compétences de communication internationale.<br><br>
+                            Le programme français est pleinement respecté et intégré, conformément aux compétences attendues par l’Éducation nationale. Il est enrichi par les unités d’enquête et l’approche transdisciplinaire du programme IB, ainsi que par l’enseignement de l’anglais à travers les Cambridge English books, référence internationale pour l’apprentissage progressif et certifiant de la langue. <br><br>
+
+Cette vision plurilingue et internationale prépare nos élèves à devenir des citoyens du monde compétents, confiants et responsables, développant les qualités du profil de l’apprenant de l’IB ainsi que les compétences transdisciplinaires nécessaires pour s’épanouir et réussir dans des contextes éducatifs et culturels variés.<br><br>
+
+<b>Le Programme primaire (PP)</b> et le <b>Programme d’éducation intermédiaire (PEI)</b> font partie de la continuité éducative de l’IB, mais ils sont conçus pour des tranches d’âge différentes, avec des objectifs et approches qui évoluent. 
+                            </p>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-4">
+                                <h4 class="text-gold"><i class="bi bi-calendar-event me-2"></i> Ateliers et Événements</h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-book me-3 text-gold"></i> Ateliers Parents-École : Comprendre la philosophie de l'IB (PYP, MYP).</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-hand-thumbs-up me-3 text-gold"></i> Journées du Volontariat et Projets d'Action.</li>
+                                    <li class="list-group-item d-flex align-items-center"><i class="bi bi-chat-left-dots me-3 text-gold"></i> Conférences sur le bien-être et la parentalité positive.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h4 class="text-gold"><i class="bi bi-globe-americas me-2"></i> Réseau International IB</h4>
+                                <p>En tant qu'École du Monde de l'IB, Elite ISG fait partie d'un réseau mondial d'écoles partageant les meilleures pratiques éducatives. Cela ouvre des portes et des opportunités d'échanges pour nos élèves et notre personnel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `,
+            
+            // =========================================================================================================
+            // 9. CONTACT
+            // =========================================================================================================
+            contact: `
+                <section class="page-section">
+                    <div class="container">
+                        <h2 class="display-5 section-header">Contactez-nous à La Sablière</h2>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-5">
+                                <h3 class="text-gold"><i class="bi bi-pin-map-fill me-2"></i> Localisation et Coordonnées</h3>
+                                <address class="text-start fs-5 mt-4">
+                                    <p class="mb-3"><i class="bi bi-geo-alt-fill me-3 text-blue-light"></i> Adresse : Sablière, Libreville, Gabon</p>
+                                    <p class="mb-3"><i class="bi bi-telephone-fill me-3 text-blue-light"></i> Téléphone : <span class="text-gold">+241 66 70 41 66 - 011 73 39 89</span></p>
+                                    <p class="mb-3"><i class="bi bi-whatsapp me-3 text-blue-light"></i> WhatsApp : Même numéro pour les questions rapides.</p>
+                                    <p class="mb-3"><i class="bi bi-envelope-fill me-3 text-blue-light"></i> **Email :** <span class="text-gold">Eliteschoolgabon@gmail.com</span></p>
+                                    <div class="mt-4">
+                                        <a href="https://facebook.com/kiddyplanetgabon" target="_blank" class="text-white me-3 fs-3"><i class="bi bi-facebook footer-link"></i></a>
+                                        <a href="https://instagram.com/elite_isg" target="_blank" class="text-white me-3 fs-3"><i class="bi bi-instagram footer-link"></i></a>
+                                    </div>
+                                </address>
+                            </div>
+                            
+                            <div class="col-lg-6 mb-5">
+                                <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
+                                <form class="mt-4 p-4 rounded shadow-lg" style="background-color: var(--elite-bg-secondary);">
+                                    <div class="mb-3">
+                                        <label for="contactName" class="form-label">Nom Complet</label>
+                                        <input type="text" class="form-control" id="contactName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactEmail" class="form-label">Adresse Email</label>
+                                        <input type="email" class="form-control" id="contactEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
+                                        <select class="form-select" id="contactSubject">
+                                            <option selected>Choisir un sujet</option>
+                                            <option value="admission">Question sur les Admissions</option>
+                                            <option value="programme">Information sur les Programmes IB</option>
+                                            <option value="autre">Autre Demande</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactMessage" class="form-label">Message</label>
+                                        <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <h3 class="text-gold section-header mt-4">Localisation Google Maps</h3>
+                        <div class="map-container">
+                            
+            
+                      
+                         <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3989.6787339559974!2d9.392775!3d0.479274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMMKwMjgnNDUuNCJOIDnCsDIzJzM0LjAiRQ!5e0!3m2!1sen!2sga!4v1762931251936!5m2!1sen!2sga" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </section>
+            `,
+        };
+
+        const mainContent = document.getElementById('main-content');
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-brand');
+
+        /**
+         * Loads content for the specified page into the main content container.
+         * @param {string} pageName - The key name of the page in the pageContent object (e.g., 'accueil').
+         */
+        function loadPage(pageName) {
+            const content = pageContent[pageName] || pageContent['accueil']; // Default to accueil if key is missing
+            
+            // Clear current content and insert new HTML
+            mainContent.innerHTML = content;
+
+            // Update active state in Navbar
+            navLinks.forEach(link => {
+                link.classList.remove('active-page');
+                if (link.dataset.page === pageName) {
+                    link.classList.add('active-page');
+                }
+            });
+
+            // Reinitialize Bootstrap components if needed (like the carousel on the home page)
+            if (pageName === 'accueil') {
+                const carouselElement = document.getElementById('schoolCarousel');
+                if (carouselElement) {
+                    new bootstrap.Carousel(carouselElement, {
+                        interval: 5000 // Ensure the carousel starts on load
+                    });
+                }
+            }
+
+            // Scroll to top of the page content after loading (excluding initial load)
+            if (window.scrollY > 0) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // 2. Attach Event Listeners to Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageName = link.dataset.page;
+                if (pageName) {
+                    loadPage(pageName);
+                    // Close the navbar on mobile after click
+                    const navbarCollapse = document.getElementById('navbarNav');
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) {
+                        bsCollapse.hide();
+                    }
+                }
+            });
+        });
+
+        // 3. Initial Page Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if there is a hash in the URL for deeper linking (optional)
+            const initialPage = window.location.hash ? window.location.hash.substring(1) : 'accueil';
+            loadPage(initialPage);
+        });
+    </script>
+</body>
+</html>

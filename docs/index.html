@@ -255,11 +255,12 @@
 
 
 .dropbtn {
- // background-color: #04AA6D;
+  /* background-color: #04AA6D; */
   color: black;
-//  padding: 16px;
+  /* padding: 16px; */
   font-size: 16px;
   border: none;
+  cursor: pointer; /* Added for better UX */
 }
 
 .dropdown {
@@ -268,12 +269,21 @@
 }
 
 .dropdown-content {
-  display: none;
+  /* REMOVED: display: none; */
+  
+  /* NEW: Hide it visually but keep it in the DOM */
+  visibility: hidden;
+  opacity: 0;
+
   position: absolute;
   background-color: white;
   min-width: 360px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+
+  /* NEW: Add the transition effect */
+  /* This animates opacity over 0.3 seconds */
+  transition: opacity 0.5s ease-in-out, visibility 0.3s;
 }
 
 .dropdown-content a {
@@ -283,11 +293,17 @@
   display: block;
 }
 
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
 
-.dropdown:hover .dropdown-content {display: block;}
-
-//.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropdown-content {
+  /* REMOVED: display: block; */
+  
+  /* NEW: Show it */
+  visibility: visible;
+  opacity: 1;
+}
 
 
 

@@ -1260,16 +1260,20 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
                                 <form class="mt-4 p-4 rounded shadow-lg" >
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">Nom Complet</label>
-                                        <input type="text" class="form-control" id="name" required>
+                                        <label for="nom" class="form-label">Nom Complet</label>
+                                        <input type="text" style="color: black;" class="form-control" id="nom" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Adresse Email</label>
-                                        <input type="email" class="form-control" id="email" required>
+                                        <input type="email" style="color: black;" class="form-control" id="email" required>
+                                    </div>
+									 <div class="mb-3">
+                                        <label for="contact" class="form-label">Contact Téléphonique</label>
+                                        <input type="text" style="color: black;" class="form-control" id="contact" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="contactSubject" class="form-label">Sujet de la Demande</label>
-                                        <select class="form-select" id="contactSubject">
+                                        <select class="form-select" id="contactSubject" style="color: black;">
                                             <option selected>Choisir un sujet</option>
                                             <option value="admission">Question sur les Admissions</option>
                                             <option value="programme">Information sur les Programmes IB</option>
@@ -1278,7 +1282,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                     </div>
                                     <div class="mb-3">
                                         <label for="contactMessage" class="form-label">Message</label>
-                                        <textarea class="form-control" id="contactMessage" rows="4" required></textarea>
+                                        <textarea style="color: black;" class="form-control" id="contactMessage" rows="4" required></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
                                 </form>

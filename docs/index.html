@@ -43,6 +43,17 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
             width:100%;
         }
+
+        /* 2. Sticky Navbar (Only for Computer/Laptop - screens wider than 992px) */
+@media (min-width: 992px) {
+    .navbar {
+        position: sticky !important;
+        top: 0;
+        /* The background will adjust with content as requested previously */
+    }
+}
+
+		
         .nav-link, .btn-outline-light {
             color: var(--elite-blue-dark) !important;
             transition: color 0.3s ease;

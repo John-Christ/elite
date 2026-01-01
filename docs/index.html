@@ -35,20 +35,21 @@
         }
 
         /* HEADER & NAVBAR */
-        .navbar {
-          /*  background-color: #1E90FF;*/
-            background-color: #ffffff;
-           /* background-color: var(--elite-vibrant-header); /* Vibrant Teal Header */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-            width:100%;
-        }
+      /* 1. Default for Phone: Moves with the page (disappears when scrolling down) */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    position: static !important; /* Forces it to NOT stick on mobile */
+    z-index: 1030;
+}
 
-        /* 2. Sticky Navbar (Only for Computer/Laptop - screens wider than 992px) */
+/* 2. For Computer/Laptop (Screens wider than 992px) */
 @media (min-width: 992px) {
     .navbar {
         position: sticky !important;
         top: 0;
-        /* The background will adjust with content as requested previously */
+        /* Background will adjust with content naturally */
     }
 }
 
@@ -427,7 +428,7 @@
 
 
 
- <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+ <nav class="navbar navbar-expand-lg navbar-dark">
       
     <span >
     

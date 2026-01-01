@@ -1323,53 +1323,37 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
-                                <div id="successMessage" class="text-center p-4 d-none">
-
- <div id="successMessage" class="text-center p-4 d-none">
-    <div class="mb-3">
-        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-    </div>
-    <h3 class="text-white">Message Envoyé ! </h3>
-    <p class="text-light">L'équipe de ELITE International School vous contactera sous peu. </p>
-    <button class="btn btn-outline-light mt-3" onclick="window.location.reload()">Envoyer un autre message</button>
-</div>
-
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {showSuccess();}"></iframe>
-
-<form id="contactForm" class="mt-4 p-4 rounded shadow-lg" method="POST" 
-      action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec"
-      target="hidden_iframe" 
-      onsubmit="submitted=true;">
-    <div class="mb-3">
-        <label for="nom" class="form-label">Nom Complet</label>
-        <input type="text" style="color: black;" class="form-control" name="nom" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Adresse Email</label>
-        <input type="email" style="color: black;" class="form-control" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="contact" class="form-label">Contact Téléphonique</label>
-        <input type="text" style="color: black;" class="form-control" name="contact" required>
-    </div>
-    <div class="mb-3">
-        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
-        <select class="form-select" name="objet" style="color: black;">
-            <option selected disabled>Choisir un sujet</option>
-            <option value="admission">Question sur les Admissions</option>
-            <option value="programme">Information sur les Programmes IB</option>
-            <option value="autre">Autre Demande</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="contactMessage" class="form-label">Message</label>
-        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
-    </div>
-    <button type="submit" id="submitBtn" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
-        <span id="btnText">Envoyer le Message</span>
-        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
-    </button>
-</form>
+                                <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" >
+                                    <div class="mb-3">
+									
+									     <output name="date" style="display: none;"></output>
+										 
+                                        <label for="nom" class="form-label">Nom Complet</label>
+                                        <input type="text" style="color: black;" class="form-control" name="nom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Adresse Email</label>
+                                        <input type="email" style="color: black;" class="form-control" name="email" required>
+                                    </div>
+									 <div class="mb-3">
+                                        <label for="contact" class="form-label">Contact Téléphonique</label>
+                                        <input type="text" style="color: black;" class="form-control" name="contact" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
+                                        <select class="form-select" name="objet" style="color: black;">
+                                            <option selected>Choisir un sujet</option>
+                                            <option value="admission">Question sur les Admissions</option>
+                                            <option value="programme">Information sur les Programmes IB</option>
+                                            <option value="autre">Autre Demande</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactMessage" class="form-label">Message</label>
+                                        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
+                                </form>
                             </div>
                         </div>
 
@@ -1530,17 +1514,8 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
     </script>
     
     
-  <script type="text/javascript">
-    var submitted = false;
-
-    function showSuccess() {
-        if (submitted) {
-            // Cache le formulaire
-            document.getElementById('contactForm').classList.add('d-none');
-            // Affiche le message de succès
-            document.getElementById('successMessage').classList.remove('d-none');
-        }
-    }
+  <script>
+   
 </script>
     
 </body>

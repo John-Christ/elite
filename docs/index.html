@@ -1341,8 +1341,10 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                         <label for="contactMessage" class="form-label">Message</label>
                                         <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
-                                </form>
+<button type="submit" id="submitBtn" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
+    <span id="btnText">Envoyer le Message <i class="bi bi-send-fill"></i></span>
+    <span id="btnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+</button>                                </form>
                             </div>
                         </div>
 
@@ -1505,7 +1507,7 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
     </script>
     
     
-   <script type="text/javascript">
+   <!--script type="text/javascript">
     var submitted = false;
 
     function handleSubmission() {
@@ -1514,11 +1516,42 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
             window.location.reload();
         }
     }
-</script>
+</script-->
 
-<iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" onload="handleSubmission();"></iframe>	
+<iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" onload="handleSubmissionResponse();"></iframe>	
    
-    
+    <script type="text/javascript">
+    var submitted = false;
+
+    // Cette fonction se déclenche au clic sur le bouton "Envoyer"
+    function handleFormSubmit() {
+        submitted = true;
+        // Afficher le loader et désactiver le bouton
+        document.getElementById('btnText').classList.add('d-none');
+        document.getElementById('btnLoader').classList.remove('d-none');
+        document.getElementById('submitBtn').disabled = true;
+    }
+
+    // Cette fonction se déclenche quand l'iframe a fini de charger la réponse de Google
+    function handleSubmissionResponse() {
+        if (submitted) {
+            alert('Merci ! Votre message a été envoyé avec succès à ELITE School.');
+            
+            // --- INSTRUCTIONS DE RÉINITIALISATION ---
+            const form = document.querySelector('form[target="hidden_confirm"]');
+            if (form) {
+                form.reset(); // Vide tous les champs du formulaire 
+            }
+
+            // Remettre le bouton à son état initial
+            document.getElementById('btnText').classList.remove('d-none');
+            document.getElementById('btnLoader').classList.add('d-none');
+            document.getElementById('submitBtn').disabled = false;
+            
+            submitted = false; // Réinitialise la variable de contrôle
+        }
+    }
+</script>
     
     
 </body>

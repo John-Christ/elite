@@ -212,7 +212,7 @@
     const btnText = document.getElementById('btnText');
     const loader = document.getElementById('loader');
     const submitBtn = document.getElementById('submitBtn');
-    const successAlert = document.getElementById('admissionSuccess'); // Nouvelle référence
+   // const successAlert = document.getElementById('admissionSuccess'); // Nouvelle référence
 
     form.addEventListener('submit', e => {
         e.preventDefault();
@@ -221,7 +221,7 @@
         submitBtn.disabled = true;
         btnText.style.display = 'none';
         loader.style.display = 'inline-block';
-        successAlert.classList.add('d-none'); // Cache l'alerte si elle était déjà visible
+     //   successAlert.classList.add('d-none'); // Cache l'alerte si elle était déjà visible
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {

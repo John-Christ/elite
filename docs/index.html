@@ -1308,37 +1308,54 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
-                                <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" >
-                                    <div class="mb-3">
-									
-									     <output name="date" style="display: none;"></output>
-										 
-                                        <label for="nom" class="form-label">Nom Complet</label>
-                                        <input type="text" style="color: black;" class="form-control" name="nom" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Adresse Email</label>
-                                        <input type="email" style="color: black;" class="form-control" name="email" required>
-                                    </div>
-									 <div class="mb-3">
-                                        <label for="contact" class="form-label">Contact Téléphonique</label>
-                                        <input type="text" style="color: black;" class="form-control" name="contact" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
-                                        <select class="form-select" name="objet" style="color: black;">
-                                            <option selected>Choisir un sujet</option>
-                                            <option value="admission">Question sur les Admissions</option>
-                                            <option value="programme">Information sur les Programmes IB</option>
-                                            <option value="autre">Autre Demande</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="contactMessage" class="form-label">Message</label>
-                                        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
-                                </form>
+
+			
+
+<script type="text/javascript">var submitted=false;</script>
+<iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" 
+        onload="if(submitted){ handleFormSuccess(); }"></iframe>
+
+<form id="contactForm" class="mt-4 p-4 rounded shadow-lg" method="POST" 
+      action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec"
+      target="hidden_confirm" 
+      onsubmit="handleFormSubmit();">
+    
+    <div class="mb-3">
+        <label for="nom" class="form-label">Nom Complet</label>
+        <input type="text" style="color: black;" class="form-control" name="nom" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="email" class="form-label">Adresse Email</label>
+        <input type="email" style="color: black;" class="form-control" name="email" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="contact" class="form-label">Contact Téléphonique</label>
+        <input type="text" style="color: black;" class="form-control" name="contact" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
+        <select class="form-select" name="objet" style="color: black;">
+            <option selected disabled>Choisir un sujet</option>
+            <option value="admission">Question sur les Admissions</option>
+            <option value="programme">Information sur les Programmes IB</option>
+            <option value="autre">Autre Demande</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="contactMessage" class="form-label">Message</label>
+        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
+    </div>
+
+    <button type="submit" id="submitBtn" class="btn btn-primary fw-bold w-100" 
+            style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
+        <span id="btnText">Envoyer le Message <i class="bi bi-send-fill"></i></span>
+        <div id="btnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></div>
+    </button>
+</form>
                             </div>
                         </div>
 
@@ -1500,7 +1517,44 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
     
     
     
+   <script>
+function handleFormSubmit() {
+    submitted = true;
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // 1. Désactiver le bouton pour éviter les doubles clics
+    submitBtn.disabled = true;
     
+    // 2. Cacher le texte et afficher le loader
+    btnText.classList.add('d-none');
+    btnLoader.classList.remove('d-none');
+}
+
+function handleFormSuccess() {
+    if (submitted) {
+        // 1. Afficher l'alerte de succès
+        alert("Merci ! Votre demande a été transmise avec succès à ELITE International School.");
+        
+        // 2. Réinitialiser le formulaire
+        const form = document.getElementById('contactForm');
+        form.reset();
+
+        // 3. Remettre le bouton dans son état initial
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.disabled = false;
+        btnText.classList.remove('d-none');
+        btnLoader.classList.add('d-none');
+        
+        // 4. Réinitialiser la variable de contrôle
+        submitted = false;
+    }
+}
+</script> 
     
     
     

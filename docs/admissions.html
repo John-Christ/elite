@@ -173,14 +173,7 @@
                             <button type="button" class="btn btn-outline-light w-25 py-3" onclick="nextStep(1)">Back</button>
 
 
-                            <div id="admissionSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark); margin-bottom: 20px;">
-    <div class="d-flex align-items-center">
-        <i class="bi bi-check-circle-fill me-2 fs-4"></i>
-        <div>
-            <strong>Succès !</strong> Votre candidature a été transmise au cloud Elite avec succès[cite: 577, 1097].
-        </div>
-    </div>
-</div>
+                      
 
                             
                             <button type="submit" id="submitBtn" class="btn btn-elite flex-grow-1 py-3">
@@ -233,17 +226,14 @@
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {
                 // Affichage de la belle alerte Bootstrap au lieu du alert()
-            successAlert.classList.remove('d-none');
-               // alert('Success! Your application has been transmitted to the Elite cloud.');
+          //  successAlert.classList.remove('d-none');
+                alert('Success! Your application has been transmitted to the Elite cloud.');
                 form.reset();
 
 
-                // Logique spécifique à votre formulaire d'admission
-            if (typeof nextStep === "function") {
-                nextStep(1);
-            }
+            
                 
-                // nextStep(1);
+                nextStep(1);
                 submitBtn.disabled = false;
                 btnText.style.display = 'inline-block';
                 loader.style.display = 'none';

@@ -222,7 +222,7 @@
     const loader = document.getElementById('loader');
     const submitBtn = document.getElementById('submitBtn');
     const successAlert = document.getElementById('admissionSuccess'); // Nouvelle référence
-   // const successAlert = document.getElementById('admissionSuccess'); // Nouvelle référence
+   
 
     form.addEventListener('submit', e => {
         e.preventDefault();
@@ -232,13 +232,13 @@
         btnText.style.display = 'none';
         loader.style.display = 'inline-block';
         successAlert.classList.add('d-none'); // Cache l'alerte si elle était déjà visible
-     //   successAlert.classList.add('d-none'); // Cache l'alerte si elle était déjà visible
+     
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {
                 successAlert.classList.remove('d-none');
                 // Affichage de la belle alerte Bootstrap au lieu du alert()
-          //  successAlert.classList.remove('d-none');
+          
              //   alert('Success! Your application has been transmitted to the Elite cloud.');
                 form.reset();
 

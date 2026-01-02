@@ -237,8 +237,13 @@
                // alert('Success! Your application has been transmitted to the Elite cloud.');
                 form.reset();
 
-                
+
+                // Logique spécifique à votre formulaire d'admission
+            if (typeof nextStep === "function") {
                 nextStep(1);
+            }
+                
+                // nextStep(1);
                 submitBtn.disabled = false;
                 btnText.style.display = 'inline-block';
                 loader.style.display = 'none';

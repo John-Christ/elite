@@ -1309,7 +1309,14 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
 
-			
+			<div id="alertSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark);">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill me-2 fs-4"></i>
+        <div>
+            <strong>Merci !</strong> Votre message a été transmis avec succès. Notre équipe vous contactera sous peu pour l'étape de l'entretien.
+        </div>
+    </div>
+</div>
 
   <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" target="hidden_confirm" 
       onsubmit="handleFormSubmit();">
@@ -1520,35 +1527,36 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
 
 <iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" onload="handleSubmissionResponse();"></iframe>	
    
-    <script type="text/javascript">
+  <script type="text/javascript">
     var submitted = false;
 
-    // Cette fonction se déclenche au clic sur le bouton "Envoyer"
     function handleFormSubmit() {
         submitted = true;
-        // Afficher le loader et désactiver le bouton
         document.getElementById('btnText').classList.add('d-none');
         document.getElementById('btnLoader').classList.remove('d-none');
         document.getElementById('submitBtn').disabled = true;
+        // Cacher l'alerte si l'utilisateur renvoie un deuxième message
+        document.getElementById('alertSuccess').classList.add('d-none');
     }
 
-    // Cette fonction se déclenche quand l'iframe a fini de charger la réponse de Google
     function handleSubmissionResponse() {
         if (submitted) {
-            alert('Merci ! Votre message a été envoyé avec succès à ELITE School.');
-            
-            // --- INSTRUCTIONS DE RÉINITIALISATION ---
-            const form = document.querySelector('form[target="hidden_confirm"]');
-            if (form) {
-                form.reset(); // Vide tous les champs du formulaire 
-            }
-
-            // Remettre le bouton à son état initial
+            // 1. Cacher le loader et réactiver le bouton
             document.getElementById('btnText').classList.remove('d-none');
             document.getElementById('btnLoader').classList.add('d-none');
             document.getElementById('submitBtn').disabled = false;
-            
-            submitted = false; // Réinitialise la variable de contrôle
+
+            // 2. Afficher le message Bootstrap au lieu de l'alerte
+            const alertBox = document.getElementById('alertSuccess');
+            alertBox.classList.remove('d-none');
+
+            // 3. Réinitialiser le formulaire [cite: 1236]
+            const form = document.querySelector('form[target="hidden_confirm"]');
+            if (form) {
+                form.reset();
+            }
+
+            submitted = false;
         }
     }
 </script>

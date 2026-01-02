@@ -30,7 +30,7 @@
             flex-direction: column;
 
             overflow-x: hidden; /* Specifically targets horizontal overflow */
-            touch-action: pan-y;
+    
            
         }
 
@@ -88,22 +88,7 @@
             border-bottom: 2px solid var(--elite-blue-dark);
             overflow: hidden;
             white-space: nowrap;
-
-			position: relative;
         }
-
-
-        @media (max-width: 991px) {
-    .announcement-bar {
-        position: sticky !important;
-        top: 0;
-        z-index: 1100; /* Higher than the navbar to stay on top */
-    }
-}
-
-		
-
-		
         .marquee-content {
             display: inline-block;
             padding-left: 100%;
@@ -338,7 +323,7 @@
 
 
 
- #loader { display: none; }
+
 
 
 
@@ -894,7 +879,7 @@ une tenue scolaire obligatoire, encourageant le sens de l’unité, le respect d
                     <div class="container">
                         <h3 class="mb-3 fw-bold text-dark">L'Avenir de votre Enfant Commence Maintenant.</h3>
                         <p class="lead text-dark">Inscriptions ouvertes pour l'année 2026-2027 - Places limitées.</p>
-                        <a href="admissions.html" target="_blank" class="btn btn-lg fw-bold shadow-lg" style="background-color: var(--elite-gold); border-color: var(--elite-gold); color: var(--elite-blue-dark);">Accéder au Portail d'Admissions <i class="bi bi-journal-check"></i></a>
+                        <a href="https://kiddy-planet.com/Admission-en-ligne/" target="_blank" class="btn btn-lg fw-bold shadow-lg" style="background-color: var(--elite-gold); border-color: var(--elite-gold); color: var(--elite-blue-dark);">Accéder au Portail d'Admissions <i class="bi bi-journal-check"></i></a>
                     </div>
                 </section>
             `,
@@ -1323,54 +1308,37 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
-                              
-								<script type="text/javascript">var submitted=false;</script>
-
-<iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" 
-        onload="if(submitted) { alert('Merci ! Votre message a été envoyé avec succès à ELITE School.'); window.location.reload(); }">
-</iframe>
-
-<form class="mt-4 p-4 rounded shadow-lg" 
-      method="POST" 
-      action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec"
-      target="hidden_confirm" 
-      onsubmit="submitted=true;">
-    
-    <div class="mb-3">
-        <label for="nom" class="form-label">Nom Complet</label>
-        <input type="text" style="color: black;" class="form-control" name="nom" required>
-    </div>
-    
-    <div class="mb-3">
-        <label for="email" class="form-label">Adresse Email</label>
-        <input type="email" style="color: black;" class="form-control" name="email" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="contact" class="form-label">Contact Téléphonique</label>
-        <input type="text" style="color: black;" class="form-control" name="contact" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
-        <select class="form-select" name="objet" style="color: black;">
-            <option selected disabled>Choisir un sujet</option>
-            <option value="admission">Question sur les Admissions</option>
-            <option value="programme">Information sur les Programmes IB</option>
-            <option value="autre">Autre Demande</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="contactMessage" class="form-label">Message</label>
-        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary fw-bold w-100" 
-            style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
-        Envoyer le Message <i class="bi bi-send-fill"></i>
-    </button>
-</form>
+                                <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" >
+                                    <div class="mb-3">
+									
+									     <output name="date" style="display: none;"></output>
+										 
+                                        <label for="nom" class="form-label">Nom Complet</label>
+                                        <input type="text" style="color: black;" class="form-control" name="nom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Adresse Email</label>
+                                        <input type="email" style="color: black;" class="form-control" name="email" required>
+                                    </div>
+									 <div class="mb-3">
+                                        <label for="contact" class="form-label">Contact Téléphonique</label>
+                                        <input type="text" style="color: black;" class="form-control" name="contact" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactSubject" class="form-label">Sujet de la Demande</label>
+                                        <select class="form-select" name="objet" style="color: black;">
+                                            <option selected>Choisir un sujet</option>
+                                            <option value="admission">Question sur les Admissions</option>
+                                            <option value="programme">Information sur les Programmes IB</option>
+                                            <option value="autre">Autre Demande</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactMessage" class="form-label">Message</label>
+                                        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
+                                </form>
                             </div>
                         </div>
 
@@ -1531,7 +1499,10 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
     </script>
     
     
-  <iframe name="hidden_confirm" id="hidden_confirm" style="display:none;" onload="if(submitted){alert('Merci ! Votre message a été envoyé avec succès.'); window.location.reload();}"></iframe>
+    
+    
+    
+    
     
 </body>
 </html>

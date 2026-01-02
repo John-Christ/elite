@@ -1323,7 +1323,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
-                                <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" >
+                                <form id="messageForm" class="mt-4 p-4 rounded shadow-lg"  >
                                     <div class="mb-3">
 									
 									     <output name="date" style="display: none;"></output>
@@ -1352,8 +1352,11 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                         <label for="contactMessage" class="form-label">Message</label>
                                         <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">Envoyer le Message <i class="bi bi-send-fill"></i></button>
-                                </form>
+                                    <button id="submitBtn" type="submit" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
+                                     <span id="btnText">Envoyer le Message <i class="bi bi-send-fill"></i></span>
+									<span id="loader" class="spinner-border spinner-border-sm" role="status"></span>
+									</button>
+								</form>
                             </div>
                         </div>
 
@@ -1515,7 +1518,38 @@ document.querySelectorAll('[data-page="contact"]').forEach(button => {
     
     
   <script>
-   
+    // 2. DATA SUBMISSION LOGIC
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec'; // <--- PUT YOUR URL HERE
+    const form = document.getElementById('messageForm');
+    const btnText = document.getElementById('btnText');
+    const loader = document.getElementById('loader');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        loader.style.display = 'inline-block';
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert('Success! Your message has been transmitted to the Elite cloud.');
+                form.reset();
+                nextStep(1);
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline-block';
+                loader.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert('Transmission error. Please check connection.');
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline-block';
+                loader.style.display = 'none';
+            });
+    });
 </script>
     
 </body>

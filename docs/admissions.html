@@ -171,6 +171,18 @@
 
                         <div class="d-flex gap-3 mt-5">
                             <button type="button" class="btn btn-outline-light w-25 py-3" onclick="nextStep(1)">Back</button>
+
+
+                            <div id="admissionSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark); margin-bottom: 20px;">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill me-2 fs-4"></i>
+        <div>
+            <strong>Succès !</strong> Votre candidature a été transmise au cloud Elite avec succès[cite: 577, 1097].
+        </div>
+    </div>
+</div>
+
+                            
                             <button type="submit" id="submitBtn" class="btn btn-elite flex-grow-1 py-3">
                                 <span id="btnText">Submit Application</span>
                                 <span id="loader" class="spinner-border spinner-border-sm" role="status"></span>
@@ -207,6 +219,7 @@
     const btnText = document.getElementById('btnText');
     const loader = document.getElementById('loader');
     const submitBtn = document.getElementById('submitBtn');
+    const successAlert = document.getElementById('admissionSuccess'); // Nouvelle référence
 
     form.addEventListener('submit', e => {
         e.preventDefault();
@@ -215,11 +228,16 @@
         submitBtn.disabled = true;
         btnText.style.display = 'none';
         loader.style.display = 'inline-block';
+        successAlert.classList.add('d-none'); // Cache l'alerte si elle était déjà visible
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
             .then(response => {
-                alert('Success! Your application has been transmitted to the Elite cloud.');
+                // Affichage de la belle alerte Bootstrap au lieu du alert()
+            successAlert.classList.remove('d-none');
+               // alert('Success! Your application has been transmitted to the Elite cloud.');
                 form.reset();
+
+                
                 nextStep(1);
                 submitBtn.disabled = false;
                 btnText.style.display = 'inline-block';

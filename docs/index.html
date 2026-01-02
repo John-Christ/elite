@@ -1309,14 +1309,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                             <div class="col-lg-6 mb-5">
                                 <h3 class="text-gold"><i class="bi bi-envelope-fill me-2"></i> Formulaire de Contact</h3>
 
-			<div id="alertSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark);">
-    <div class="d-flex align-items-center">
-        <i class="bi bi-check-circle-fill me-2 fs-4"></i>
-        <div>
-            <strong>Merci !</strong> Votre message a été transmis avec succès. Notre équipe vous contactera sous peu pour l'étape de l'entretien.
-        </div>
-    </div>
-</div>
+		
 
   <form class="mt-4 p-4 rounded shadow-lg" method="POST" action="https://script.google.com/macros/s/AKfycbw_D-uCSfg7QgXmo4bcOPMPPfWNY7J3czZIyG2XtnR1G2fGEuLRLNsZbwSMOMSGWJhm/exec" target="hidden_confirm" 
       onsubmit="handleFormSubmit();">
@@ -1348,6 +1341,16 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                         <label for="contactMessage" class="form-label">Message</label>
                                         <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
                                     </div>
+
+        	<div id="alertSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark);">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill me-2 fs-4"></i>
+        <div>
+            <strong>Merci !</strong> Votre message a été transmis avec succès. Notre équipe vous contactera sous peu pour l'étape de l'entretien.
+        </div>
+    </div>
+</div>
+									
 <button type="submit" id="submitBtn" class="btn btn-primary fw-bold w-100" style="background-color: var(--elite-blue-light); border-color: var(--elite-blue-light); color: var(--elite-blue-dark);">
     <span id="btnText">Envoyer le Message <i class="bi bi-send-fill"></i></span>
     <span id="btnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>

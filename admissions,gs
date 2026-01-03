@@ -1,0 +1,22 @@
+function doPost(e) {
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const d = e.parameter;
+    
+    // Spread the data into specific columns
+    sheet.appendRow([
+      new Date(),      // Column A: Timestamp
+      d.nom,           // Column B: Full Name
+      d.dob,           // Column C: Date of Birth
+      d.objet,         // Column D: Grade
+      d.parent_name,   // Column E: Parent Name
+      d.email,         // Column F: Email
+      d.contact,       // Column G: Phone
+      d.message        // Column H: Message
+    ]);
+
+    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    return ContentService.createTextOutput("Error: " + err.toString());
+  }
+}

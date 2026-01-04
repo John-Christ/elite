@@ -1398,6 +1398,9 @@ function loadPage(pageName, sectionId = null) {
     // 1. Clear current content and insert new HTML
     mainContent.innerHTML = content;
 
+	// AJOUTEZ CECI : Met à jour l'URL dans la barre d'adresse
+    window.location.hash = pageName;
+
     // 2. Update active state in Navbar
     navLinks.forEach(link => {
         link.classList.remove('active-page');

@@ -1387,6 +1387,14 @@ if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
+
+		// 2. Enregistre la position du scroll et la page toutes les secondes
+setInterval(() => {
+    localStorage.setItem('elite_scroll', window.scrollY);
+    localStorage.setItem('elite_hash', window.location.hash);
+}, 1000);
+		
+
       const mainContent = document.getElementById('main-content');
 const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-brand');
 
@@ -1404,6 +1412,19 @@ function loadPage(pageName, sectionId = null) {
 
 	// AJOUTEZ CECI : Met à jour l'URL dans la barre d'adresse
     window.location.hash = pageName;
+
+
+  // --- AJOUTEZ CE BLOC À LA FIN DE LA FONCTION ---
+    const savedScroll = localStorage.getItem('elite_scroll');
+    const savedHash = localStorage.getItem('elite_hash');
+
+    if (savedScroll && window.location.hash === savedHash) {
+        setTimeout(() => {
+            window.scrollTo(0, parseInt(savedScroll));
+        }, 100); // Petit délai pour laisser le contenu s'afficher
+    }
+
+	
 
     // 2. Update active state in Navbar
     navLinks.forEach(link => {

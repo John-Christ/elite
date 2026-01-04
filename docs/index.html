@@ -1382,11 +1382,15 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
             `,  
         };
 
-	
+	// 1. POSITIONNEMENT : Tout en haut du script
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
 
       const mainContent = document.getElementById('main-content');
 const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-brand');
 
+		
 /**
  * Loads content for the specified page and optionally scrolls to a section.
  * @param {string} pageName - The key name of the page (e.g., 'accueil').
@@ -1480,11 +1484,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
      <script>
-
-		// Ajoutez ceci en haut de votre script global
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual'; 
-} 
     
     // Get the modal element and the content element
 var modal = document.getElementById("myModal");

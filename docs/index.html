@@ -1471,6 +1471,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
      <script>
+
+		// Ajoutez ceci en haut de votre script global
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'; 
+} 
     
     // Get the modal element and the content element
 var modal = document.getElementById("myModal");

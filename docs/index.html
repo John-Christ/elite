@@ -1463,8 +1463,14 @@ navLinks.forEach(link => {
 // 6. Initial Page Load
 document.addEventListener('DOMContentLoaded', () => {
     // Optional: Check URL for page (simplest implementation)
-    const initialPage = 'accueil';
-    loadPage(initialPage);
+   // const initialPage = 'accueil';
+  //  loadPage(initialPage);
+
+	// Vérifie s'il y a un hash (ex: #contact), sinon prend 'accueil'
+    const savedPage = window.location.hash.replace('#', '') || 'accueil';
+    
+    // Charge la page où l'utilisateur se trouvait
+    loadPage(savedPage);
 });
     
     </script>
@@ -1473,9 +1479,9 @@ document.addEventListener('DOMContentLoaded', () => {
      <script>
 
 		// Ajoutez ceci en haut de votre script global
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual'; 
-} 
+//if ('scrollRestoration' in history) {
+//    history.scrollRestoration = 'manual'; 
+//} 
     
     // Get the modal element and the content element
 var modal = document.getElementById("myModal");

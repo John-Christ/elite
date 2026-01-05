@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiddy Planet & Elite Kits | AI-Powered Stationery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #050505; color: white; overflow-x: hidden; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .page-content { display: none; }
+        .page-active { display: block; animation: fadeIn 0.5s ease forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .orb {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(40px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb top-[-100px] left-[-100px]"></div>
+    <div class="orb bottom-[-100px] right-[-100px]"></div>
+
+    <nav class="fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center neon-glow">
+                    <i data-lucide="zap" class="text-white fill-white"></i>
+                </div>
+                <span class="font-extrabold text-xl tracking-tighter italic">KIDDY <span class="text-indigo-500 underline">ELITE</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide uppercase">
+                <button onclick="navigateTo('home')" class="hover:text-indigo-400 transition-colors">Accueil</button>
+                <button onclick="navigateTo('shop')" class="hover:text-indigo-400 transition-colors">Boutique</button>
+                <button onclick="navigateTo('kits')" class="hover:text-indigo-400 transition-colors">Elite Kits</button>
+            </div>
+
+            <div class="flex items-center gap-5">
+                <div class="relative cursor-pointer" onclick="navigateTo('cart')">
+                    <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-indigo-600 text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+                </div>
+                <button class="bg-white text-black px-5 py-2 rounded-full text-xs font-bold hover:bg-indigo-500 hover:text-white transition-all">SIGN IN</button>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="page-content page-active pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h1 class="text-6xl md:text-8xl font-extrabold mb-6 tracking-tighter">
+                FUTURE OF <span class="text-indigo-500">SCHOOL.</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                La papeterie rencontre l'intelligence. Équipez vos enfants avec les kits **Kiddy Planet** & **Elite** de nouvelle génération.
+            </p>
+            <button onclick="navigateTo('shop')" class="glass px-10 py-4 rounded-full font-bold border border-indigo-500/50 hover:bg-indigo-500 transition-all text-lg">
+                EXPLORER LES KITS
+            </button>
+        </div>
+    </section>
+
+    <section id="shop" class="page-content pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-4xl font-bold italic">BEST SELLERS_</h2>
+                <div class="flex gap-2">
+                    <div class="h-1 w-20 bg-indigo-600"></div>
+                </div>
+            </div>
+
+            <div id="shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <section id="kits" class="page-content pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-10">TECH-READY ELITE KITS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="glass p-8 rounded-3xl text-left">
+                    <div class="h-64 bg-[url('https://images.unsplash.com/photo-1510172951991-859a69907ac4?q=80&w=600')] bg-cover rounded-2xl mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2 uppercase">Kiddy Planet Pro</h3>
+                    <p class="text-gray-400 mb-4">Parfait pour les génies en herbe de la maternelle.</p>
+                    <span class="text-2xl font-bold text-indigo-400">15.500 FCFA</span>
+                </div>
+                <div class="glass p-8 rounded-3xl text-left">
+                    <div class="h-64 bg-[url('https://images.unsplash.com/photo-1586075010633-247fe3f9c631?q=80&w=600')] bg-cover rounded-2xl mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2 uppercase">Elite Ultra Pack</h3>
+                    <p class="text-gray-400 mb-4">Le kit définitif pour le lycée et l'université.</p>
+                    <span class="text-2xl font-bold text-indigo-400">28.000 FCFA</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // NAVIGATION ENGINE
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('page-active'));
+            // Show target page
+            document.getElementById(pageId).classList.add('page-active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // DATA
+        const products = [
+            { id: 1, name: "KIT AVENTURE KP", price: "15.500", img: "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400", cat: "Maternelle" },
+            { id: 2, name: "PACK ELITE V3", price: "28.000", img: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?q=80&w=400", cat: "Collège" },
+            { id: 3, name: "SMART KIT GOLD", price: "22.500", img: "https://images.unsplash.com/photo-1624396115568-55b8979e8ed7?q=80&w=400", cat: "Primaire" },
+            { id: 4, name: "AI NOTEBOOK SET", price: "9.500", img: "https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=400", cat: "Accessoires" }
+        ];
+
+        let cartCount = 0;
+
+        // RENDER SHOP
+        function initShop() {
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="glass p-4 rounded-[2rem] hover:scale-[1.02] transition-transform group">
+                    <div class="relative overflow-hidden rounded-2xl h-72 mb-6">
+                        <img src="${p.img}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <span class="absolute top-4 left-4 bg-indigo-600 px-3 py-1 rounded-full text-[10px] font-black">${p.cat}</span>
+                    </div>
+                    <div class="px-2">
+                        <h3 class="text-xl font-bold tracking-tight mb-1 uppercase">${p.name}</h3>
+                        <div class="flex justify-between items-center mt-6">
+                            <span class="text-2xl font-extrabold text-indigo-400">${p.price} <small class="text-[10px] text-white/50 italic">FCFA</small></span>
+                            <button onclick="addToCart()" class="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-indigo-500 hover:text-white transition-all">
+                                <i data-lucide="plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addToCart() {
+            cartCount++;
+            document.getElementById('cart-count').innerText = cartCount;
+            // Simple GSAP animation for the count
+            gsap.from("#cart-count", { scale: 1.5, duration: 0.2 });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initShop();
+            lucide.createIcons();
+            
+            // Subtle animation for the hero text
+            gsap.from("h1", { opacity: 0, y: 50, duration: 1, ease: "power4.out" });
+        });
+    </script>
+</body>
+</html>

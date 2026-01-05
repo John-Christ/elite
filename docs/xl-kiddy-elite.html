@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiddy Planet & Elite Kits | Powered Stationery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #050505; color: white; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .neon-border { border: 1px solid rgba(99, 102, 241, 0.5); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        .page-content { display: none; }
+        .page-active { display: block; animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Modal Animation */
+        #product-modal { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        #product-modal.active { display: flex; opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center neon-border"><i data-lucide="cpu" class="text-white"></i></div>
+                <span class="font-extrabold text-xl tracking-tighter italic uppercase">Kiddy <span class="text-indigo-400">Elite</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest">
+                <button onclick="navigateTo('home')" class="hover:text-indigo-400 transition-all">Home</button>
+                <button onclick="navigateTo('shop')" class="hover:text-indigo-400 transition-all">Boutique</button>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative"><i data-lucide="shopping-cart" class="w-5 h-5"></i><span id="cart-count" class="absolute -top-2 -right-2 bg-indigo-600 text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span></div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="page-content page-active pt-40 pb-20 text-center">
+        <h1 class="text-7xl font-extrabold mb-6">ELITE <span class="text-indigo-500">STATIONERY.</span></h1>
+        <p class="text-gray-400 max-w-xl mx-auto mb-10">L'avenir de l'éducation commence ici avec nos kits intelligents.</p>
+        <button onclick="navigateTo('shop')" class="bg-white text-black px-10 py-4 rounded-full font-black hover:bg-indigo-500 hover:text-white transition-all uppercase text-sm">Entrer dans la boutique</button>
+    </section>
+
+    <section id="shop" class="page-content pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-black mb-12 italic uppercase tracking-tighter">Nos Meilleures Ventes_</h2>
+            <div id="shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <div id="product-modal" class="fixed inset-0 z-[100] items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass max-w-4xl w-full rounded-[2.5rem] overflow-hidden flex flex-col md:flex-row shadow-2xl relative border border-white/20">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-white/50 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="md:w-1/2 h-64 md:h-auto overflow-hidden">
+                <img id="modal-img" src="" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+            </div>
+            <div class="md:w-1/2 p-10 flex flex-col justify-center">
+                <span id="modal-cat" class="text-indigo-400 font-bold text-xs uppercase tracking-[0.2em] mb-2">CATEGORY</span>
+                <h2 id="modal-title" class="text-3xl font-black mb-6 uppercase leading-none">PRODUCT TITLE</h2>
+                <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                    Découvrez l'excellence avec nos kits scolaires **Kiddy Planet** et **Elite**, conçus pour fusionner durabilité premium et design futuriste. Chaque pack offre une sélection rigoureuse de fournitures haut de gamme, organisées intelligemment pour booster la productivité et la créativité des élèves de tous niveaux. Que ce soit pour la maternelle ou le lycée, nos kits garantissent une préparation optimale grâce à des matériaux résistants et une esthétique moderne unique. Offrez à vos enfants l'avantage compétitif d'un équipement complet, élégant et parfaitement adapté aux défis de l'éducation contemporaine.
+                </p>
+                <div class="flex items-center justify-between">
+                    <span id="modal-price" class="text-3xl font-extrabold">0 FCFA</span>
+                    <button onclick="addToCart()" class="bg-indigo-600 px-8 py-3 rounded-xl font-bold hover:bg-indigo-500 transition-all">Ajouter au Panier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "Kit Aventure Kiddy Planet", price: "15.500", cat: "Maternelle", img: "https://images.unsplash.com/photo-1510172951991-859a69907ac4?q=80&w=600" },
+            { id: 2, name: "Pack Excellence Elite", price: "28.000", cat: "Lycée", img: "https://images.unsplash.com/photo-1586075010633-247fe3f9c631?q=80&w=600" },
+            { id: 3, name: "Kiddy Smart Box", price: "12.500", cat: "Primaire", img: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=600" },
+            { id: 4, name: "Elite Kit Gold", price: "35.000", cat: "Université", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600" }
+        ];
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('page-active'));
+            document.getElementById(pageId).classList.add('page-active');
+        }
+
+        function renderShop() {
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="glass p-3 rounded-3xl hover:border-indigo-500/50 transition-all cursor-pointer group" onclick="openModal(${p.id})">
+                    <div class="h-48 rounded-2xl overflow-hidden mb-4">
+                        <img src="${p.img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500">
+                    </div>
+                    <div class="px-2 pb-2">
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">${p.cat}</span>
+                        <h3 class="font-bold text-sm uppercase mt-1 truncate">${p.name}</h3>
+                        <p class="text-lg font-black mt-3 text-white/90">${p.price} <small class="text-[10px] opacity-50">FCFA</small></p>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openModal(id) {
+            const p = products.find(x => x.id === id);
+            document.getElementById('modal-title').innerText = p.name;
+            document.getElementById('modal-cat').innerText = p.cat;
+            document.getElementById('modal-price').innerText = p.price + " FCFA";
+            document.getElementById('modal-img').src = p.img;
+            document.getElementById('product-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.remove('active');
+        }
+
+        let cart = 0;
+        function addToCart() {
+            cart++;
+            document.getElementById('cart-count').innerText = cart;
+            closeModal();
+            gsap.from("#cart-count", { scale: 2, duration: 0.3 });
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('product-modal')) closeModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderShop();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

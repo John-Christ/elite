@@ -1401,7 +1401,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
 									     <output name="date" style="display: none;"></output>
 										 
                                         <label for="nom" class="form-label">Nom Complet</label>
-                                        <input type="text" style="color: black;" class="form-control" name="nom" required>
+                                        <input type="text" style="color: black;" class="form-control" name="nom" pattern="^(?!.*(http|www|\.com|\.org|\.net)).*$"  required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Adresse Email</label>
@@ -1409,7 +1409,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                     </div>
 									 <div class="mb-3">
                                         <label for="contact" class="form-label">Contact Téléphonique</label>
-                                        <input type="text" style="color: black;" class="form-control" name="contact" required>
+                                        <input type="phone" style="color: black;" class="form-control" name="contact" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="contactSubject" class="form-label">Sujet de la Demande</label>
@@ -1422,7 +1422,7 @@ Cette dynamique favorise l’ouverture sur le monde et encourage les échanges, 
                                     </div>
                                     <div class="mb-3">
                                         <label for="contactMessage" class="form-label">Message</label>
-                                        <textarea style="color: black;" class="form-control" name="message" rows="4" required></textarea>
+                                        <textarea style="color: black;" class="form-control" name="message" rows="4"  pattern="^(?!.*(http|www|\.com|\.org|\.net)).*$"   required></textarea>
                                     </div>
 
         	<div id="alertSuccess" class="alert alert-success d-none animate__animated animate__fadeIn" role="alert" style="background-color: var(--elite-blue-light); border: none; color: var(--elite-blue-dark);">

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mot de la Directrice - ELITE International School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d; /* Bleu institutionnel */
+            --accent-color: #c5a059;  /* Or élégant */
+            --text-color: #2d3748;
+            --bg-light: #f7fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            margin: 15px auto 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .image-wrapper {
+            position: sticky;
+            top: 40px;
+        }
+
+        .director-image {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 15px 15px 0px var(--accent-color);
+            object-fit: cover;
+            aspect-ratio: 4/5;
+        }
+
+        .text-content {
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .quote-card {
+            background: #fff9f0;
+            border-left: 4px solid var(--accent-color);
+            padding: 25px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .footer-signature {
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .title {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .image-wrapper {
+                max-width: 400px;
+                margin: 0 auto 40px;
+                position: static;
+            }
+            h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <h1>Mot de la directrice</h1>
+    </div>
+
+    <div class="content-grid">
+        <div class="image-wrapper">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" 
+                 alt="Directrice ELITE School" 
+                 class="director-image">
+        </div>
+
+        <div class="text-content">
+            <p>Depuis la création de <span class="highlight">Kiddy Planet</span> en 2019, mon engagement repose sur une vision claire et profonde : créer un environnement international bilingue où chaque enfant apprend avec plaisir, se sent respecté, encouragé et valorisé.</p>
+            
+            <p>À Kiddy Planet, nous avons imaginé un lieu où la curiosité naturelle est nourrie, où se développent l’autonomie, la confiance en soi, la persévérance et la créativité, dans un cadre bienveillant qui permet à chaque enfant d’explorer, d’expérimenter et de grandir à son propre rythme.</p>
+
+            <div class="quote-card">
+                "Notre école est devenue bien plus qu’un établissement scolaire : elle est une communauté éducative, une véritable famille."
+            </div>
+
+            <p>Le Conseil d’Administration, l’équipe psychopédagogique et l’ensemble de nos collaborateurs œuvrent chaque jour avec dévouement pour assurer la réussite scolaire des élèves, tant sur le plan académique que sur celui du bien-être personnel.</p>
+
+            <p>Cette vision s’élargit aujourd’hui avec la création de <span class="highlight">ELITE International School</span>. ELITE incarne la continuité de notre mission : offrir un parcours complet, progressif et international, en parfaite cohérence avec nos valeurs d'excellence.</p>
+
+            <p>À ELITE, les élèves évoluent vers le Programme d’Éducation Intermédiaire (PEI/MYP), un cursus qui développe la pensée critique, le leadership et la citoyenneté mondiale. Notre ambition est de transformer un apprenant curieux en un adolescent réfléchi, responsable et acteur de ses choix.</p>
+
+            <p>Nous souhaitons former des citoyens du monde, capables d’utiliser les outils du XXIᵉ siècle — y compris <strong>l’intelligence artificielle</strong> — avec discernement et éthique. Nous cultivons l’empathie, l’intégrité et la solidarité pour bâtir l’avenir.</p>
+
+            <div class="footer-signature">
+                <p class="name">La Directrice Générale</p>
+                <p class="title">Kiddy Planet & ELITE International School</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journée Portes Ouvertes - ELITE International School</title>
+    <style>
+        :root {
+            --primary: #1a3a5f;
+            --accent: #c5a059;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            color: #333;
+        }
+
+        /* Barre de navigation */
+        nav {
+            background: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+            border: 2px solid var(--primary);
+        }
+
+        .nav-btn:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+
+        /* Section Héros / Contenu */
+        .main-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 850px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+
+        .event-details h1 {
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .info-card h3 { margin-top: 0; color: var(--primary); }
+
+        /* Style du Formulaire */
+        .form-card {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 100px;
+            border-top: 8px solid var(--accent);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: var(--primary); }
+        input, select {
+            width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; box-sizing: border-box;
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white; border: none; width: 100%; padding: 15px; border-radius: 8px;
+            font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+
+        .btn-submit:hover { background: #122a46; transform: translateY(-2px); }
+
+        #status {
+            margin-top: 15px; padding: 10px; border-radius: 6px; display: none; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div style="font-weight: 900; color: var(--primary); font-size: 24px;">ELITE</div>
+    <a href="https://eliteschoolgabon.com" class="nav-btn">Visiter le Site Officiel</a>
+</nav>
+
+<div class="main-container">
+    <div class="event-details">
+        <h1>Journée Portes Ouvertes 2026</h1>
+        <p>Elite International School of Gabon vous ouvre ses portes ! Dans la continuité pédagogique de <strong>Kiddy Planet</strong>, découvrez un environnement international, inclusif et bienveillant.</p>
+        
+        <div class="info-card">
+            <h3>Date & Lieu</h3>
+            <p>📅 <strong>Samedi 23 mai 2026</strong> à 10h30</p>
+            <p>📍 Situé à la Sablière, après le Beach Club à gauche.</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Au programme</h3>
+            <ul>
+                <li>Visite des nouveaux locaux</li>
+                <li>Présentation de la continuité pédagogique</li>
+                <li>Découverte de nos projets éducatifs</li>
+                <li>Échanges conviviaux avec les familles</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <h2 style="text-align: center; color: var(--primary); margin-top: 0;">Inscription</h2>
+        <form id="jpoForm">
+            <div class="form-group">
+                <label>Nom du Parent</label>
+                <input type="text" name="parentName" required>
+            </div>
+            <div class="form-group">
+                <label>Nom & Prénom de l'enfant</label>
+                <input type="text" name="childNames" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label>Participants</label>
+                <select name="guests">
+                    <option value="1">1 Personne</option>
+                    <option value="2">2 Personnes</option>
+                    <option value="3">3 Personnes</option>
+                    <option value="4+">4+ Personnes</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">Confirmer ma présence</button>
+            <div id="status"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwyOx7g06qrjNELMpegB73mLjXyI1vyPFyc8GR0CjsJDd0oP1va-o14Pwp42TWPLbLt/exec';
+    const form = document.getElementById('jpoForm');
+    const status = document.getElementById('status');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.innerText = 'Traitement...';
+        
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                status.style.display = 'block';
+                status.style.backgroundColor = '#d4edda';
+                status.style.color = '#155724';
+                status.innerText = 'Confirmation envoyée ! Vérifiez vos emails.';
+                form.reset();
+                btn.disabled = false;
+                btn.innerText = 'Confirmer ma présence';
+            })
+            .catch(error => {
+                status.style.display = 'block';
+                status.style.backgroundColor = '#f8d7da';
+                status.style.color = '#721c24';
+                status.innerText = 'Erreur. Veuillez réessayer.';
+                btn.disabled = false;
+            });
+    });
+</script>
+
+</body>
+</html>

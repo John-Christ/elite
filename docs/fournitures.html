@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELITE School - Manuels & Fournitures Scolaires 2026-2027</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d3b66;     /* Deep Royal Blue */
+            --secondary-color: #f4d35e;   /* Gold/Yellow accent */
+            --accent-color: #ee964b;      /* Warm Orange */
+            --text-dark: #2b2d42;         /* Charcoal text */
+            --bg-light: #f8f9fa;          /* Off-white background */
+            --card-bg: #ffffff;
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brand i {
+            color: var(--secondary-color);
+        }
+
+        .btn-home {
+            background-color: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-home:hover {
+            background-color: #fff;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Header Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(13,59,102,0.95), rgba(26,94,156,0.9)), url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?ixlib=rb-4.0.3') no-repeat center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Container & Tabs Dashboard */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+        }
+
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 35px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn i {
+            margin-right: 8px;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(13,59,102,0.2);
+        }
+
+        /* Level Content Panes */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .level-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .level-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Cards Grid System */
+        .grid-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary-color);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Styling variants for child sections */
+        .pre-prim .card { border-top-color: var(--accent-color); }
+        .lycee .card { border-top-color: #2ec4b6; }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .pre-prim .card-icon { color: var(--accent-color); }
+        .lycee .card-icon { color: #2ec4b6; }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pre-prim .btn-view { background-color: var(--accent-color); }
+        .lycee .btn-view { background-color: #2ec4b6; }
+
+        .btn-view:hover {
+            filter: brightness(0.9);
+        }
+
+        /* Professional Modal Setup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            animation: modalScale 0.3s ease forwards;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes modalScale {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #aaa;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-header h2 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-btn {
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-open {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-dl {
+            background-color: #e9ecef;
+            color: var(--text-dark);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 4%; }
+            .hero h1 { font-size: 2rem; }
+            .tab-btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid : fa-graduation-cap"></i> ELITE School
+        </div>
+        <a href="index.html" class="btn-home">
+            <i class="fa-solid fa-house"></i> Retour au Site Principal
+        </a>
+    </nav>
+
+    <header class="hero">
+        <h1>Listes des Manuels & Fournitures Scolaires</h1>
+        <p>Année Scolaire 2026 / 2027. Veuillez sélectionner le niveau d'apprentissage de votre enfant pour consulter ou télécharger les ressources requises.</p>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab(event, 'pre-primaire')">
+                <i class="fa-solid fa-child"></i> Pré-Primaire
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'primaire')">
+                <i class="fa-solid fa-book-open"></i> Primaire
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'lycee')">
+                <i class="fa-solid fa-school"></i> Collège / Lycée
+            </button>
+        </div>
+
+        <div id="pre-primaire" class="tab-content tab-pane active pre-prim">
+            <h2 class="level-title">Cycle Pré-Primaire</h2>
+            <div class="grid-levels">
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-shapes"></i></div>
+                        <h3>Toute Petite Section (TPS)</h3>
+                        <p>& Crèche — Matériel d'éveil, hygiène et fournitures d'apprentissage précoce.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Toute Petite Section & Crèche', 'TPS & creche fournitures.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-palette"></i></div>
+                        <h3>Petite & Moyenne Sections (PS / MS)</h3>
+                        <p>Liste des fournitures de créativité, motricité fine et vie scolaire.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Petite & Moyenne Sections', 'PS & MS  fournitures.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-pencil-style"></i></div>
+                        <h3>Grande Section (GS)</h3>
+                        <p>Manuels scolaires (Sami et Julie), méthodes d'écriture et fournitures requises.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Grande Section (GS)', 'GS fournitures + Manuels.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="primaire" class="tab-content tab-pane">
+            <h2 class="level-title">Cycle Primaire (P1 - P5)</h2>
+            <div class="grid-levels">
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-1"></i></div>
+                        <h3>Classe de P1 / CP</h3>
+                        <p>Méthodes de lecture Taoki, cahiers d'exercices et trousse de base complète.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de P1 / CP', 'P1 fournitures + Manuels 2026-2027.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-2"></i></div>
+                        <h3>Classe de P2 / CE1</h3>
+                        <p>Manuels de français Meli, fichiers de mathématiques, sciences Luciole et trousse.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de P2 / CE1', 'P2  Fournitures + Manuels  2026-2027.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+              
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-3"></i></div>
+                        <h3>Classe de P3 / CE2</h3>
+                        <p>Français, mathématiques, instruments de géométrie complets et trousse.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de P3 / CE2', 'P3 - CE2 Fournitures + Manuels 2026-2027.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-3"></i></div>
+                        <h3>Classe de P4 / CM1</h3>
+                        <p>Français, mathématiques, instruments de géométrie complets et trousse.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de P4 / CM1', 'P4 - CM1 Fournitures + Manuels 2026-2027.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+              
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-5"></i></div>
+                        <h3>Classe de P5 / CM2</h3>
+                        <p>Cahiers de fluence, romans de lecture (Matilda, Kensuke), Bescherelle et géométrie.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de P5 / CM2', 'P5 - CM2 Fournitures + Manuels 2026-2027.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+              
+            </div>
+        </div>
+
+        <div id="lycee" class="tab-content tab-pane lycee">
+            <h2 class="level-title">Cycle Secondaire / Collège</h2>
+            <div class="grid-levels">
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-feather"></i></div>
+                        <h3>Classe de 6ème</h3>
+                        <p>Lelivrescolaire.fr Français, œuvres littéraires (L'Odyssée) et matériel de géométrie.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de 6ème', '6e Fournitures et Manuels.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-flask"></i></div>
+                        <h3>Classe de 5ème</h3>
+                        <p>Manuels Colibris, romans d'apprentissage, dictionnaire Larousse et fournitures.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de 5ème', '5e Fournitures et Manuels.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
+                        <h3>Classe de 4ème</h3>
+                        <p>Anthologie de la presse, exercices de grammaire, Casio FX-92 et classeurs.</p>
+                    </div>
+                    <button class="btn-view" onclick="openDownloadModal('Classe de 4ème', '4e Fournitures et Manuels.pdf')">
+                        Voir les ressources <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalGradeTitle">Niveau Scolaire</h2>
+                <p>Que souhaitez-vous faire avec la liste des manuels et fournitures ?</p>
+            </div>
+            <div class="modal-actions">
+                <a href="#" id="modalViewBtn" target="_blank" class="modal-btn btn-open">
+                    <i class="fa-solid fa-eye"></i> Ouvrir et Consulter en ligne
+                </a>
+                <a href="#" id="modalDlBtn" download class="modal-btn btn-dl">
+                    <i class="fa-solid fa-download"></i> Télécharger le PDF original
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(event, tabId) {
+            // Remove active classes on buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Hide all tab container elements
+            const tabPanes = document.querySelectorAll('.tab-content');
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Set current active target styling
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Modal triggers for handling files on GitHub paths
+        const modal = document.getElementById('downloadModal');
+        const modalTitle = document.getElementById('modalGradeTitle');
+        const modalViewBtn = document.getElementById('modalViewBtn');
+        const modalDlBtn = document.getElementById('modalDlBtn');
+
+        function openDownloadModal(gradeName, fileName) {
+            modalTitle.innerText = gradeName;
+            
+            // Make sure the PDF names match the exact filenames when uploaded to the root of your GitHub repository folder.
+            // Using encoded string handling handles special characters safely.
+            const fileUrl = encodeURIComponent(fileName);
+            
+            modalViewBtn.href = fileName;
+            modalDlBtn.href = fileName;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Close modal if parent clicks outside the centered dialogue box wrapper
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

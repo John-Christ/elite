@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingest - Le Jeu de la Pollution</title>
+    <style>
+        /* Importation de polices joyeuses et lisibles pour les enfants */
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+
+        :root {
+            --primary-color: #1e3a8a;
+            --accent-green: #2ecc71;
+            --accent-blue: #3498db;
+            --accent-yellow: #f1c40f;
+            --accent-red: #e74c3c;
+            --background-sky: #e0f2fe;
+            --text-dark: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-sky);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            padding-bottom: 40px;
+        }
+
+        /* --- HEADER STYLE --- */
+        .school-header {
+            background: white;
+            border-bottom: 5px solid var(--accent-blue);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-radius: 20px;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.05);
+        }
+
+        .school-logo {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid var(--accent-yellow);
+        }
+
+        .school-info {
+            flex: 1;
+        }
+
+        .school-info h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .school-info p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #555;
+        }
+
+        .school-info .contact-line {
+            margin-top: 5px;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        /* --- MAIN CONTAINER & SCREENS --- */
+        .game-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 30px;
+            border: 6px solid var(--primary-color);
+            box-shadow: 0 12px 0 rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* --- CARTOON ANIMATIONS --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- WELCOME SCREEN --- */
+        .welcome-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.8rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 0px #d4f8e3;
+        }
+
+        .project-description {
+            text-align: center;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px dashed var(--accent-blue);
+        }
+
+        .students-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 35px;
+        }
+
+        .student-card {
+            text-align: center;
+        }
+
+        .student-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 5px solid var(--accent-blue);
+            background: #e2e8f0;
+            object-fit: cover;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .student-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .student-name {
+            margin-top: 10px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .big-btn {
+            display: block;
+            width: 260px;
+            margin: 0 auto;
+            padding: 18px 30px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.6rem;
+            color: white;
+            background: var(--accent-green);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #1e8449;
+            transition: all 0.2s;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        .big-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 6px 0 #1e8449;
+        }
+
+        .big-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 #1e8449;
+        }
+
+        /* --- QUIZ INTERFACE --- */
+        .quiz-header-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: var(--background-sky);
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .level-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 15px;
+            width: 100%;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--accent-blue);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease-out;
+        }
+
+        .question-box {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #f8fafc;
+            border: 3px solid #cbd5e1;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+
+        .option-btn:hover {
+            background: #f0fdf4;
+            border-color: var(--accent-blue);
+            transform: translateX(5px);
+        }
+
+        /* --- RESULTS SECTION --- */
+        .results-box {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+
+        .result-item:last-child { border: none; }
+        
+        .result-q { font-weight: bold; margin-bottom: 5px; }
+        .result-user { color: var(--accent-red); font-weight: 700;}
+        .result-correct { color: var(--accent-green); font-weight: 700;}
+
+        /* --- TROPHY & REWARDS --- */
+        .trophy-container {
+            text-align: center;
+            animation: bounce 2s infinite;
+            margin: 20px 0;
+        }
+
+        .trophy-svg {
+            width: 150px;
+            height: 150px;
+            fill: var(--accent-yellow);
+            filter: drop-shadow(0px 8px 0px #d4ac0d);
+        }
+
+        /* --- CONFETTI EFFECT --- */
+        .confetti-wrapper {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px; height: 12px;
+            background-color: var(--accent-yellow);
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- PRINT CERTIFICATE VISUALS --- */
+        #certificate-print-zone {
+            display: none;
+        }
+
+        @media print {
+            body * {
+                display: none !important;
+            }
+            #certificate-print-zone, #certificate-print-zone * {
+                display: block !important;
+            }
+            #certificate-print-zone {
+                width: 100%;
+                max-width: 850px;
+                margin: 0 auto;
+                padding: 40px;
+                border: 15px double var(--primary-color);
+                background: white;
+                text-align: center;
+                box-sizing: border-box;
+                font-family: 'Quicksand', sans-serif;
+            }
+            .cert-header {
+                border-bottom: 3px solid var(--accent-blue);
+                padding-bottom: 20px;
+                margin-bottom: 30px;
+            }
+            .cert-title {
+                font-family: 'Fredoka One', cursive;
+                font-size: 3rem;
+                color: #d4ac0d;
+                margin: 25px 0;
+            }
+            .cert-body {
+                font-size: 1.5rem;
+                line-height: 1.8;
+                margin-bottom: 40px;
+            }
+            .cert-footer {
+                display: flex !important;
+                justify-content: space-between;
+                margin-top: 60px;
+                font-size: 1.1rem;
+            }
+            .cert-signature {
+                border-top: 2px dashed #000;
+                width: 200px;
+                padding-top: 10px;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="school-header">
+        <img src="kiddy-elite.jpg" alt="Logo Kiddy Planet - Elite" class="school-logo" onerror="this.src='https://via.placeholder.com/130?text=Kiddy+Elite'">
+        <div class="school-info">
+            <h1>Kiddy Planet – Elite International School Group</h1>
+            <p>Sablière, Libreville, Gabon. BP: 3490</p>
+            <p>Téléphone: +241 66 70 41 66 | +241 11 73 39 89</p>
+            <p class="contact-line">Email : admin@eliteschoolgabon.com</p>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="confetti-wrapper" id="confetti-box"></div>
+
+        <section id="welcome-screen" class="screen active">
+            <h2 class="welcome-title">Bienvenue sur Ingest !</h2>
+            <div class="project-description">
+                Ce jeu est un projet scolaire réalisé par deux camarades de classe de <strong>Kiddy Planet en P5/CM2 (Promotion 2025-2036)</strong>. 
+                Toutes les questions sont basées sur le thème de la <strong>Pollution</strong>. Prêts à relever le défi ?
+            </div>
+            
+            <div class="students-section">
+                <div class="student-card">
+                    <img src="https://via.placeholder.com/140/3498db/ffffff?text=Gullian" alt="Gullian" class="student-avatar">
+                    <div class="student-name">Gullian</div>
+                </div>
+                <div class="student-card">
+                    <img src="https://via.placeholder.com/140/2ecc71/ffffff?text=Gabrielle" alt="Gabrielle" class="student-avatar">
+                    <div class="student-name">Gabrielle</div>
+                </div>
+            </div>
+
+            <button class="big-btn" onclick="startGame()">Commencer</button>
+        </section>
+
+        <section id="quiz-screen" class="screen">
+            <div class="quiz-header-status">
+                <span id="level-title" class="level-badge">Niveau 1</span>
+                <span>Question : <span id="question-number">1</span>/10</span>
+                <span>Score actuel : <span id="live-score">0</span></span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="question-box" id="question-text">
+                Chargement de la question...
+            </div>
+            <div class="options-list" id="options-container">
+                </div>
+        </section>
+
+        <section id="level-end-screen" class="screen">
+            <h2 id="end-level-status" class="welcome-title" style="font-size: 2.2rem;">Résultat du Niveau</h2>
+            <div class="project-description" id="end-level-summary" style="font-size: 1.3rem; font-weight: bold;">
+                </div>
+            
+            <h3 style="margin-bottom: 10px; color: var(--primary-color);">Détail de tes réponses :</h3>
+            <div class="results-box" id="results-review">
+                </div>
+
+            <br><br>
+            <button class="big-btn" id="level-action-btn" onclick="handleLevelAction()">Suivant</button>
+        </section>
+
+        <section id="final-screen" class="screen" style="text-align: center;">
+            <h2 class="welcome-title">Félicitations Exceptionnelles !</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 15px;">Vous avez brillamment maîtrisé les 5 niveaux du jeu Ingest !</p>
+            
+            <div class="trophy-container">
+                <svg class="trophy-svg" viewBox="0 0 24 24">
+                    <path d="M18 2H6v2H2v3c0 3.12 2.14 5.74 5 6.46V17h2v3H6v2h12v-2h-3v-3h2c2.86-.72 5-3.34 5-6.46V4h-4V2zM4 7V6h2v3.38C4.94 8.79 4 7.97 4 7zm16 0c0 .97-.94 1.79-2 2.38V6h2v1z"/>
+                </svg>
+            </div>
+
+            <p style="font-size: 1.3rem; font-weight: bold; color: var(--accent-green); margin-bottom: 30px;">
+                Gullian, Gabrielle et toute l'équipe de Kiddy Planet - Elite sont fiers de votre engagement pour préserver la Terre.
+            </p>
+
+            <button class="big-btn" style="background: var(--accent-yellow); box-shadow: 0 8px 0 #b7950b;" onclick="window.print()">Imprimer le Certificat</button>
+        </section>
+    </main>
+
+    <div id="certificate-print-zone">
+        <div class="cert-header">
+            <h2>Kiddy Planet – Elite International School Group</h2>
+            <p>Sablière, Libreville, Gabon | BP: 3490</p>
+            <p>Téléphone: +241 66 70 41 66 | Email : admin@eliteschoolgabon.com</p>
+        </div>
+        <div class="cert-title">CERTIFICAT DE RÉUSSITE</div>
+        <div class="cert-body">
+            Le présent diplôme d'éco-citoyen d'élite est décerné à l'élève joueur pour avoir accompli avec succès l'intégralité des défis du jeu de connaissances écologiques 
+            <br><br>
+            <strong style="font-size: 2.2rem; color: #1e3a8a;">INGEST : MISSION POLLUTION</strong>
+            <br><br>
+            Ce projet de fin d'année témoigne d'une parfaite compréhension des enjeux écologiques actuels, soutenu et validé par la promotion P5/CM2, année académique 2025-2036.
+        </div>
+        <div class="cert-footer">
+            <div>
+                <p><strong>Fait à Libreville, Gabon</strong></p>
+                <p>Le : <span id="cert-date"></span></p>
+            </div>
+            <div>
+                <p><strong>La Direction du Groupe Scolaire</strong></p>
+                <div class="cert-signature"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banques de 50 questions réparties sur 5 niveaux thématiques
+        const quizData = [
+            {
+                level: 1,
+                name: "Niveau 1 : Les Déchets et le Recyclage",
+                questions: [
+                    { q: "Quel déchet met le plus de temps à disparaître dans la nature ?", a: ["Un trognon de pomme", "Une bouteille en plastique", "Un journal en papier"], c: 1 },
+                    { q: "Dans quelle poubelle doit-on jeter les briques en carton ?", a: ["La poubelle jaune (Recyclage)", "La poubelle verte (Verre)", "La poubelle des restes alimentaires"], c: 0 },
+                    { q: "Que signifie le mot 'Biodégradable' ?", a: ["Qui pollue l'eau", "Qui se détruit tout seul grâce à la nature", "Qui est fabriqué en usine"], c: 1 },
+                    { q: "Quel objet peut remplacer idéalement les sacs en plastique jetables ?", a: ["Un sac en plastique plus grand", "Un sac en tissu réutilisable (Tote bag)", "Une boîte en carton jetable"], c: 1 },
+                    { q: "Le verre est une matière magique ! Combien de fois peut-on le recycler ?", a: ["Seulement 2 fois", "Jusqu'à 10 fois", "À l'infini !"], c: 2 },
+                    { q: "Où faut-out jeter les piles usagées de nos jouets ?", a: ["Dans la poubelle normale", "Dans un bac de collecte spécial en magasin", "Dans le jardin"], c: 1 },
+                    { q: "Qu'est-ce que le compost ?", a: ["La transformation de restes de nourriture en engrais pour les plantes", "Un produit chimique dangereux", "Un camion poubelle"], c: 0 },
+                    { q: "Jeter un déchet par terre en ville s'appelle...", a: ["Un oubli sans importance", "Une pollution visuelle et environnementale", "Une décoration"], c: 1 },
+                    { q: "Lequel de ces objets est parfaitement recyclable ?", a: ["Une canette en aluminium", "Un vieux mouchoir en papier usagé", "Un pot de yaourt cassé"], c: 0 },
+                    { q: "Que signifie la règle des 3R ?", a: ["Rouler, Ranger, Regarder", "Réduire, Réutiliser, Recycler", "Rien Redire du Tout"], c: 1 }
+                ]
+            },
+            {
+                level: 2,
+                name: "Niveau 2 : Protégeons notre Eau !",
+                questions: [
+                    { q: "Qu'est-ce qui pollue le plus les mers et les océans de nos jours ?", a: ["Le sable des plages", "Le plastique", "Les algues marines"], c: 1 },
+                    { q: "Qu'appelle-t-on le '7ème continent' ?", a: ["Une immense île de déchets plastiques flottants", "Un nouveau pays très vert", "Le pôle Sud"], c: 0 },
+                    { q: "Pourquoi une marée noire est-elle une catastrophe ?", a: ["Parce que le pétrole tue les oiseaux et les animaux marins", "Parce que l'eau devient toute noire et jolie", "Parce que les bateaux coulent"], c: 0 },
+                    { q: "Où vont les eaux sales de nos toilettes et douches pour être nettoyées ?", a: ["Directement dans les rivières", "Dans une station d'épuration", "Dans la mer"], c: 1 },
+                    { q: "Quel animal marin confond souvent les sacs plastiques avec des méduses ?", a: ["Le requin blanc", "La tortue marine", "Le crabe"], c: 1 },
+                    { q: "Si on jette de l'huile de cuisine dans l'évier, que se passe-t-il ?", a: ["Cela nettoie les tuyaux", "Cela bouche les canalisations et pollue l'eau", "Cela nourrit les poissons"], c: 1 },
+                    { q: "D'où vient la plus grande partie de la pollution de l'océan ?", a: ["Des activités des hommes sur la terre ferme", "Des extraterrestres", "Des poissons eux-mêmes"], c: 0 },
+                    { q: "Les engrais chimiques utilisés dans les champs peuvent polluer...", a: ["L'air uniquement", "Les nappes d'eau souterraines", "Rien du tout"], c: 1 },
+                    { q: "Qu'est-ce que de l'eau potable ?", a: ["Une eau de couleur bleue", "Une eau propre qu'on peut boire sans tomber malade", "L'eau de la mer"], c: 1 },
+                    { q: "Économiser l'eau à la maison permet de...", a: ["Laisser plus d'eau propre dans la nature", "Faire plaisir au plombier", "Devenir plus fort"], c: 0 }
+                ]
+            },
+            {
+                level: 3,
+                name: "Niveau 3 : L'Air et le Climat",
+                questions: [
+                    { q: "Quel gaz polluant est rejeté par les pots d'échappement des voitures ?", a: ["L'oxygène", "Le dioxyde de carbone (CO2)", "La vapeur d'eau"], c: 1 },
+                    { q: "Qu'est-ce que l'effet de serre ?", a: ["Une maison pour faire pousser les fleurs", "Un piège à chaleur autour de la Terre à cause des gaz polluants", "Un vent très froid"], c: 1 },
+                    { q: "Quel est l'impact direct de la pollution de l'air sur les enfants ?", a: ["Elle fait grandir plus vite", "Elle cause des maladies comme l'asthme et la toux", "Elle rend plus intelligent"], c: 1 },
+                    { q: "Qui sont les super-héros de la nature qui nettoient l'air en absorbant le CO2 ?", a: ["Les voitures électriques", "Les arbres et les forêts", "Les nuages"], c: 1 },
+                    { q: "Qu'est-ce que le 'smog' dans les grandes villes ?", a: ["Une danse populaire", "Un brouillard épais formé par la pollution de l'air", "Un type de bonbon"], c: 1 },
+                    { q: "Comment peut-on aider à réduire la pollution de l'air en ville ?", a: ["En prenant le vélo ou en marchant", "En laissant le moteur de la voiture allumé", "En brûlant des plastiques"], c: 0 },
+                    { q: "Le réchauffement de la planète a pour conséquence directe de faire...", a: ["Fondre les glaciers et monter le niveau de la mer", "Refroidir les océans", "Diminuer la taille des déserts"], c: 0 },
+                    { q: "Laquelle de ces énergies ne pollue pas l'air ?", a: ["L'énergie du charbon", "L'énergie solaire", "Le pétrole"], c: 1 },
+                    { q: "A-t-on le droit de brûler ses déchets de jardin ou du plastique chez soi ?", a: ["Oui, c'est une bonne idée", "Non, c'est interdit car cela dégage des fumées toxiques", "Seulement la nuit"], c: 1 },
+                    { q: "Quel secteur d'activité humain produit d'immenses fumées polluantes ?", a: ["Les bibliothèques", "Les usines lourdes et les centrales thermiques", "Les parcs d'attractions"], c: 1 }
+                ]
+            },
+            {
+                level: 4,
+                name: "Niveau 4 : Protégeons la Biodiversité",
+                questions: [
+                    { q: "Pourquoi la pollution par les pesticides est-elle dangereuse pour les abeilles ?", a: ["Elle les aide à faire plus de miel", "Elle les empoisonne et perturbe leur orientation", "Elle change leur couleur"], c: 1 },
+                    { q: "Qu'est-ce que la déforestation ?", a: ["Planter de nouveaux arbres", "Couper ou détruire des forêts entières", "Nettoyer les parcs"], c: 1 },
+                    { q: "Quand l'habitat d'un animal est pollué ou détruit, l'espèce risque de...", a: ["Déménager sur la Lune", "S'éteindre et disparaître pour toujours", "Changer de régime alimentaire"], c: 1 },
+                    { q: "Les morceaux minuscules de plastiques dans l'eau s'appellent...", a: ["Les confettis d'eau", "Les microplastiques", "Les bonbons de mer"], c: 1 },
+                    { q: "Qu'est-ce que la biodiversité ?", a: ["La collection de toutes les voitures de sport", "La variété de tous les êtres vivants sur Terre", "Une matière enseignée au collège"], c: 1 },
+                    { q: "Pourquoi la grande forêt du Gabon est-elle si importante pour le monde ?", a: ["Elle est un poumon vert géant qui stocke le carbone", "Elle bloque le vent du nord", "Elle contient des usines de jouets"], c: 0 },
+                    { q: "Qu'arrive-t-il aux coraux sous l'océan à cause du réchauffement des eaux ?", a: ["Ils deviennent multicolores", "Ils blanchissent et finissent par mourir", "Ils grandissent plus vite"], c: 1 },
+                    { q: "Quel est l'effet de l'utilisation excessive de produits chimiques sur la terre ?", a: ["Cela rend le sol stérile et tue les vers de terre utiles", "Cela fait pousser des plantes en or", "Cela nettoie la terre"], c: 0 },
+                    { q: "Quel fléau pour la faune trouve-t-on souvent abandonné dans les forêts ?", a: ["Des livres scolaires", "Des cartouches, bouteilles et sacs abandonnés", "Des ordinateurs portables"], c: 1 },
+                    { q: "La disparition d'un seul petit insecte dans la nature peut...", a: ["N'avoir aucune conséquence", "Déséquilibrer toute la chaîne alimentaire", "Rendre la nature plus forte"], c: 1 }
+                ]
+            },
+            {
+                level: 5,
+                name: "Niveau 5 : Les Éco-gestes et Solutions !",
+                questions: [
+                    { q: "Qu'est-ce qu'une énergie renouvelable ?", a: ["Une énergie propre qui ne s'épuise jamais", "Une pile qu'on recharge à la main", "Une énergie très chère"], c: 0 },
+                    { q: "Parmi ces choix, laquelle est une énergie propre ?", a: ["L'énergie du pétrole", "L'énergie éolienne (le vent)", "Le gaz de schiste"], c: 1 },
+                    { q: "Pour économiser l'électricité dans sa chambre, il faut...", a: ["Laisser la télévision allumée toute la journée", "Éteindre la lumière dès que l'on sort de la pièce", "Acheter plus de lampes"], c: 1 },
+                    { q: "Pourquoi vaut-il mieux utiliser une gourde en inox plutôt qu'une bouteille d'eau jetable ?", a: ["Parce qu'elle est plus lourde", "Pour éviter de fabriquer et jeter du plastique à chaque utilisation", "Parce que l'eau change de goût"], c: 1 },
+                    { q: "Qu'est-ce que l'achat local (acheter des fruits près de chez soi) évite ?", a: ["La pollution liée aux longs transports en avions ou camions", "De parler avec les voisins", "De manger de bonnes choses"], c: 0 },
+                    { q: "Quel éco-geste permet de réduire le gaspillage de l'eau sous la douche ?", a: ["Prendre un bain chaud juste après", "Couper l'eau pendant qu'on se savonne", "Laisser couler l'eau très fort"], c: 1 },
+                    { q: "Que doit-on faire de nos vêtements trop petits qui sont encore en bon état ?", a: ["Les jeter à la poubelle des déchets ménagers", "Les donner à des associations ou à d'autres enfants", "Les brûler"], c: 1 },
+                    { q: "Que signifie viser l'objectif 'Zéro Déchet' ?", a: ["Acheter des produits sans emballages inutiles", "Remplir sa poubelle le plus vite possible", "Ne plus rien manger"], c: 0 },
+                    { q: "Que faire d'un appareil électronique ou d'un téléphone cassé ?", a: ["Le jeter dans la forêt", "L'apporter dans un point de recyclage ou une déchèterie", "Le cacher sous son lit"], c: 1 },
+                    { q: "Qui est responsable de la protection de la planète Terre contre la pollution ?", a: ["Uniquement les maîtres et maîtresses", "Chaque citoyen, petit comme grand, par ses gestes quotidiens !", "Seulement les présidents"], c: 1 }
+                ]
+            }
+        ];
+
+        // variables d'état du jeu
+        let currentLevelIndex = 0;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswersHistory = [];
+
+        // Lancement du jeu
+        function startGame() {
+            currentLevelIndex = 0;
+            initLevel(currentLevelIndex);
+        }
+
+        // Initialisation d'un niveau
+        function initLevel(levelIdx) {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswersHistory = [];
+            switchScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        // Chargement de la question active
+        function loadQuestion() {
+            const currentLevel = quizData[currentLevelIndex];
+            const currentQuestion = currentLevel.questions[currentQuestionIndex];
+
+            // Mise à jour de l'interface graphique
+            document.getElementById('level-title').innerText = currentLevel.name;
+            document.getElementById('question-number').innerText = currentQuestionIndex + 1;
+            document.getElementById('live-score').innerText = score + " pts";
+            
+            // Barre de progression
+            const progressPercent = ((currentQuestionIndex) / 10) * 100;
+            document.getElementById('progress-bar').style.width = progressPercent + "%";
+
+            // Texte de la question
+            document.getElementById('question-text').innerText = currentQuestion.q;
+
+            // Boutons d'options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.a.forEach((optionText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optionText;
+                btn.onclick = () => checkAnswer(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // Vérification de la réponse sélectionnée
+        function checkAnswer(selectedIdx) {
+            const currentLevel = quizData[currentLevelIndex];
+            const currentQuestion = currentLevel.questions[currentQuestionIndex];
+            const isCorrect = (selectedIdx === currentQuestion.c);
+
+            if (isCorrect) {
+                score++;
+            }
+
+            // Sauvegarde de l'historique pour le bilan de fin de niveau
+            userAnswersHistory.push({
+                question: currentQuestion.q,
+                userChoice: currentQuestion.a[selectedIdx],
+                correctChoice: currentQuestion.a[currentQuestion.c],
+                success: isCorrect
+            });
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < currentLevel.questions.length) {
+                loadQuestion();
+            } else {
+                showLevelResults();
+            }
+        }
+
+        // Affichage des résultats du niveau en cours
+        function showLevelResults() {
+            switchScreen('level-end-screen');
+            document.getElementById('progress-bar').style.width = "100%";
+
+            const passed = (score >= 6); // Plus de 50% de bonnes réponses (6 sur 10)
+            const statusTitle = document.getElementById('end-level-status');
+            const summaryBox = document.getElementById('end-level-summary');
+            const actionBtn = document.getElementById('level-action-btn');
+
+            // Nettoyage et injection du récapitulatif textuel détaillé
+            const reviewBox = document.getElementById('results-review');
+            reviewBox.innerHTML = '';
+
+            userAnswersHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <div class="result-q">❓ ${item.question}</div>
+                    <div class="${item.success ? 'result-correct' : 'result-user'}">👉 Ta réponse : ${item.userChoice} ${item.success ? '✔' : '❌'}</div>
+                    ${!item.success ? `<div class="result-correct">✔ La bonne réponse était : ${item.correctChoice}</div>` : ''}
+                `;
+                reviewBox.appendChild(div);
+            });
+
+            if (passed) {
+                statusTitle.innerText = "🎉 Niveau Réussi ! Bravo ! 🎉";
+                statusTitle.style.color = "var(--accent-green)";
+                summaryBox.innerHTML = `Magnifique ! Tu as obtenu un score de <span style="color:var(--accent-green); font-size:1.6rem;">${score}/10</span>. Tu as l'étoile verte !`;
+                actionBtn.innerText = "Niveau Suivant ➔";
+                actionBtn.style.background = "var(--accent-blue)";
+                triggerConfetti();
+            } else {
+                statusTitle.innerText = "Oups ! Entraîne-toi encore ! 🔄";
+                statusTitle.style.color = "var(--accent-red)";
+                summaryBox.innerHTML = `Tu as obtenu <span style="color:var(--accent-red); font-size:1.6rem;">${score}/10</span>. Il faut au moins 6 bonnes réponses pour passer au niveau suivant.`;
+                actionBtn.innerText = "Recommencer le niveau ⟲";
+                actionBtn.style.background = "var(--accent-red)";
+            }
+        }
+
+        // Gestion du clic sur le bouton d'action de fin de niveau
+        function handleLevelAction() {
+            const passed = (score >= 6);
+            stopConfetti();
+
+            if (passed) {
+                currentLevelIndex++;
+                if (currentLevelIndex < quizData.length) {
+                    initLevel(currentLevelIndex);
+                } else {
+                    // Tous les 5 niveaux ont été franchis avec succès
+                    showFinalScreen();
+                }
+            } else {
+                // Échec : Réinitialisation du même niveau en cours
+                initLevel(currentLevelIndex);
+            }
+        }
+
+        // Écran final de triomphe
+        function showFinalScreen() {
+            switchScreen('final-screen');
+            triggerConfetti();
+            // Inscription automatique de la date du jour sur le certificat imprimable
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('cert-date').innerText = new Date().toLocaleDateString('fr-FR', options);
+        }
+
+        // Utilitaire de permutation d'écrans
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Fonctions d'animation des confettis
+        function triggerConfetti() {
+            const box = document.getElementById('confetti-box');
+            box.innerHTML = '';
+            box.style.display = 'block';
+            const colors = ['#2ecc71', '#3498db', '#f1c40f', '#e74c3c', '#9b59b6'];
+            
+            for (let i = 0; i < 50; i++) {
+                const div = document.createElement('div');
+                div.className = 'confetti';
+                div.style.left = Math.random() * 100 + '%';
+                div.style.top = Math.random() * -20 + 'px';
+                div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                div.style.animationDelay = Math.random() * 2 + 's';
+                div.style.transform = `scale(${Math.random() * 0.8 + 0.4})`;
+                box.appendChild(div);
+            }
+        }
+
+        function stopConfetti() {
+            const box = document.getElementById('confetti-box');
+            box.style.display = 'none';
+            box.innerHTML = '';
+        }
+    </script>
+</body>
+</html>

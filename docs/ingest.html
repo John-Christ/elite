@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingest - Le Jeu de la Pollution</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    
     <style>
         /* Importation de polices joyeuses et lisibles pour les enfants */
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
@@ -459,7 +463,9 @@
                 Gullian, Gabrielle et toute l'équipe de Kiddy Planet - Elite sont fiers de votre engagement pour préserver la Terre.
             </p>
 
-            <button class="big-btn" style="background: var(--accent-yellow); box-shadow: 0 8px 0 #b7950b;" onclick="window.print()">Imprimer le Certificat</button>
+
+            <button class="big-btn" style="background: var(--accent-yellow); box-shadow: 0 8px 0 #b7950b;" onclick="telechargerCertificat()">Télécharger le Certificat (PDF)</button>
+            <!--button class="big-btn" style="background: var(--accent-yellow); box-shadow: 0 8px 0 #b7950b;" onclick="window.print()">Imprimer le Certificat</button-->
         </section>
     </main>
 
@@ -751,6 +757,31 @@
             box.style.display = 'none';
             box.innerHTML = '';
         }
+
+
+
+        function telechargerCertificat() {
+    const element = document.getElementById('certificate-print-zone');
+    
+    // On force temporairement l'affichage pour que l'outil puisse le capturer
+    element.style.display = 'block';
+    
+    // Configuration du rendu PDF
+    const options = {
+        margin:       15,
+        filename:     'Certificat_Ingest_Elite.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    // Génération et téléchargement automatique
+    html2pdf().set(options).from(element).save().then(() => {
+        // On cache à nouveau la zone après la capture
+        element.style.display = 'none';
+    });
+}
+        
     </script>
 </body>
 </html>

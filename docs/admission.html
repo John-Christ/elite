@@ -1,112 +1,334 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande d'inscription scolaire - ELITE - Kiddy Planet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0284c7;
+            --accent: #f59e0b;
+            --text: #1f2937;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+        }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+        
+        .container { max-width: 850px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        .header { text-align: center; border-bottom: 3px solid var(--primary); padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); font-size: 26px; font-weight: 700; text-transform: uppercase; }
+        .header h2 { color: var(--secondary); font-size: 16px; font-weight: 400; margin-top: 5px; }
+        .header p { font-size: 12px; color: #6b7280; margin-top: 5px; }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        .section-title { background: var(--primary); color: white; padding: 10px 15px; font-size: 16px; font-weight: 600; border-radius: 6px; margin: 25px 0 15px 0; text-transform: uppercase; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-<div class="container py-5">
-    <div class="mb-4">
-    
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; color: #374151; }
+        input[type="text"], input[type="email"], input[type="date"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; transition: border 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2); }
+        
+        .radio-group, .checkbox-group { display: flex; gap: 15px; align-items: center; margin-top: 5px; }
+        .radio-group label, .checkbox-group label { display: inline; font-weight: 400; cursor: pointer; }
+        
+        .info-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; }
+        .alert-box { background: #fffbeb; border-left: 4px solid #d97706; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; }
 
-        <a href="https://eliteschoolgabon.com/" data-page="home" class="btn btn-outline-secondary border-0 shadow-sm mb-3">
-    <i class="bi bi-arrow-left-circle-fill me-2"></i> Back to Elite
-</a>
+        /* Signature Canvas */
+        .signature-container { border: 2px dashed #cbd5e1; background: #fafafa; border-radius: 6px; position: relative; margin-top: 10px; }
+        canvas { width: 100%; height: 150px; display: block; cursor: crosshair; }
+        .clear-sig { position: absolute; right: 10px; bottom: 10px; background: #ef4444; color: white; border: none; padding: 5px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; }
+
+        .btn-submit { display: block; width: 100%; background: var(--secondary); color: white; text-align: center; padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 30px; }
+        .btn-submit:hover { background: var(--primary); }
+        
+        /* Spinner pour le chargement */
+        .loading { display: none; text-align: center; font-weight: bold; color: var(--primary); margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Kiddy Planet</h1>
+        <h2>Montessori Bilingual School — Formulaire de demande d'inscription scolaire</h2>
+        <p>BP 3490 - Tel: +241.16.70.41.66 / +241.11.73.39.89 - kiddymontessori@gmail.com</p>
     </div>
 
-    <div class="card shadow">
-        <div class="card-body p-4">
-            <h2 class="text-center mb-4">Admission Form</h2>
-            
-            <div class="progress mb-4" style="height: 10px;">
-                <div id="formProgress" class="progress-bar" role="progressbar" style="width: 50%; background-color: var(--elite-gold);"></div>
-            </div>
-
-            <form id="admissionForm">
-                <div class="form-step" id="step1">
-                    <h4 class="mb-3" style="color: var(--elite-blue-dark);">Step 1: Child's Information</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Date of Birth</label>
-                            <input type="date" class="form-control" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Grade Applying For</label>
-                            <select class="form-select">
-                                <option>6ème</option>
-                                <option>5ème</option>
-                                <option>4ème</option>
-                                <option>3ème</option>
-                                <option>2nde</option>
-                                <option>1ere</option>
-                                <option>Tle</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="button" class="btn fw-bold mt-4 w-100" style="background-color: var(--elite-gold);" onclick="nextStep(2)">Next: Parent Details</button>
-                </div>
-
-                <div class="form-step d-none" id="step2">
-                    <h4 class="mb-3" style="color: var(--elite-blue-dark);">Step 2: Parent Information & Consent</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Parent/Guardian Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" required>
-                        </div>
-                        
-                        <div class="col-12 mt-4">
-                            <div class="form-check p-3 border rounded">
-                                <input class="form-check-input" type="checkbox" id="imageConsent" required>
-                                <label class="form-check-label ms-2" for="imageConsent">
-                                    <strong>Image Use Consent</strong><br>
-                                    <small>I authorize Elite to use photographs or videos of my child for educational or promotional purposes.</small>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="button" class="btn btn-secondary w-50" onclick="nextStep(1)">Back</button>
-                        <button type="submit" class="btn btn-success fw-bold w-50" style="background-color: var(--elite-gold); color: var(--elite-blue-dark);">Submit Application</button>
-                    </div>
-                </div>
-            </form>
+    <form id="inscriptionForm">
+        
+        <div class="section-title">Identité de l'élève</div>
+        <div class="grid-2">
+            <div class="form-group"><label>Nom : *</label><input type="text" name="Nom_Eleve" required></div>
+            <div class="form-group"><label>Prénoms : *</label><input type="text" name="Prenoms_Eleve" required></div>
         </div>
-    </div>
+        <div class="grid-2">
+            <div class="form-group"><label>Date et lieu de naissance : *</label><input type="text" name="Date_Lieu_Naissance" placeholder="Ex: 12/05/2021 à Libreville" required></div>
+            <div class="form-group"><label>Nationalité(s) : *</label><input type="text" name="Nationalite_Eleve" required></div>
+        </div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Sexe : *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="Sexe" value="Garçon" required> Garçon</label>
+                    <label><input type="radio" name="Sexe" value="Fille"> Fille</label>
+                </div>
+            </div>
+            <div class="form-group"><label>Adresse : *</label><input type="text" name="Adresse" required></div>
+        </div>
+        <div class="form-group">
+            <label>Habite avec : *</label>
+            <select name="Habite_Avec" required>
+                <option value="">Sélectionnez...</option>
+                <option value="Parents">Parents</option>
+                <option value="Père">Père</option>
+                <option value="Mère">Mère</option>
+                <option value="Autre">Autre</option>
+            </select>
+        </div>
+
+        <div class="section-title">Suivi de la scolarité</div>
+        <div class="grid-2">
+            <div class="form-group"><label>Niveau scolaire actuel :</label><input type="text" name="Niveau_Actuel"></div>
+            <div class="form-group"><label>Inscription au niveau suivant : *</label><input type="text" name="Inscription_Niveau" required></div>
+        </div>
+        <div class="form-group"><label>Dernier établissement fréquenté :</label><input type="text" name="Dernier_Etablissement"></div>
+        <div class="grid-2">
+            <div class="form-group"><label>Langues Parlées :</label><input type="text" name="Langues_Parlees"></div>
+            <div class="form-group">
+                <label>Redoublant : *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="Redoublant" value="Oui" required> Oui</label>
+                    <label><input type="radio" name="Redoublant" value="Non"> Non</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Renseignements sanitaires</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Allergies alimentaires ou médicamenteuses : *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="Allergies" value="Oui" id="allergieOui" required> Oui</label>
+                    <label><input type="radio" name="Allergies" value="Non" id="allergieNon"> Non</label>
+                </div>
+            </div>
+            <div class="form-group"><label>Si oui, précisez :</label><input type="text" name="Allergies_Details" id="allergiesDetails" disabled></div>
+        </div>
+        <div class="grid-3">
+            <div class="form-group">
+                <label>Asthme : *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="Asthme" value="Oui" required> Oui</label>
+                    <label><input type="radio" name="Asthme" value="Non"> Non</label>
+                </div>
+            </div>
+            <div class="form-group"><label>Groupe Sanguin de l'enfant :</label><input type="text" name="Groupe_Sanguin" placeholder="Ex: A+"></div>
+        </div>
+        <div class="form-group"><label>Observations concernant la santé de l'enfant :</label><textarea name="Observations_Sante" rows="2"></textarea></div>
+
+        <div class="section-title">Identité des parents / Tuteurs</div>
+        <div class="grid-2">
+            <div style="border-right: 1px solid #e5e7eb; padding-right: 15px;">
+                <h3 style="margin-bottom:10px; color: var(--secondary);">Père</h3>
+                <div class="form-group"><label>Nom et Prénom(s) :</label><input type="text" name="Pere_Nom_Prenom"></div>
+                <div class="form-group"><label>Nationalité :</label><input type="text" name="Pere_Nationalite"></div>
+                <div class="form-group"><label>Profession :</label><input type="text" name="Pere_Profession"></div>
+                <div class="form-group"><label>Lieu de Travail :</label><input type="text" name="Pere_Lieu_Travail"></div>
+                <div class="form-group"><label>Téléphone :</label><input type="text" name="Pere_Telephone"></div>
+                <div class="form-group"><label>E-Mail :</label><input type="email" name="Pere_Email"></div>
+            </div>
+            <div style="padding-left: 5px;">
+                <h3 style="margin-bottom:10px; color: var(--secondary);">Mère</h3>
+                <div class="form-group"><label>Nom et Prénom(s) :</label><input type="text" name="Mere_Nom_Prenom"></div>
+                <div class="form-group"><label>Nationalité :</label><input type="text" name="Mere_Nationalite"></div>
+                <div class="form-group"><label>Profession :</label><input type="text" name="Mere_Profession"></div>
+                <div class="form-group"><label>Lieu de Travail :</label><input type="text" name="Mere_Lieu_Travail"></div>
+                <div class="form-group"><label>Téléphone :</label><input type="text" name="Mere_Telephone"></div>
+                <div class="form-group"><label>E-Mail :</label><input type="email" name="Mere_Email"></div>
+            </div>
+        </div>
+
+        <div style="margin-top:20px; background: #f8fafc; padding: 15px; border-radius: 6px;">
+            <h3 style="margin-bottom:10px; font-size:14px;">Personne à prévenir en cas d'urgence</h3>
+            <div class="grid-2">
+                <div class="form-group"><label>Nom et Prénom : *</label><input type="text" name="Urgence_Nom_Prenom" required></div>
+                <div class="form-group"><label>Téléphone : *</label><input type="text" name="Urgence_Telephone" required></div>
+            </div>
+        </div>
+
+        <div class="section-title">Autorisation parentale & Documentation</div>
+        <div class="form-group">
+            <label>Droit à l'image : *</label>
+            <div class="radio-group" style="flex-direction: column; align-items: flex-start;">
+                <label><input type="radio" name="Autorisation_Image" value="Autorise" required> J'autorise l'école à photographier mon enfant dans le cadre des activités pédagogiques et à diffuser sur les réseaux sociaux.</label>
+                <label><input type="radio" name="Autorisation_Image" value="Refuse"> Je n'autorise pas l'école.</label>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Documentation requise (à fournir ultérieurement à l'établissement) :</strong><br>
+            • Deux photos d'identité de l'enfant<br>
+            • Photocopie du passeport ou de l'acte de naissance<br>
+            • Dernier bulletin de l'année scolaire écoulée<br>
+            • Photocopie du carnet de vaccinations
+        </div>
+
+        <div class="section-title">Modalités de paiement des frais de scolarité</div>
+        <div class="alert-box">
+            Frais d'inscription : <strong>250.000 FCFA</strong> (non remboursables).
+        </div>
+        <div class="form-group">
+            <label>Choisissez votre option de règlement : *</label>
+            <div class="radio-group" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <label><input type="radio" name="Modalite_Paiement" value="Une fois" required> Paiement en une fois avant le 15 Octobre</label>
+                <label><input type="radio" name="Modalite_Paiement" value="Semestriel"> Paiement semestriel (Avant le 15 Septembre et avant le 15 Janvier)</label>
+                <label><input type="radio" name="Modalite_Paiement" value="Trois versements"> Paiement en trois versements annuels (15 Sept, 15 Déc, 15 Mars)</label>
+                <label><input type="radio" name="Modalite_Paiement" value="Mensuel"> Paiement mensuel (Dernier versement début Mai)</label>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 20px;">
+            <p style="font-size: 13px; font-weight: 600;">
+                Je soussigné(e), m'engage à effectuer le paiement conformément à la date prévue, en respectant les termes et conditions établis de l'établissement Kiddy Planet.
+            </p>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Signature du parent / tuteur : *</label>
+                <div class="signature-container">
+                    <canvas id="sigCanvas"></canvas>
+                    <button type="button" class="clear-sig" id="clearBtn">Effacer</button>
+                </div>
+                <input type="hidden" name="Signature_Parent" id="signatureInput" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Envoyer la demande d'inscription</button>
+        <div class="loading" id="loadingMsg">Envoi des données en cours, veuillez patienter...</div>
+    </form>
 </div>
 
 <script>
-function nextStep(step) {
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const progressBar = document.getElementById('formProgress');
+    // Activation/Désactivation dynamique du champ détails allergies
+    document.getElementById('allergieOui').addEventListener('change', function() {
+        document.getElementById('allergiesDetails').disabled = false;
+        document.getElementById('allergiesDetails').required = true;
+    });
+    document.getElementById('allergieNon').addEventListener('change', function() {
+        document.getElementById('allergiesDetails').disabled = true;
+        document.getElementById('allergiesDetails').required = false;
+        document.getElementById('allergiesDetails').value = "";
+    });
 
-    if (step === 2) {
-        step1.classList.add('d-none');
-        step2.classList.remove('d-none');
-        progressBar.style.width = '100%';
-    } else {
-        step2.classList.add('d-none');
-        step1.classList.remove('d-none');
-        progressBar.style.width = '50%';
+    // Gestion du Canvas pour la Signature
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Ajuster la taille réelle du dessin
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = 150;
     }
-}
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-// Optional: Handle form submission
-document.getElementById('admissionForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Thank you! Your application for Elite has been submitted.');
-});
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX || e.touches[0].clientX) - rect.left,
+            y: (e.clientY || e.touches[0].clientY) - rect.top
+        };
+    }
 
-</script> 
+    function startDrawing(e) {
+        drawing = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const pos = getMousePos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1e3a8a';
+        ctx.stroke();
+        e.preventDefault();
+    }
+
+    function stopDrawing() {
+        if(drawing) {
+            drawing = false;
+            // Assigne l'image en Base64 au champ caché pour envoi
+            document.getElementById('signatureInput').value = canvas.toDataURL();
+        }
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDrawing);
+
+    document.getElementById('clearBtn').addEventListener('click', function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('signatureInput').value = "";
+    });
+
+    // Envoi des données au script Google Apps Script
+    document.getElementById('inscriptionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!document.getElementById('signatureInput').value) {
+            alert("Veuillez signer le formulaire avant l'envoi.");
+            return;
+        }
+
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('loadingMsg').style.display = 'block';
+
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => { data[key] = value; });
+
+        // URL de votre Web App générée dans Google Apps Script
+        const urlAppScript = "https://script.google.com/macros/s/AKfycbxz6PU6U0jKaG5ed0gwNkgv-NHpInaZDKLuH03Pj8RiYuwVQ7DkCe7l_rAqE9XvQoX6/exec"; 
+
+        fetch(urlAppScript, {
+            method: 'POST',
+            mode: 'no-cors', // Évite les problèmes de CORS croisés basiques avec GAS
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            alert("Félicitations ! Votre demande d'inscription a bien été transmise.");
+            document.getElementById('inscriptionForm').reset();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('loadingMsg').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('loadingMsg').style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>

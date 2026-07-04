@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kiddy Planet – Elite International School Group LMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .brand-font {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Custom Scrollbar for modern application look */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <div id="authPortal" class="flex-1 flex items-center justify-center p-6 sm:p-12">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
+      <div class="p-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 text-center relative">
+        <div class="mx-auto mb-4 w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/20">
+          <img id="loginLogo" src="https://placehold.co/150x150/ffffff/4f46e5?text=KP" alt="Kiddy Planet Group Logo" class="w-12 h-12 object-contain rounded-lg">
+        </div>
+        <h1 class="brand-font text-xl font-bold text-white tracking-tight">Kiddy Planet</h1>
+        <p class="text-xs text-indigo-200 uppercase tracking-widest mt-1 font-semibold">Elite International School Group LMS</p>
+      </div>
+      
+      <div class="p-8 space-y-6">
+        <div id="authErrorMessage" class="hidden bg-rose-50 border-l-4 border-rose-500 p-4 text-sm text-rose-700 rounded-r-lg"></div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Institutional Email</label>
+            <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" placeholder="username@kiddyplanet.edu">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Secure Password</label>
+            <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" placeholder="••••••••">
+          </div>
+          <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/20 transition-all duration-150 flex items-center justify-center text-sm tracking-wide">
+            Sign In to Dashboard
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="appContainer" class="hidden flex-1 flex flex-col md:flex-row min-h-screen">
+    
+    <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shadow-xl">
+      <div class="p-6 border-b border-slate-800 flex items-center gap-3 bg-slate-950/40">
+        <img id="sidebarLogo" src="https://placehold.co/150x150/4f46e5/ffffff?text=KP" alt="School Logo" class="w-10 h-10 object-contain rounded-lg shadow-inner">
+        <div>
+          <h2 class="brand-font font-bold text-sm text-white leading-tight">Kiddy Planet</h2>
+          <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold block">Elite LMS Matrix</span>
+        </div>
+      </div>
+      
+      <div class="px-6 py-4 bg-slate-950/20 border-b border-slate-800/60 flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        <div>
+          <p id="userNameDisplay" class="text-xs font-semibold text-white truncate w-40"></p>
+          <p id="userRoleBadge" class="text-[10px] uppercase tracking-wide text-slate-400 font-mono"></p>
+        </div>
+      </div>
+
+      <nav class="flex-1 p-4 space-y-1.5" id="navigationContainer">
+        </nav>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-950/30">
+        <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-medium tracking-wide text-slate-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Disconnect Session
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col bg-slate-50 overflow-y-auto">
+      
+      <header class="bg-white border-b border-slate-200 h-16 px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <h3 id="currentViewTitle" class="brand-font font-bold text-lg text-slate-800">Dynamic Workspace</h3>
+        
+        <div class="flex items-center gap-4">
+          <div class="text-right hidden sm:block">
+            <p class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Academic Context</p>
+            <p class="text-xs font-bold text-slate-700">IB PYP & MYP Architecture</p>
+          </div>
+        </div>
+      </header>
+
+      <div id="viewContainer" class="p-6 max-w-7xl w-full mx-auto space-y-6">
+        </div>
+    </main>
+  </div>
+
+  <div id="globalLoadingScreen" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-4 max-w-xs text-center border border-slate-100">
+      <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-xs font-medium text-slate-600 font-mono tracking-tight">Accessing Kiddy Planet Cloud Engine...</p>
+    </div>
+  </div>
+
+  <script>
+    // System State State Management Variables
+    let currentUser = null;
+    let appCachedData = null;
+    let currentActiveView = 'dashboard';
+
+    // Insert your precise production Image Source assets here
+    const BRAND_LOGO_URL = 'https://placehold.co/300x300/4f46e5/ffffff?text=Kiddy+Planet';
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('loginLogo').src = BRAND_LOGO_URL;
+      document.getElementById('sidebarLogo').src = BRAND_LOGO_URL;
+    });
+
+    function showLoading(status) {
+      const loader = document.getElementById('globalLoadingScreen');
+      status ? loader.classList.remove('hidden') : loader.classList.add('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      showLoading(true);
+      document.getElementById('authErrorMessage').classList.add('hidden');
+      
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+
+      google.script.run
+        .withSuccessHandler(function(response) {
+          if (response.success) {
+            currentUser = response.user;
+            loadDashboardSystemData();
+          } else {
+            showLoading(false);
+            const errBox = document.getElementById('authErrorMessage');
+            errBox.textContent = response.message;
+            errBox.classList.remove('hidden');
+          }
+        })
+        .withFailureHandler(function(err) {
+          showLoading(false);
+          alert("Network execution pipeline communication fault.");
+        })
+        .authenticateUser(email, password);
+    }
+
+    function loadDashboardSystemData() {
+      google.script.run
+        .withSuccessHandler(function(data) {
+          appCachedData = data;
+          showLoading(false);
+          initializeDashboardLayout();
+        })
+        .withFailureHandler(function() {
+          showLoading(false);
+          alert("Critical error parsing secure data payload packages.");
+        })
+        .getDashboardData(currentUser.role, currentUser.id);
+    }
+
+    function initializeDashboardLayout() {
+      document.getElementById('authPortal').classList.add('hidden');
+      document.getElementById('appContainer').classList.remove('hidden');
+      
+      document.getElementById('userNameDisplay').textContent = currentUser.name;
+      document.getElementById('userRoleBadge').textContent = currentUser.role;
+      
+      buildRoleNavigation();
+      switchWorkspaceView('dashboard');
+    }
+
+    function buildRoleNavigation() {
+      const nav = document.getElementById('navigationContainer');
+      nav.innerHTML = '';
+      
+      let items = [
+        { id: 'dashboard', label: 'Dashboard Overview', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>' },
+        { id: 'units', label: 'IB Unit Planners', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>' },
+        { id: 'tasks', label: 'Tasks & Portfolios', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>' }
+      ];
+
+      if (currentUser.role === 'administrator' || currentUser.role === 'teacher') {
+        items.push({ id: 'createUnit', label: 'Add New IB Unit', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>' });
+      }
+
+      items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = `w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-medium tracking-wide transition-all duration-150 text-slate-400 hover:text-white hover:bg-slate-800`;
+        btn.id = `nav-btn-${item.id}`;
+        btn.innerHTML = `${item.icon} <span>${item.label}</span>`;
+        btn.onclick = () => switchWorkspaceView(item.id);
+        nav.appendChild(btn);
+      });
+    }
+
+    function switchWorkspaceView(viewId) {
+      currentActiveView = viewId;
+      
+      // Toggle nav styling states
+      document.querySelectorAll('#navigationContainer button').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/10');
+        btn.classList.add('text-slate-400', 'hover:bg-slate-800');
+      });
+      const activeBtn = document.getElementById(`nav-btn-${viewId}`);
+      if(activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800');
+        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/10');
+      }
+
+      const container = document.getElementById('viewContainer');
+      const title = document.getElementById('currentViewTitle');
+      container.innerHTML = '';
+
+      switch(viewId) {
+        case 'dashboard':
+          title.textContent = 'Toddle Inspired Dashboard';
+          renderDashboardWorkspace(container);
+          break;
+        case 'units':
+          title.textContent = 'IB Unit Planners (PYP / MYP Matrix)';
+          renderUnitsWorkspace(container);
+          break;
+        case 'tasks':
+          title.textContent = 'Assessment Tasks & Portfolios';
+          renderTasksWorkspace(container);
+          break;
+        case 'createUnit':
+          title.textContent = 'Initialize New IB Curriculum Unit';
+          renderCreateUnitWorkspace(container);
+          break;
+      }
+    }
+
+    // ================= VIEW ARCHITECTURE ENGINES =================
+
+    function renderDashboardWorkspace(target) {
+      // Metric KPI Dashboard Row Layout Cards
+      let statsHtml = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active IB Framework</p>
+              <h4 class="brand-font font-bold text-xl text-slate-800 mt-1">PYP & MYP Engine</h4>
+            </div>
+            <span class="p-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs uppercase">Toddle Matrix</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Curriculum Units</p>
+              <h4 class="brand-font font-bold text-2xl text-slate-800 mt-1">${appCachedData.units ? appCachedData.units.length : 0}</h4>
+            </div>
+            <span class="p-3 bg-amber-50 text-amber-600 rounded-xl font-bold text-xs">Curriculum</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monitored Tasks</p>
+              <h4 class="brand-font font-bold text-2xl text-slate-800 mt-1">${appCachedData.tasks ? appCachedData.tasks.length : 0}</h4>
+            </div>
+            <span class="p-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-xs">Portfolios</span>
+          </div>
+        </div>
+      `;
+      
+      let personalGreeting = `
+        <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-6 rounded-2xl shadow-md text-white">
+          <h2 class="brand-font font-bold text-xl">Welcome to Elite International Dashboard, ${currentUser.name}</h2>
+          <p class="text-xs text-indigo-200/90 mt-1 font-light max-w-xl">
+            You are currently authorized under the role of <span class="underline font-medium font-mono">${currentUser.role}</span>. Verify assignments, evaluate modern portfolios, and customize learning pathways across institutional divisions.
+          </p>
+        </div>
+      `;
+
+      target.innerHTML = statsHtml + personalGreeting;
+    }
+
+    function renderUnitsWorkspace(target) {
+      if (!appCachedData.units || appCachedData.units.length === 0) {
+        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No curriculum frameworks loaded in this node workspace.</div>`;
+        return;
+      }
+
+      let grid = document.createElement('div');
+      grid.className = "grid grid-cols-1 md:grid-cols-2 gap-6";
+
+      appCachedData.units.forEach(unit => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all";
+        
+        const frameworkBadgeColor = unit.framework === 'PYP' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-purple-50 text-purple-700 border-purple-200';
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-md border ${frameworkBadgeColor}">${unit.framework} Context</span>
+              <span class="text-xs font-mono font-bold text-slate-400">${unit.unit_id}</span>
+            </div>
+            <h4 class="brand-font font-bold text-slate-800 text-base mb-1">${unit.title}</h4>
+            <p class="text-xs font-semibold text-indigo-600 mb-3">${unit.concept_or_theme}</p>
+            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed">${unit.description}</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>Status: <b class="text-emerald-600 font-semibold">${unit.status || 'Active'}</b></span>
+            <button class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs tracking-tight">Open Planners →</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      target.appendChild(grid);
+    }
+
+    function renderTasksWorkspace(target) {
+      if (!appCachedData.tasks || appCachedData.tasks.length === 0) {
+        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No ongoing continuous assessment data matches this profile node.</div>`;
+        return;
+      }
+
+      let wrapper = document.createElement('div');
+      wrapper.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm";
+      
+      let tableHtml = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-[10px] uppercase font-bold tracking-wider text-slate-500">
+                <th class="p-4">Task ID</th>
+                <th class="p-4">Unit Connection</th>
+                <th class="p-4">Assignment Title</th>
+                <th class="p-4">Target Date</th>
+                <th class="p-4">Assigned Evaluator ID</th>
+                <th class="p-4">Grade Registry Matrix</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs">
+      `;
+
+      appCachedData.tasks.forEach(task => {
+        tableHtml += `
+          <tr class="hover:bg-slate-50/80 transition-all">
+            <td class="p-4 font-mono font-bold text-slate-500">${task.task_id}</td>
+            <td class="p-4 font-semibold text-indigo-600">${task.unit_id}</td>
+            <td class="p-4 font-medium text-slate-800">${task.title}</td>
+            <td class="p-4 text-slate-500">${task.due_date}</td>
+            <td class="p-4 text-slate-500 font-mono">${task.assigned_to}</td>
+            <td class="p-4">
+              <span class="inline-block px-2.5 py-1 font-bold text-[11px] rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100">
+                ${task.grade || 'Pending Review'}
+              </span>
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHtml += `</tbody></table></div>`;
+      wrapper.innerHTML = tableHtml;
+      target.appendChild(wrapper);
+    }
+
+    function renderCreateUnitWorkspace(target) {
+      const formCard = document.createElement('div');
+      formCard.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-2xl mx-auto";
+      formCard.innerHTML = `
+        <form id="createUnitForm" onsubmit="submitNewUnit(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">IB Framework Designation</label>
+            <select id="newUnitFramework" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all bg-white">
+              <option value="PYP">Primary Years Programme (PYP)</option>
+              <option value="MYP">Middle Years Programme (MYP)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Unit Title Architecture</label>
+            <input type="text" id="newUnitTitle" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="e.g., Sharing the Planet">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Transdisciplinary Theme / Global Context Key Concept</label>
+            <input type="text" id="newUnitConcept" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="e.g., Biodiversity Ecosystem Interdependence">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Detailed Inquiry Line & Objectives Statement</label>
+            <textarea id="newUnitDescription" rows="4" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="Provide clear pedagogical framework scope definitions..."></textarea>
+          </div>
+          <button type="submit" class="w-full bg-slate-900 hover:bg-indigo-950 text-white font-medium py-3 px-4 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md">
+            Commit Unit to Institutional Schema
+          </button>
+        </form>
+      `;
+      target.appendChild(formCard);
+    }
+
+    function submitNewUnit(e) {
+      e.preventDefault();
+      showLoading(true);
+
+      const payload = {
+        framework: document.getElementById('newUnitFramework').value,
+        title: document.getElementById('newUnitTitle').value,
+        concept_or_theme: document.getElementById('newUnitConcept').value,
+        description: document.getElementById('newUnitDescription').value
+      };
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if(res.success) {
+            // Hot refresh data engine state cache
+            loadDashboardSystemData();
+          } else {
+            showLoading(false);
+            alert("Error logging infrastructure: " + res.error);
+          }
+        })
+        .withFailureHandler(function() {
+          showLoading(false);
+          alert("Server internal exception cluster write block loss.");
+        })
+        .createUnit(payload);
+    }
+
+    function handleLogout() {
+      showLoading(true);
+      setTimeout(() => {
+        currentUser = null;
+        appCachedData = null;
+        document.getElementById('emailInput').value = '';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('appContainer').class = 'hidden';
+        document.getElementById('authPortal').classList.remove('hidden');
+        document.getElementById('appContainer').classList.add('hidden');
+        showLoading(false);
+      }, 600);
+    }
+  </script>
+</body>
+</html>

@@ -7,14 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-    }
-    .brand-font {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    /* Custom Scrollbar for modern application look */
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -23,7 +17,7 @@
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
   <div id="authPortal" class="flex-1 flex items-center justify-center p-6 sm:p-12">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden transition-all duration-300 transform hover:shadow-2xl">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden transition-all duration-300">
       <div class="p-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 text-center relative">
         <div class="mx-auto mb-4 w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/20">
           <img id="loginLogo" src="https://placehold.co/150x150/ffffff/4f46e5?text=KP" alt="Kiddy Planet Group Logo" class="w-12 h-12 object-contain rounded-lg">
@@ -34,15 +28,14 @@
       
       <div class="p-8 space-y-6">
         <div id="authErrorMessage" class="hidden bg-rose-50 border-l-4 border-rose-500 p-4 text-sm text-rose-700 rounded-r-lg"></div>
-        
         <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
           <div>
             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Institutional Email</label>
-            <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" placeholder="username@kiddyplanet.edu">
+            <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all" placeholder="username@kiddyplanet.edu">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Secure Password</label>
-            <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all" placeholder="••••••••">
+            <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition-all" placeholder="••••••••">
           </div>
           <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/20 transition-all duration-150 flex items-center justify-center text-sm tracking-wide">
             Sign In to Dashboard
@@ -71,8 +64,7 @@
         </div>
       </div>
 
-      <nav class="flex-1 p-4 space-y-1.5" id="navigationContainer">
-        </nav>
+      <nav class="flex-1 p-4 space-y-1.5" id="navigationContainer"></nav>
 
       <div class="p-4 border-t border-slate-800 bg-slate-950/30">
         <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-medium tracking-wide text-slate-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-all">
@@ -83,10 +75,8 @@
     </aside>
 
     <main class="flex-1 flex flex-col bg-slate-50 overflow-y-auto">
-      
       <header class="bg-white border-b border-slate-200 h-16 px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <h3 id="currentViewTitle" class="brand-font font-bold text-lg text-slate-800">Dynamic Workspace</h3>
-        
         <div class="flex items-center gap-4">
           <div class="text-right hidden sm:block">
             <p class="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Academic Context</p>
@@ -95,8 +85,7 @@
         </div>
       </header>
 
-      <div id="viewContainer" class="p-6 max-w-7xl w-full mx-auto space-y-6">
-        </div>
+      <div id="viewContainer" class="p-6 max-w-7xl w-full mx-auto space-y-6"></div>
     </main>
   </div>
 
@@ -108,12 +97,16 @@
   </div>
 
   <script>
-    // System State State Management Variables
+    // ==========================================
+    // SYSTEM VARIABLES & API CONFIGURATION
+    // ==========================================
     let currentUser = null;
     let appCachedData = null;
     let currentActiveView = 'dashboard';
-
-    // Insert your precise production Image Source assets here
+    
+    // ⚠️ REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxBBCITqx8X8wxHEdmTeVT_MBIoVqPqnSdpMoXnnk5jZv81p61Y7mf0dkEf1-c78CXHEQ/exec"; 
+    
     const BRAND_LOGO_URL = 'https://placehold.co/300x300/4f46e5/ffffff?text=Kiddy+Planet';
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -126,7 +119,26 @@
       status ? loader.classList.remove('hidden') : loader.classList.add('hidden');
     }
 
-    function handleLogin(e) {
+    // ==========================================
+    // API COMMUNICATION LAYER (Replaces google.script.run)
+    // ==========================================
+    async function callBackendAPI(action, payload) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: action, payload: payload })
+        });
+        return await response.json();
+      } catch (error) {
+        console.error("API Error:", error);
+        throw new Error("Network communication fault.");
+      }
+    }
+
+    // ==========================================
+    // AUTHENTICATION & DATA LOADING
+    // ==========================================
+    async function handleLogin(e) {
       e.preventDefault();
       showLoading(true);
       document.getElementById('authErrorMessage').classList.add('hidden');
@@ -134,39 +146,45 @@
       const email = document.getElementById('emailInput').value;
       const password = document.getElementById('passwordInput').value;
 
-      google.script.run
-        .withSuccessHandler(function(response) {
-          if (response.success) {
-            currentUser = response.user;
-            loadDashboardSystemData();
-          } else {
-            showLoading(false);
-            const errBox = document.getElementById('authErrorMessage');
-            errBox.textContent = response.message;
-            errBox.classList.remove('hidden');
-          }
-        })
-        .withFailureHandler(function(err) {
+      try {
+        const response = await callBackendAPI('authenticateUser', { email, password });
+        
+        if (response.success) {
+          currentUser = response.user;
+          loadDashboardSystemData();
+        } else {
           showLoading(false);
-          alert("Network execution pipeline communication fault.");
-        })
-        .authenticateUser(email, password);
+          const errBox = document.getElementById('authErrorMessage');
+          errBox.textContent = response.message || "Invalid credentials.";
+          errBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        showLoading(false);
+        const errBox = document.getElementById('authErrorMessage');
+        errBox.textContent = "Network error. Make sure your API URL is correct.";
+        errBox.classList.remove('hidden');
+      }
     }
 
-    function loadDashboardSystemData() {
-      google.script.run
-        .withSuccessHandler(function(data) {
-          appCachedData = data;
-          showLoading(false);
-          initializeDashboardLayout();
-        })
-        .withFailureHandler(function() {
-          showLoading(false);
-          alert("Critical error parsing secure data payload packages.");
-        })
-        .getDashboardData(currentUser.role, currentUser.id);
+    async function loadDashboardSystemData() {
+      try {
+        const data = await callBackendAPI('getDashboardData', { 
+          role: currentUser.role, 
+          userId: currentUser.id 
+        });
+        
+        appCachedData = data;
+        showLoading(false);
+        initializeDashboardLayout();
+      } catch (err) {
+        showLoading(false);
+        alert("Critical error parsing secure data payload packages.");
+      }
     }
 
+    // ==========================================
+    // UI RENDERING & NAVIGATION LOGIC
+    // ==========================================
     function initializeDashboardLayout() {
       document.getElementById('authPortal').classList.add('hidden');
       document.getElementById('appContainer').classList.remove('hidden');
@@ -184,12 +202,14 @@
       
       let items = [
         { id: 'dashboard', label: 'Dashboard Overview', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>' },
-        { id: 'units', label: 'IB Unit Planners', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>' },
+        { id: 'announcements', label: 'Announcements Board', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>' },
+        { id: 'homework', label: 'Homework Trackers', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>' },
+        { id: 'units', label: 'IB Unit Planners', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>' },
         { id: 'tasks', label: 'Tasks & Portfolios', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>' }
       ];
 
       if (currentUser.role === 'administrator' || currentUser.role === 'teacher') {
-        items.push({ id: 'createUnit', label: 'Add New IB Unit', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>' });
+        items.push({ id: 'teacherActions', label: 'Teacher Tools Workspace', icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>' });
       }
 
       items.forEach(item => {
@@ -205,7 +225,6 @@
     function switchWorkspaceView(viewId) {
       currentActiveView = viewId;
       
-      // Toggle nav styling states
       document.querySelectorAll('#navigationContainer button').forEach(btn => {
         btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-600/10');
         btn.classList.add('text-slate-400', 'hover:bg-slate-800');
@@ -225,6 +244,14 @@
           title.textContent = 'Toddle Inspired Dashboard';
           renderDashboardWorkspace(container);
           break;
+        case 'announcements':
+          title.textContent = 'School Announcements & Circulars';
+          renderAnnouncementsWorkspace(container);
+          break;
+        case 'homework':
+          title.textContent = 'Active Homework Assignments';
+          renderHomeworkWorkspace(container);
+          break;
         case 'units':
           title.textContent = 'IB Unit Planners (PYP / MYP Matrix)';
           renderUnitsWorkspace(container);
@@ -233,29 +260,26 @@
           title.textContent = 'Assessment Tasks & Portfolios';
           renderTasksWorkspace(container);
           break;
-        case 'createUnit':
-          title.textContent = 'Initialize New IB Curriculum Unit';
-          renderCreateUnitWorkspace(container);
+        case 'teacherActions':
+          title.textContent = 'Add Announcements, Units & Homework';
+          renderTeacherActionsWorkspace(container);
           break;
       }
     }
 
-    // ================= VIEW ARCHITECTURE ENGINES =================
-
     function renderDashboardWorkspace(target) {
-      // Metric KPI Dashboard Row Layout Cards
       let statsHtml = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
             <div>
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active IB Framework</p>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Framework</p>
               <h4 class="brand-font font-bold text-xl text-slate-800 mt-1">PYP & MYP Engine</h4>
             </div>
             <span class="p-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs uppercase">Toddle Matrix</span>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
             <div>
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Curriculum Units</p>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Curriculum Units</p>
               <h4 class="brand-font font-bold text-2xl text-slate-800 mt-1">${appCachedData.units ? appCachedData.units.length : 0}</h4>
             </div>
             <span class="p-3 bg-amber-50 text-amber-600 rounded-xl font-bold text-xs">Curriculum</span>
@@ -271,10 +295,10 @@
       `;
       
       let personalGreeting = `
-        <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-6 rounded-2xl shadow-md text-white">
+        <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-6 rounded-2xl shadow-md text-white mt-6">
           <h2 class="brand-font font-bold text-xl">Welcome to Elite International Dashboard, ${currentUser.name}</h2>
           <p class="text-xs text-indigo-200/90 mt-1 font-light max-w-xl">
-            You are currently authorized under the role of <span class="underline font-medium font-mono">${currentUser.role}</span>. Verify assignments, evaluate modern portfolios, and customize learning pathways across institutional divisions.
+            You are currently authorized under the role of <span class="underline font-medium font-mono">${currentUser.role}</span>. Verify assignments, evaluate modern portfolios, and customize learning pathways.
           </p>
         </div>
       `;
@@ -282,21 +306,72 @@
       target.innerHTML = statsHtml + personalGreeting;
     }
 
-    function renderUnitsWorkspace(target) {
-      if (!appCachedData.units || appCachedData.units.length === 0) {
-        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No curriculum frameworks loaded in this node workspace.</div>`;
+    function renderAnnouncementsWorkspace(target) {
+      if (!appCachedData.announcements || appCachedData.announcements.length === 0) {
+        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No announcements posted.</div>`;
         return;
       }
+      let wrapper = document.createElement('div');
+      wrapper.className = "space-y-4 max-w-3xl mx-auto";
+      appCachedData.announcements.forEach(ann => {
+        wrapper.innerHTML += `
+          <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100">Scope: ${ann.target_framework}</span>
+              <span class="text-xs text-slate-400">${ann.date_posted}</span>
+            </div>
+            <h4 class="brand-font font-bold text-slate-800 text-base mb-2">${ann.title}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${ann.content}</p>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 font-medium">
+              Posted by: <span class="text-slate-700">${ann.author_name}</span>
+            </div>
+          </div>
+        `;
+      });
+      target.appendChild(wrapper);
+    }
 
+    function renderHomeworkWorkspace(target) {
+      if (!appCachedData.homework || appCachedData.homework.length === 0) {
+        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No continuous homework logged on the calendar.</div>`;
+        return;
+      }
       let grid = document.createElement('div');
       grid.className = "grid grid-cols-1 md:grid-cols-2 gap-6";
+      appCachedData.homework.forEach(hw => {
+        let driveLinkHtml = hw.drive_resource_link 
+          ? `<a href="${hw.drive_resource_link}" target="_blank" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">Open Drive Resources ↗</a>` 
+          : `<span class="text-slate-400 italic">No linked attachments</span>`;
+        grid.innerHTML += `
+          <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md uppercase bg-amber-50 text-amber-700 border border-amber-200">${hw.framework}</span>
+                <span class="text-xs text-rose-600 font-semibold bg-rose-50 px-2 py-0.5 rounded-md">Due: ${hw.due_date}</span>
+              </div>
+              <h4 class="brand-font font-bold text-slate-800 text-base mb-2">${hw.title}</h4>
+              <p class="text-xs text-slate-500 leading-relaxed mb-4">${hw.task_description}</p>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              ${driveLinkHtml}
+            </div>
+          </div>
+        `;
+      });
+      target.appendChild(grid);
+    }
 
+    function renderUnitsWorkspace(target) {
+      if (!appCachedData.units || appCachedData.units.length === 0) {
+        target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No curriculum frameworks loaded.</div>`;
+        return;
+      }
+      let grid = document.createElement('div');
+      grid.className = "grid grid-cols-1 md:grid-cols-2 gap-6";
       appCachedData.units.forEach(unit => {
         const card = document.createElement('div');
         card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all";
-        
         const frameworkBadgeColor = unit.framework === 'PYP' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-purple-50 text-purple-700 border-purple-200';
-        
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-4">
@@ -322,10 +397,8 @@
         target.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center border text-slate-400 text-sm">No ongoing continuous assessment data matches this profile node.</div>`;
         return;
       }
-
       let wrapper = document.createElement('div');
       wrapper.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm";
-      
       let tableHtml = `
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
@@ -335,13 +408,12 @@
                 <th class="p-4">Unit Connection</th>
                 <th class="p-4">Assignment Title</th>
                 <th class="p-4">Target Date</th>
-                <th class="p-4">Assigned Evaluator ID</th>
+                <th class="p-4">Assigned To</th>
                 <th class="p-4">Grade Registry Matrix</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-xs">
       `;
-
       appCachedData.tasks.forEach(task => {
         tableHtml += `
           <tr class="hover:bg-slate-50/80 transition-all">
@@ -358,70 +430,176 @@
           </tr>
         `;
       });
-
       tableHtml += `</tbody></table></div>`;
       wrapper.innerHTML = tableHtml;
       target.appendChild(wrapper);
     }
 
-    function renderCreateUnitWorkspace(target) {
-      const formCard = document.createElement('div');
-      formCard.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-2xl mx-auto";
-      formCard.innerHTML = `
-        <form id="createUnitForm" onsubmit="submitNewUnit(event)" class="space-y-5">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">IB Framework Designation</label>
-            <select id="newUnitFramework" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all bg-white">
-              <option value="PYP">Primary Years Programme (PYP)</option>
-              <option value="MYP">Middle Years Programme (MYP)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Unit Title Architecture</label>
-            <input type="text" id="newUnitTitle" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="e.g., Sharing the Planet">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Transdisciplinary Theme / Global Context Key Concept</label>
-            <input type="text" id="newUnitConcept" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="e.g., Biodiversity Ecosystem Interdependence">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Detailed Inquiry Line & Objectives Statement</label>
-            <textarea id="newUnitDescription" rows="4" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs transition-all" placeholder="Provide clear pedagogical framework scope definitions..."></textarea>
-          </div>
-          <button type="submit" class="w-full bg-slate-900 hover:bg-indigo-950 text-white font-medium py-3 px-4 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md">
-            Commit Unit to Institutional Schema
-          </button>
-        </form>
+    function renderTeacherActionsWorkspace(target) {
+      let container = document.createElement('div');
+      container.className = "space-y-8 max-w-2xl mx-auto";
+
+      // Form A: Announcements
+      let annFormHtml = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h4 class="brand-font font-bold text-slate-800 text-sm uppercase tracking-wide mb-4 text-indigo-600">Publish Class Announcement</h4>
+          <form onsubmit="submitAnnouncement(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Title</label>
+              <input type="text" id="annTitle" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Target Curriculum Division</label>
+              <select id="annFramework" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                <option value="Both">All Classes (Whole School)</option>
+                <option value="PYP">Primary Years Programme Only (PYP)</option>
+                <option value="MYP">Middle Years Programme Only (MYP)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Content Body</label>
+              <textarea id="annContent" rows="3" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-xl text-xs uppercase tracking-wider transition-all">Broadcast Announcement</button>
+          </form>
+        </div>
       `;
-      target.appendChild(formCard);
+
+      // Form B: Homework
+      let hwFormHtml = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h4 class="brand-font font-bold text-slate-800 text-sm uppercase tracking-wide mb-4 text-amber-600">Assign New Homework Task</h4>
+          <form onsubmit="submitHomework(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Assignment Title</label>
+                <input type="text" id="hwTitle" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Target Date</label>
+                <input type="date" id="hwDueDate" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Programmatic Class Level</label>
+              <select id="hwFramework" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                <option value="PYP">PYP Core Class Matrix</option>
+                <option value="MYP">MYP Secondary Class Track</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Instructions & Rubrics Description</label>
+              <textarea id="hwDesc" rows="3" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Google Drive Asset Link (Optional)</label>
+              <input type="url" id="hwDriveUrl" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://drive.google.com/...">
+            </div>
+            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-xl text-xs uppercase tracking-wider transition-all">Assign To Class List</button>
+          </form>
+        </div>
+      `;
+
+      // Form C: IB Units
+      let unitFormHtml = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h4 class="brand-font font-bold text-slate-800 text-sm uppercase tracking-wide mb-4 text-emerald-600">Initialize New IB Curriculum Unit</h4>
+          <form onsubmit="submitNewUnit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">IB Framework Designation</label>
+              <select id="newUnitFramework" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                <option value="PYP">Primary Years Programme (PYP)</option>
+                <option value="MYP">Middle Years Programme (MYP)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Unit Title Architecture</label>
+              <input type="text" id="newUnitTitle" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Transdisciplinary Theme / Key Concept</label>
+              <input type="text" id="newUnitConcept" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Detailed Inquiry Line & Objectives</label>
+              <textarea id="newUnitDescription" rows="3" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-xl text-xs uppercase tracking-wider transition-all shadow-md">Commit Unit</button>
+          </form>
+        </div>
+      `;
+
+      container.innerHTML = annFormHtml + hwFormHtml + unitFormHtml;
+      target.appendChild(container);
     }
 
-    function submitNewUnit(e) {
+    // ==========================================
+    // ACTION SUBMISSIONS
+    // ==========================================
+    async function submitAnnouncement(e) {
       e.preventDefault();
       showLoading(true);
+      const payload = {
+        title: document.getElementById('annTitle').value,
+        target_framework: document.getElementById('annFramework').value,
+        content: document.getElementById('annContent').value,
+        author: currentUser.name
+      };
+      
+      try {
+        await callBackendAPI('createAnnouncement', payload);
+        alert("Announcement Posted Successfully!");
+        loadDashboardSystemData(); 
+      } catch (error) {
+        showLoading(false);
+        alert("Failed to post announcement.");
+      }
+    }
 
+    async function submitHomework(e) {
+      e.preventDefault();
+      showLoading(true);
+      const payload = {
+        title: document.getElementById('hwTitle').value,
+        due_date: document.getElementById('hwDueDate').value,
+        framework: document.getElementById('hwFramework').value,
+        task_description: document.getElementById('hwDesc').value,
+        drive_resource_link: document.getElementById('hwDriveUrl').value
+      };
+      
+      try {
+        await callBackendAPI('createHomework', payload);
+        alert("Homework Assigned Successfully!");
+        loadDashboardSystemData(); 
+      } catch (error) {
+        showLoading(false);
+        alert("Failed to assign homework.");
+      }
+    }
+
+    async function submitNewUnit(e) {
+      e.preventDefault();
+      showLoading(true);
       const payload = {
         framework: document.getElementById('newUnitFramework').value,
         title: document.getElementById('newUnitTitle').value,
         concept_or_theme: document.getElementById('newUnitConcept').value,
         description: document.getElementById('newUnitDescription').value
       };
-
-      google.script.run
-        .withSuccessHandler(function(res) {
-          if(res.success) {
-            // Hot refresh data engine state cache
-            loadDashboardSystemData();
-          } else {
-            showLoading(false);
-            alert("Error logging infrastructure: " + res.error);
-          }
-        })
-        .withFailureHandler(function() {
+      
+      try {
+        const res = await callBackendAPI('createUnit', payload);
+        if(res.success) {
+          alert("Curriculum Unit Initialized Successfully!");
+          loadDashboardSystemData();
+        } else {
           showLoading(false);
-          alert("Server internal exception cluster write block loss.");
-        })
-        .createUnit(payload);
+          alert("Error: " + res.message);
+        }
+      } catch (error) {
+        showLoading(false);
+        alert("Failed to initialize unit.");
+      }
     }
 
     function handleLogout() {
@@ -431,9 +609,8 @@
         appCachedData = null;
         document.getElementById('emailInput').value = '';
         document.getElementById('passwordInput').value = '';
-        document.getElementById('appContainer').class = 'hidden';
-        document.getElementById('authPortal').classList.remove('hidden');
         document.getElementById('appContainer').classList.add('hidden');
+        document.getElementById('authPortal').classList.remove('hidden');
         showLoading(false);
       }, 600);
     }

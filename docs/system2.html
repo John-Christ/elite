@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kiddy Planet – Plateforme LMS Élite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col overflow-hidden">
+
+  <div id="authPortal" class="flex-1 flex items-center justify-center p-6 sm:p-12 absolute inset-0 z-50 bg-slate-50">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
+      <div class="p-8 bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 text-center">
+        <h1 class="brand-font text-2xl font-bold text-white tracking-tight">Kiddy Planet</h1>
+        <p class="text-[10px] text-indigo-300 uppercase tracking-widest mt-1 font-bold">Système de Gestion de l'Apprentissage</p>
+      </div>
+      <div class="p-8 space-y-6">
+        <div id="authErrorMessage" class="hidden bg-rose-50 border-l-4 border-rose-500 p-4 text-sm text-rose-700 rounded-r-lg"></div>
+        <form onsubmit="handleLogin(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Courriel Institutionnel</label>
+            <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mot de passe</label>
+            <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-slate-50">
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all text-sm tracking-wide">Accéder à l'espace</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="appContainer" class="hidden flex-1 flex h-screen w-full">
+    
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 border-r border-slate-800 flex-none overflow-y-auto">
+      <div class="p-6 bg-slate-950/40 border-b border-slate-800 sticky top-0 z-10 backdrop-blur-md">
+        <h2 class="brand-font font-extrabold text-xl text-white">Kiddy Planet</h2>
+        <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold block">International School Group</span>
+      </div>
+      
+      <div class="px-6 py-5 bg-slate-900 border-b border-slate-800 flex items-center gap-4">
+        <img id="userAvatar" src="" class="w-12 h-12 rounded-full object-cover border-2 border-indigo-500 bg-slate-800 shadow-lg">
+        <div class="overflow-hidden">
+          <p id="userNameDisplay" class="text-sm font-bold text-white truncate"></p>
+          <p id="userRoleBadge" class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold truncate"></p>
+        </div>
+      </div>
+
+      <nav class="flex-1 px-4 py-6 space-y-1" id="navModules"></nav>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-950/50 sticky bottom-0">
+        <button onclick="location.reload()" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-widest uppercase text-slate-400 hover:text-rose-400 rounded-xl hover:bg-rose-500/10 transition-all">Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full bg-slate-50 relative overflow-hidden">
+      <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30 shadow-sm">
+        <h3 id="viewTitle" class="brand-font font-extrabold text-2xl text-slate-800 tracking-tight">Aperçu</h3>
+        <div class="text-right hidden md:block">
+          <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Cadre Pédagogique</p>
+          <p class="text-sm font-bold text-indigo-600">IB PYP & MYP Network</p>
+        </div>
+      </header>
+      <div id="viewContainer" class="p-8 w-full max-w-7xl mx-auto overflow-y-auto h-full pb-32 fade-in"></div>
+    </main>
+  </div>
+
+  <div id="loader" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl flex flex-col items-center shadow-2xl">
+      <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-4 text-xs font-bold text-slate-600 tracking-widest uppercase">Traitement en cours...</p>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ REPLACE WITH YOUR SCRIPT URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbx0l7wCNzhljaBS7gm8KTcmF0sfueCGRuZ1FzP9c5uzZxxGLYXYdadpRuyQZjYR9syQ/exec"; 
+    
+    let currentUser = null;
+    let lmsData = null;
+
+    // Defined IB structures for the dynamic forms
+    const ibFrameworks = {
+      PYP: ["Who we are", "Where we are in place and time", "How we express ourselves", "How the world works", "How we organize ourselves", "Sharing the planet"],
+      MYP: ["Identities & Relationships", "Orientation in Space & Time", "Personal & Cultural Expression", "Scientific & Technical Innovation", "Globalization & Sustainability", "Fairness & Development"]
+    };
+
+    const modules = [
+      { id: 'apercu', label: 'Aperçu', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6z' },
+      { id: 'communiques', label: 'Communiqués de l\'école', icon: 'M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z' },
+      { id: 'programmes', label: 'Cartes des programmes (IB)', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+      { id: 'affectations', label: 'Gestionnaire des affectations', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+      { id: 'cahier', label: 'Cahier de notes & Bulletins', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
+      { id: 'messagerie', label: 'Messagerie Directe', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' }
+    ];
+
+    function toggleLoader(show) {
+      document.getElementById('loader').classList[show ? 'remove' : 'add']('hidden');
+    }
+
+    async function callBackend(action, payload) {
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action, payload }) });
+      return await res.json();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      toggleLoader(true);
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      try {
+        const response = await callBackend('authenticateUser', { email, password });
+        if (response.success) {
+          currentUser = response.user;
+          if(currentUser.role === 'administrator') {
+             modules.push({ id: 'admin', label: 'Administration (Classes/Users)', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' });
+          }
+          await fetchLMSData();
+          document.getElementById('authPortal').classList.add('hidden');
+          document.getElementById('appContainer').classList.remove('hidden');
+          document.getElementById('userNameDisplay').textContent = currentUser.name;
+          document.getElementById('userRoleBadge').textContent = currentUser.role;
+          document.getElementById('userAvatar').src = currentUser.profile_image || 'https://placehold.co/100x100/4f46e5/fff?text=U';
+          renderSidebar();
+          routeView('apercu');
+        } else {
+          document.getElementById('authErrorMessage').textContent = response.message;
+          document.getElementById('authErrorMessage').classList.remove('hidden');
+        }
+      } catch (err) { alert("Server Error"); }
+      toggleLoader(false);
+    }
+
+    async function fetchLMSData() {
+      const res = await callBackend('getLMSData', { role: currentUser.role, userId: currentUser.id });
+      lmsData = res.data;
+    }
+
+    // --- FORM SUBMISSION WRAPPER ---
+    async function submitAction(event, actionName, payloadBuilder, refreshView) {
+      event.preventDefault();
+      toggleLoader(true);
+      try {
+        const payload = payloadBuilder();
+        await callBackend(actionName, payload);
+        await fetchLMSData(); // Refresh Data Memory
+        routeView(refreshView); // Re-render view
+      } catch (err) { alert("Error saving data."); }
+      toggleLoader(false);
+    }
+
+    function renderSidebar() {
+      const nav = document.getElementById('navModules');
+      nav.innerHTML = '';
+      modules.forEach(m => {
+        const btn = document.createElement('button');
+        btn.id = `btn-${m.id}`;
+        btn.className = `w-full flex items-center gap-4 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:text-white hover:bg-slate-800`;
+        btn.innerHTML = `<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="${m.icon}"></path></svg> <span class="text-left truncate">${m.label}</span>`;
+        btn.onclick = () => routeView(m.id);
+        nav.appendChild(btn);
+      });
+    }
+
+    function routeView(viewId) {
+      document.querySelectorAll('#navModules button').forEach(b => {
+        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+        b.classList.add('text-slate-400');
+      });
+      document.getElementById(`btn-${viewId}`).classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+      document.getElementById(`btn-${viewId}`).classList.remove('text-slate-400');
+      
+      const titleConfig = modules.find(m => m.id === viewId);
+      document.getElementById('viewTitle').textContent = titleConfig.label;
+      
+      const container = document.getElementById('viewContainer');
+      container.innerHTML = '';
+      container.classList.remove('fade-in');
+      void container.offsetWidth; 
+      container.classList.add('fade-in');
+
+      if (viewId === 'apercu') renderApercu(container);
+      else if (viewId === 'communiques') renderCommuniques(container);
+      else if (viewId === 'programmes') renderCartesProgrammes(container);
+      else if (viewId === 'affectations') renderAffectations(container);
+      else if (viewId === 'cahier') renderCahier(container);
+      else if (viewId === 'messagerie') renderMessagerie(container);
+      else if (viewId === 'admin') renderAdmin(container);
+    }
+
+    // ==========================================
+    // MODULE RENDERERS
+    // ==========================================
+
+    function renderApercu(container) {
+      container.innerHTML = `
+        <div class="mb-8 p-8 bg-indigo-600 rounded-3xl shadow-xl shadow-indigo-600/20 text-white relative overflow-hidden flex items-center justify-between">
+          <div class="relative z-10">
+            <h2 class="brand-font text-3xl font-extrabold mb-2">Bienvenue, ${currentUser.name}</h2>
+            <p class="text-indigo-100 font-medium">Connecté en tant que: <span class="uppercase tracking-widest text-xs font-bold bg-indigo-800 px-2 py-1 rounded-md ml-1">${currentUser.role}</span></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Architecture du Curriculum</p>
+            <h4 class="brand-font text-xl font-bold text-slate-800">PYP & MYP Actifs</h4>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Affectations Totales</p>
+            <h4 class="brand-font text-xl font-bold text-slate-800">${lmsData.assignments.length}</h4>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Unités IB Actives</p>
+            <h4 class="brand-font text-xl font-bold text-slate-800">${lmsData.curriculumMaps.length}</h4>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCommuniques(container) {
+      let formHtml = currentUser.role !== 'student' ? `
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+          <h4 class="text-sm font-bold text-slate-800 mb-4">Créer un nouveau communiqué</h4>
+          <form id="formAnn" class="space-y-4">
+            <input type="text" id="annTitle" placeholder="Titre du message" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required>
+            <textarea id="annContent" placeholder="Contenu du communiqué..." rows="3" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+            <button type="submit" class="bg-indigo-600 text-white font-bold px-6 py-2 rounded-xl text-sm hover:bg-indigo-700 transition-all">Publier</button>
+          </form>
+        </div>
+      ` : '';
+
+      let listHtml = `<div class="space-y-4">`;
+      lmsData.announcements.forEach(ann => {
+        listHtml += `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
+            <div class="flex justify-between items-center mb-3">
+              <h5 class="font-bold text-slate-800 text-lg">${ann.title}</h5>
+              <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-3 py-1 rounded-lg">${ann.date || ''}</span>
+            </div>
+            <p class="text-sm text-slate-600 whitespace-pre-line mb-4">${ann.content}</p>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 border-t border-slate-100 pt-3">Par: <span class="text-indigo-600">${ann.author}</span></div>
+          </div>`;
+      });
+      container.innerHTML = formHtml + listHtml + `</div>`;
+      
+      if(document.getElementById('formAnn')) {
+        document.getElementById('formAnn').onsubmit = (e) => submitAction(e, 'postAnnouncement', () => ({
+          title: document.getElementById('annTitle').value,
+          content: document.getElementById('annContent').value,
+          author: currentUser.name
+        }), 'communiques');
+      }
+    }
+
+    function renderCartesProgrammes(container) {
+      let formHtml = currentUser.role !== 'student' ? `
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+          <h4 class="text-sm font-bold text-slate-800 mb-4">Créer une Unité IB</h4>
+          <form id="formCurriculum" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <select id="ibLevel" onchange="updateThemesUI()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <option value="PYP">Primary Years Programme (PYP)</option>
+                <option value="MYP">Middle Years Programme (MYP)</option>
+              </select>
+              <select id="ibTheme" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required></select>
+            </div>
+            <input type="text" id="unitFocus" placeholder="Titre de l'unité (Ex: Systèmes Energétiques)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required>
+            <textarea id="unitObjectives" placeholder="Objectifs d'apprentissage détaillés..." rows="2" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+            <button type="submit" class="bg-emerald-600 text-white font-bold px-6 py-2 rounded-xl text-sm hover:bg-emerald-700 transition-all">Ajouter l'Unité</button>
+          </form>
+        </div>
+      ` : '';
+
+      let listHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      lmsData.curriculumMaps.forEach(map => {
+        let badgeColor = map.framework === 'PYP' ? 'bg-teal-100 text-teal-800' : 'bg-purple-100 text-purple-800';
+        listHtml += `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-lg ${badgeColor}">${map.framework}</span>
+            </div>
+            <h4 class="brand-font font-bold text-xl text-slate-800 mb-1">${map.unit_focus}</h4>
+            <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">${map.theme_or_context}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">${map.objectives}</p>
+          </div>`;
+      });
+      container.innerHTML = formHtml + listHtml + `</div>`;
+
+      if(document.getElementById('formCurriculum')) {
+        updateThemesUI(); // populate initial themes
+        document.getElementById('formCurriculum').onsubmit = (e) => submitAction(e, 'addCurriculum', () => ({
+          framework: document.getElementById('ibLevel').value,
+          theme_or_context: document.getElementById('ibTheme').value,
+          unit_focus: document.getElementById('unitFocus').value,
+          objectives: document.getElementById('unitObjectives').value
+        }), 'programmes');
+      }
+    }
+
+    function updateThemesUI() {
+      const level = document.getElementById('ibLevel').value;
+      const themeSelect = document.getElementById('ibTheme');
+      themeSelect.innerHTML = ibFrameworks[level].map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    function renderAffectations(container) {
+      let classOptions = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      let unitOptions = lmsData.curriculumMaps.map(u => `<option value="${u.id}">${u.unit_focus} (${u.framework})</option>`).join('');
+      
+      let formHtml = currentUser.role !== 'student' ? `
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+          <h4 class="text-sm font-bold text-slate-800 mb-4">Créer un Devoir / Affectation</h4>
+          <form id="formAssignment" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <input type="text" id="assTitle" placeholder="Titre du devoir" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <input type="date" id="assDue" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <select id="assClass" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${classOptions}</select>
+              <select id="assUnit" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${unitOptions}</select>
+            </div>
+            <textarea id="assDesc" placeholder="Description de la tâche..." rows="2" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required></textarea>
+            <input type="url" id="assDrive" placeholder="Lien Google Drive (Ressource / Fiche) (Optionnel)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+            <button type="submit" class="bg-indigo-600 text-white font-bold px-6 py-2 rounded-xl text-sm hover:bg-indigo-700">Publier l'Affectation</button>
+          </form>
+        </div>` : '';
+
+      let listHtml = `<div class="grid grid-cols-1 gap-4">`;
+      lmsData.assignments.forEach(ass => {
+        let driveLink = ass.drive_resource_link ? `<a href="${ass.drive_resource_link}" target="_blank" class="text-indigo-600 font-bold hover:underline">Ouvrir Ressource Drive ↗</a>` : '';
+        listHtml += `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="brand-font font-bold text-lg text-slate-800">${ass.title}</h4>
+              <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded">Échéance: ${ass.due_date}</span>
+            </div>
+            <p class="text-sm text-slate-600 mb-4">${ass.description}</p>
+            ${driveLink}
+          </div>`;
+      });
+      container.innerHTML = formHtml + listHtml + `</div>`;
+
+      if(document.getElementById('formAssignment')) {
+        document.getElementById('formAssignment').onsubmit = (e) => submitAction(e, 'addAssignment', () => ({
+          title: document.getElementById('assTitle').value,
+          due_date: document.getElementById('assDue').value,
+          class_id: document.getElementById('assClass').value,
+          unit_id: document.getElementById('assUnit').value,
+          description: document.getElementById('assDesc').value,
+          drive_resource_link: document.getElementById('assDrive').value
+        }), 'affectations');
+      }
+    }
+
+    function renderCahier(container) {
+      let studentOptions = lmsData.users.filter(u => u.role === 'student').map(u => `<option value="${u.id}">${u.name}</option>`).join('');
+      let assOptions = lmsData.assignments.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+      
+      let formHtml = currentUser.role !== 'student' ? `
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+          <h4 class="text-sm font-bold text-slate-800 mb-4">Saisir une Note</h4>
+          <form id="formGrade" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <select id="grStudent" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${studentOptions}</select>
+              <select id="grAss" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${assOptions}</select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <input type="text" id="grScore" placeholder="Note (Ex: 8/10, A, Maîtrisé)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <input type="url" id="grDrive" placeholder="Lien Drive de Soumission Élève (Optionnel)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+            </div>
+            <textarea id="grFeedback" placeholder="Commentaire / Feedback formatif..." rows="2" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm"></textarea>
+            <button type="submit" class="bg-indigo-600 text-white font-bold px-6 py-2 rounded-xl text-sm hover:bg-indigo-700">Enregistrer Note</button>
+          </form>
+        </div>` : '';
+
+      let listHtml = `
+        <table class="w-full text-left border-collapse bg-white rounded-2xl shadow-sm overflow-hidden">
+          <thead class="bg-slate-50 text-xs uppercase font-bold text-slate-500">
+            <tr><th class="p-4">Devoir ID</th><th class="p-4">Élève ID</th><th class="p-4">Note</th><th class="p-4">Feedback</th></tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+      `;
+      lmsData.grades.forEach(g => {
+        listHtml += `<tr><td class="p-4">${g.assignment_id}</td><td class="p-4 font-bold text-indigo-600">${g.student_id}</td><td class="p-4"><span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-bold">${g.score}</span></td><td class="p-4 text-slate-600">${g.feedback_comments}</td></tr>`;
+      });
+      container.innerHTML = formHtml + listHtml + `</tbody></table>`;
+
+      if(document.getElementById('formGrade')) {
+        document.getElementById('formGrade').onsubmit = (e) => submitAction(e, 'addGrade', () => ({
+          student_id: document.getElementById('grStudent').value,
+          assignment_id: document.getElementById('grAss').value,
+          score: document.getElementById('grScore').value,
+          feedback_comments: document.getElementById('grFeedback').value,
+          submission_drive_link: document.getElementById('grDrive').value
+        }), 'cahier');
+      }
+    }
+
+    function renderMessagerie(container) {
+      let userOptions = lmsData.users.filter(u => u.id !== currentUser.id).map(u => `<option value="${u.id}">${u.name} (${u.role})</option>`).join('');
+      let formHtml = `
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+          <h4 class="text-sm font-bold text-slate-800 mb-4">Nouveau Message</h4>
+          <form id="formMsg" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <select id="msgTo" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${userOptions}</select>
+              <input type="text" id="msgSub" placeholder="Sujet" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+            </div>
+            <textarea id="msgBody" placeholder="Votre message..." rows="3" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required></textarea>
+            <button type="submit" class="bg-indigo-600 text-white font-bold px-6 py-2 rounded-xl text-sm">Envoyer</button>
+          </form>
+        </div>`;
+      
+      let listHtml = `<div class="space-y-4">`;
+      // Show messages involving current user
+      let myMessages = lmsData.messages.filter(m => m.sender_id === currentUser.id || m.receiver_id === currentUser.id || currentUser.role === 'administrator');
+      myMessages.forEach(m => {
+        let isMine = m.sender_id === currentUser.id;
+        let badge = isMine ? `<span class="bg-indigo-100 text-indigo-800 px-2 rounded text-xs">Envoyé à: ${m.receiver_id}</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 rounded text-xs">Reçu de: ${m.sender_id}</span>`;
+        listHtml += `
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex justify-between items-center mb-2"><h5 class="font-bold">${m.subject}</h5> ${badge}</div>
+            <p class="text-sm text-slate-600">${m.content}</p>
+          </div>`;
+      });
+      container.innerHTML = formHtml + listHtml + `</div>`;
+
+      if(document.getElementById('formMsg')) {
+        document.getElementById('formMsg').onsubmit = (e) => submitAction(e, 'addMessage', () => ({
+          sender_id: currentUser.id,
+          receiver_id: document.getElementById('msgTo').value,
+          subject: document.getElementById('msgSub').value,
+          content: document.getElementById('msgBody').value
+        }), 'messagerie');
+      }
+    }
+
+    function renderAdmin(container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h4 class="font-bold mb-4">Créer une Classe</h4>
+            <form id="formClass" class="space-y-4">
+              <input type="text" id="clsName" placeholder="Nom de la classe (Ex: Grade 4)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <select id="clsProg" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm"><option value="PYP">PYP</option><option value="MYP">MYP</option></select>
+              <input type="text" id="clsTeacher" placeholder="Teacher ID (Ex: U002)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2 rounded-xl text-sm">Ajouter Classe</button>
+            </form>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h4 class="font-bold mb-4">Enregistrer un Utilisateur</h4>
+            <form id="formUser" class="space-y-4">
+              <input type="text" id="uName" placeholder="Nom complet" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <input type="email" id="uEmail" placeholder="Email institutionnel" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <input type="text" id="uPass" placeholder="Mot de passe" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              <select id="uRole" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm"><option value="student">Élève</option><option value="teacher">Professeur</option><option value="parent">Parent</option></select>
+              <button type="submit" class="w-full bg-slate-900 text-white font-bold py-2 rounded-xl text-sm">Ajouter Utilisateur</button>
+            </form>
+          </div>
+        </div>
+      `;
+      document.getElementById('formClass').onsubmit = (e) => submitAction(e, 'addClass', () => ({
+        name: document.getElementById('clsName').value, program_level: document.getElementById('clsProg').value, teacher_id: document.getElementById('clsTeacher').value
+      }), 'admin');
+      
+      document.getElementById('formUser').onsubmit = (e) => submitAction(e, 'addUser', () => ({
+        name: document.getElementById('uName').value, email: document.getElementById('uEmail').value, password: document.getElementById('uPass').value, role: document.getElementById('uRole').value
+      }), 'admin');
+    }
+  </script>
+</body>
+</html>

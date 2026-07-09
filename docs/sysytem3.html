@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiddy Planet – Plateforme LMS Élite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .module-header {
+      background-size: cover; background-position: center; border-radius: 1.5rem; position: relative; overflow: hidden;
+    }
+    .module-header::before {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.4));
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased h-screen flex flex-col overflow-hidden bg-slate-50">
+
+  <div id="authPortal" class="flex-1 flex items-center justify-center p-6 absolute inset-0 z-50 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070')] bg-cover bg-center">
+    <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-md"></div>
+    <div class="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden z-10 relative p-10 text-center">
+      <h1 class="brand-font text-4xl font-extrabold text-white tracking-tight mb-2">Kiddy Planet</h1>
+      <p class="text-xs text-indigo-300 uppercase tracking-widest font-bold mb-8">LMS Élite</p>
+      
+      <div id="authErrorMessage" class="hidden bg-rose-500/20 border border-rose-500/50 p-4 mb-4 text-sm text-rose-200 rounded-xl"></div>
+      
+      <form onsubmit="handleLogin(event)" class="space-y-5">
+        <input type="email" id="emailInput" placeholder="Courriel Institutionnel" required class="w-full px-5 py-4 rounded-xl border border-white/20 bg-white/5 text-white placeholder-slate-300 focus:ring-2 focus:ring-indigo-400 outline-none">
+        <input type="password" id="passwordInput" placeholder="Mot de passe" required class="w-full px-5 py-4 rounded-xl border border-white/20 bg-white/5 text-white placeholder-slate-300 focus:ring-2 focus:ring-indigo-400 outline-none">
+        <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all text-sm tracking-wide">Accéder au portail</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="appContainer" class="hidden flex-1 flex h-screen w-full">
+    
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 border-r border-slate-800">
+      <div class="p-6 bg-slate-950/40 border-b border-slate-800 backdrop-blur-md">
+        <h2 class="brand-font font-extrabold text-xl text-white">Kiddy Planet</h2>
+      </div>
+      <div class="px-6 py-5 border-b border-slate-800 flex items-center gap-4">
+        <img id="userAvatar" src="" class="w-12 h-12 rounded-full object-cover border-2 border-indigo-500 bg-slate-800">
+        <div class="overflow-hidden">
+          <p id="userNameDisplay" class="text-sm font-bold text-white truncate"></p>
+          <p id="userRoleBadge" class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold truncate"></p>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto" id="navModules"></nav>
+      <div class="p-4 border-t border-slate-800">
+        <button onclick="location.reload()" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-widest uppercase text-slate-400 hover:text-rose-400 rounded-xl hover:bg-rose-500/10 transition-all"><i class="ph-sign-out text-lg"></i> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+      <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 px-8 flex items-center justify-between sticky top-0 z-30">
+        <h3 id="viewTitle" class="brand-font font-extrabold text-2xl text-slate-800 tracking-tight">Aperçu</h3>
+      </header>
+      <div id="viewContainer" class="p-8 w-full mx-auto overflow-y-auto h-full pb-32"></div>
+    </main>
+  </div>
+
+  <div id="loader" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center">
+    <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+
+  <script>
+    // ⚠️ REPLACE WITH YOUR NEW APPS SCRIPT URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxMN8aV5-UhiJ8R5kipS4vFkRqHF1_c9sDUravHHgzt0urQ6a2u6vAZFZEmLs01gdRSNA/exec";
+    let currentUser = null;
+    let lmsData = null;
+
+    const ALL_MODULES = [
+      { id: 'apercu', label: 'Tableau de bord', icon: 'ph-squares-four', roles: ['admin', 'teacher', 'student', 'parent'] },
+      { id: 'affectations', label: 'Devoirs & Tâches', icon: 'ph-pencil-simple', roles: ['admin', 'teacher', 'student', 'parent'] }
+    ];
+
+    async function callBackend(action, payload) {
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action, payload }) });
+      return await res.json();
+    }
+
+    function toggleLoader(show) { document.getElementById('loader').classList[show ? 'remove' : 'add']('hidden'); }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      toggleLoader(true);
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      try {
+        const response = await callBackend('authenticateUser', { email, password });
+        if (response.success) {
+          currentUser = response.user;
+          const dataRes = await callBackend('getLMSData', {});
+          lmsData = dataRes.data;
+          
+          document.getElementById('authPortal').classList.add('hidden');
+          document.getElementById('appContainer').classList.remove('hidden');
+          document.getElementById('userNameDisplay').textContent = currentUser.name;
+          document.getElementById('userRoleBadge').textContent = currentUser.role;
+          document.getElementById('userAvatar').src = currentUser.profile_image || 'https://placehold.co/100x100/4f46e5/fff?text=U';
+          
+          renderSidebar();
+          routeView('apercu');
+        } else {
+          document.getElementById('authErrorMessage').textContent = response.message;
+          document.getElementById('authErrorMessage').classList.remove('hidden');
+        }
+      } catch (err) { alert("Erreur de connexion."); }
+      toggleLoader(false);
+    }
+
+    function renderSidebar() {
+      const nav = document.getElementById('navModules');
+      nav.innerHTML = '';
+      ALL_MODULES.filter(m => m.roles.includes(currentUser.role)).forEach(m => {
+        const btn = document.createElement('button');
+        btn.id = `btn-${m.id}`;
+        btn.className = `w-full flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium tracking-wide transition-all text-slate-400 hover:text-white hover:bg-slate-800`;
+        btn.innerHTML = `<i class="${m.icon} text-xl"></i> <span class="text-left truncate">${m.label}</span>`;
+        btn.onclick = () => routeView(m.id);
+        nav.appendChild(btn);
+      });
+    }
+
+    function routeView(viewId) {
+      document.querySelectorAll('#navModules button').forEach(b => {
+        b.classList.remove('bg-indigo-600', 'text-white');
+        b.classList.add('text-slate-400');
+      });
+      document.getElementById(`btn-${viewId}`).classList.add('bg-indigo-600', 'text-white');
+      
+      const titleConfig = ALL_MODULES.find(m => m.id === viewId);
+      document.getElementById('viewTitle').textContent = titleConfig.label;
+      
+      const container = document.getElementById('viewContainer');
+      container.innerHTML = '';
+      container.classList.remove('fade-in'); void container.offsetWidth; container.classList.add('fade-in');
+
+      if (viewId === 'apercu') renderApercu(container);
+      else if (viewId === 'affectations') renderAffectations(container);
+    }
+
+    // ==========================================
+    // MODULE: APERÇU (DASHBOARD)
+    // ==========================================
+    function renderApercu(container) {
+      // 1. Calculate stats based on Role
+      let myClassesCount = 0; let myAssignmentsCount = 0;
+      
+      if(currentUser.role === 'admin') {
+        myClassesCount = lmsData.classes.length;
+        myAssignmentsCount = lmsData.assignments.length;
+      } else if (currentUser.role === 'teacher') {
+        const myClasses = lmsData.classes.filter(c => c.teacher_id === currentUser.id);
+        myClassesCount = myClasses.length;
+        myAssignmentsCount = lmsData.assignments.filter(a => myClasses.some(c => c.id === a.class_id)).length;
+      } else {
+        // Students & Parents simplified stats
+        myAssignmentsCount = lmsData.assignments.length; // Can be filtered further
+      }
+
+      container.innerHTML = `
+        <div class="module-header p-8 mb-8 shadow-xl flex flex-col justify-end min-h-[220px]" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80');">
+          <div class="relative z-10">
+            <h2 class="brand-font text-3xl font-extrabold text-white mb-2">Bienvenue, ${currentUser.name}</h2>
+            <p class="text-indigo-200 font-medium uppercase tracking-widest text-xs">Tableau de Bord Global</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Classes Gérées</p>
+              <h4 class="brand-font text-3xl font-bold text-slate-800">${myClassesCount}</h4>
+            </div>
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-2xl"><i class="ph-users"></i></div>
+          </div>
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Affectations</p>
+              <h4 class="brand-font text-3xl font-bold text-slate-800">${myAssignmentsCount}</h4>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-2xl"><i class="ph-pencil-simple"></i></div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h4 class="text-sm font-bold text-slate-800 mb-6">Activité Récente</h4>
+          <canvas id="activityChart" height="80"></canvas>
+        </div>
+      `;
+
+      // Initialize Chart.js
+      const ctx = document.getElementById('activityChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+          datasets: [{
+            label: 'Interactions',
+            data: [12, 19, 3, 5, 2, 3, 9],
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } } }
+      });
+    }
+
+    // ==========================================
+    // MODULE: AFFECTATIONS (ASSIGNMENTS)
+    // ==========================================
+    function renderAffectations(container) {
+      let filteredAssignments = lmsData.assignments;
+      let formHtml = '';
+
+      if (currentUser.role === 'admin' || currentUser.role === 'teacher') {
+        const classOptions = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        const unitOptions = lmsData.curriculumMaps.map(u => `<option value="${u.id}">${u.unit_focus}</option>`).join('');
+        
+        formHtml = `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+            <h4 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="ph-plus-circle text-lg text-indigo-600"></i> Créer une Affectation</h4>
+            <form id="formAssignment" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="assTitle" placeholder="Titre du devoir" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+                <input type="date" id="assDue" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <select id="assClass" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${classOptions}</select>
+                <select id="assUnit" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">${unitOptions}</select>
+              </div>
+              <textarea id="assDesc" placeholder="Consignes détaillées..." rows="3" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm" required></textarea>
+              <input type="url" id="assDrive" placeholder="Lien document externe (Google Drive, PDF, Word) - Optionnel" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+              <button type="submit" class="bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-indigo-700 shadow-lg shadow-indigo-200">Publier aux étudiants</button>
+            </form>
+          </div>
+        `;
+      }
+
+      let listHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      filteredAssignments.forEach(ass => {
+        let docBtn = ass.drive_resource_link ? `<a href="${ass.drive_resource_link}" target="_blank" class="mt-4 flex items-center justify-center gap-2 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-lg text-xs font-bold transition-all"><i class="ph-file-arrow-down text-lg"></i> Ouvrir Document Joint</a>` : '';
+        let submitBtn = currentUser.role === 'student' ? `<button class="mt-2 flex items-center justify-center gap-2 w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2 rounded-lg text-xs font-bold transition-all border border-emerald-200"><i class="ph-upload-simple text-lg"></i> Soumettre mon travail</button>` : '';
+
+        listHtml += `
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="brand-font font-bold text-lg text-slate-800">${ass.title}</h4>
+                <span class="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2 py-1 rounded-md uppercase">Pour le: ${ass.due_date}</span>
+              </div>
+              <p class="text-sm text-slate-600 mb-4 whitespace-pre-line">${ass.description}</p>
+            </div>
+            <div>
+              ${docBtn}
+              ${submitBtn}
+            </div>
+          </div>`;
+      });
+
+      container.innerHTML = `
+        <div class="module-header p-8 mb-8 shadow-xl flex flex-col justify-end min-h-[160px]" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80');">
+          <div class="relative z-10">
+            <h2 class="brand-font text-3xl font-extrabold text-white mb-2">Devoirs & Tâches</h2>
+          </div>
+        </div>
+        ${formHtml}
+        ${listHtml}</div>
+      `;
+
+      if(document.getElementById('formAssignment')) {
+        document.getElementById('formAssignment').onsubmit = async (e) => {
+          e.preventDefault();
+          toggleLoader(true);
+          await callBackend('addAssignment', {
+            title: document.getElementById('assTitle').value, due_date: document.getElementById('assDue').value,
+            class_id: document.getElementById('assClass').value, unit_id: document.getElementById('assUnit').value,
+            description: document.getElementById('assDesc').value, drive_resource_link: document.getElementById('assDrive').value
+          });
+          const dataRes = await callBackend('getLMSData', {}); lmsData = dataRes.data; // Refresh Memory
+          routeView('affectations');
+          toggleLoader(false);
+        };
+      }
+    }
+  </script>
+</body>
+</html>

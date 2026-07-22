@@ -2,9 +2,8 @@
 <html lang="fr" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kiddy Planet – Plateforme LMS Élite</title>
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,87 +12,66 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Outfit', sans-serif; }
+    body { font-family: 'Outfit', sans-serif; transition: background-color 0.3s, color 0.3s; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-    .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.05); }
+    .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.1); }
     .dark .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .rubric-header { height: 160px; background-size: cover; background-position: center; border-radius: 1rem; position: relative; overflow: hidden; margin-bottom: 2rem; }
-    .rubric-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42,0.9), transparent); }
-    .rubric-title { position: absolute; bottom: 20px; left: 30px; z-index: 10; font-size: 2rem; font-weight: 800; color: white; }
+    .rubric-header { height: 150px; background-size: cover; background-position: center; border-radius: 1rem; position: relative; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); }
+    .rubric-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); }
+    .rubric-title { position: absolute; bottom: 20px; left: 30px; z-index: 10; font-size: 2rem; font-weight: 800; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Hide Google Translate UI elements */
+    .goog-te-banner-frame { display: none !important; }
+    .goog-te-gadget { color: transparent !important; }
+    body { top: 0px !important; }
   </style>
 </head>
-<body class="antialiased h-screen flex flex-col overflow-hidden bg-slate-50 text-slate-800 dark:bg-[#0f172a] dark:text-cbd5e1 transition-colors duration-300">
+<body class="antialiased h-screen flex flex-col overflow-hidden bg-slate-50 text-slate-800 dark:bg-[#0f172a] dark:text-[#cbd5e1]">
 
-  <!-- MODAL SYSTEM -->
-  <div id="customModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="relative w-full max-w-md glass bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl fade-in flex flex-col">
-      <h3 id="modalTitle" class="text-xl font-bold text-slate-900 dark:text-white mb-4"></h3>
-      <div id="modalBody" class="text-slate-600 dark:text-slate-300 text-sm mb-6 flex-1"></div>
-      <div id="modalActions" class="flex justify-end gap-3 mt-auto"></div>
-    </div>
-  </div>
-
-  <!-- LOADER -->
-  <div id="loader" class="hidden fixed inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-[300] flex items-center justify-center">
-    <div class="text-center">
-      <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p class="text-xs font-bold text-cyan-600 dark:text-cyan-400 tracking-[0.2em] uppercase" id="loaderText">Synchronisation...</p>
-    </div>
-  </div>
-
-  <!-- ULTRA PRO LOGIN -->
+  <!-- LOGIN PORTAL -->
   <div id="authPortal" class="fixed inset-0 z-50 flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center">
-    <div class="absolute inset-0 bg-white/90 dark:bg-slate-900/80 backdrop-blur-sm transition-colors"></div>
-    <div class="relative w-full max-w-md glass bg-white/80 dark:bg-slate-800/80 rounded-3xl p-10 shadow-2xl text-center mx-4">
-      <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+    <div class="absolute inset-0 bg-white/60 dark:bg-slate-900/80 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-md glass rounded-3xl p-10 shadow-2xl text-center">
+      <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/30">
         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
       </div>
-      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2" id="lang-login-title">Kiddy Planet</h1>
-      
-      <div id="authErrorMessage" class="hidden bg-rose-500/20 text-rose-600 dark:text-rose-200 p-3 text-sm rounded-xl mb-6"></div>
+      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">Kiddy Planet</h1>
+      <p class="text-xs text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.3em] mb-8 font-bold">Élite LMS Gateway</p>
       
       <form onsubmit="handleLogin(event)" class="space-y-5 text-left">
         <div>
-          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email</label>
-          <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-1 focus:ring-cyan-400 outline-none">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Institutionnel</label>
+          <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all">
         </div>
         <div class="relative">
-          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2" id="lang-login-pwd">Mot de Passe</label>
-          <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-1 focus:ring-cyan-400 outline-none">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mot de Passe</label>
+          <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none transition-all">
           <button type="button" onclick="togglePassword()" class="absolute right-4 top-[34px] text-slate-500 hover:text-cyan-500">
-             <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
           </button>
         </div>
-        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3.5 rounded-xl transition-all" id="lang-login-btn">S'authentifier</button>
+        <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all tracking-wide mt-4">S'authentifier</button>
       </form>
     </div>
   </div>
 
   <!-- MAIN APP -->
-  <div id="appContainer" class="hidden flex-1 flex flex-col md:flex-row h-screen w-full relative">
+  <div id="appContainer" class="hidden flex-1 flex h-screen w-full relative">
     
-    <!-- MOBILE HEADER -->
-    <div class="md:hidden glass p-4 flex justify-between items-center z-40 border-b border-slate-200 dark:border-slate-800">
-      <h1 class="font-bold text-lg text-slate-900 dark:text-white">Kiddy Planet</h1>
-      <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="text-slate-800 dark:text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-      </button>
-    </div>
-
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="absolute md:relative w-72 glass border-r border-slate-200 dark:border-slate-800 flex flex-col h-full z-50 shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-      <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center gap-4">
-        <div class="relative group cursor-pointer" onclick="openProfileModal()">
+    <aside class="w-64 md:w-72 glass border-r border-slate-200 dark:border-white/5 flex flex-col h-full z-40 shrink-0">
+      <div class="p-6 border-b border-slate-200 dark:border-white/5 flex items-center gap-4">
+        <div class="relative group cursor-pointer" onclick="openPhotoUploadModal()">
           <img id="userAvatar" src="" class="w-14 h-14 rounded-xl object-cover border border-slate-300 dark:border-slate-600 group-hover:opacity-50 transition-all">
-          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 rounded-xl">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <svg class="w-5 h-5 text-slate-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
           </div>
         </div>
         <div class="overflow-hidden">
@@ -104,26 +82,62 @@
 
       <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="navModules"></nav>
       
-      <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex gap-2">
-        <button onclick="toggleTheme()" class="flex-1 py-3 bg-slate-200 dark:bg-slate-800 rounded-xl flex justify-center text-slate-700 dark:text-slate-300 hover:text-cyan-500">
-           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-        </button>
-        <button onclick="toggleLanguage()" class="flex-1 py-3 bg-slate-200 dark:bg-slate-800 rounded-xl flex justify-center text-slate-700 dark:text-slate-300 font-bold text-sm" id="langBtn">EN</button>
-        <button onclick="location.reload()" class="flex-1 py-3 bg-rose-100 dark:bg-rose-500/10 rounded-xl flex justify-center text-rose-500 hover:bg-rose-200">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+      <div class="p-4 border-t border-slate-200 dark:border-white/5">
+        <button onclick="location.reload()" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-rose-500 rounded-xl hover:bg-rose-500/10 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          Déconnexion
         </button>
       </div>
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-white dark:bg-[#0f172a] transition-colors">
-      <header class="hidden md:flex glass h-20 px-8 items-center justify-between shrink-0 sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800">
-        <h3 id="viewTitle" class="text-xl font-bold text-slate-900 dark:text-white">Tableau de Bord</h3>
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-100 dark:bg-[#0f172a]">
+      <!-- TOPBAR -->
+      <header class="glass h-20 px-4 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-30 border-b border-slate-200 dark:border-white/5">
+        <h3 id="viewTitle" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Tableau de Bord</h3>
+        <div class="flex items-center gap-4">
+          <!-- Google Translate Element -->
+          <div id="google_translate_element" class="text-sm"></div>
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" class="p-2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-cyan-500 hover:text-white transition-all">
+            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          </button>
+        </div>
       </header>
       
       <!-- DYNAMIC CONTENT VIEW -->
       <div id="viewContainer" class="p-4 md:p-8 w-full max-w-7xl mx-auto overflow-y-auto h-full pb-32 fade-in"></div>
     </main>
+  </div>
+
+  <!-- CUSTOM ALERT MODAL -->
+  <div id="alertModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+    <div class="glass w-full max-w-sm p-6 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-2xl text-center fade-in">
+      <h3 id="alertTitle" class="text-xl font-bold text-slate-900 dark:text-white mb-2"></h3>
+      <p id="alertMsg" class="text-sm text-slate-600 dark:text-slate-300 mb-6"></p>
+      <button onclick="closeModal('alertModal')" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl w-full">Compris</button>
+    </div>
+  </div>
+
+  <!-- FILE UPLOAD MODAL -->
+  <div id="uploadModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+    <div class="glass w-full max-w-md p-6 rounded-2xl border border-slate-300 dark:border-slate-700 shadow-2xl fade-in">
+      <h3 id="uploadTitle" class="text-xl font-bold text-slate-900 dark:text-white mb-4">Uploader un fichier</h3>
+      <input type="file" id="fileInput" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 mb-4 cursor-pointer">
+      <div class="flex gap-4">
+        <button onclick="closeModal('uploadModal')" class="flex-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white py-2 rounded-xl">Annuler</button>
+        <button id="uploadBtn" class="flex-1 bg-cyan-500 text-white py-2 rounded-xl font-bold hover:bg-cyan-600">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div id="loader" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4 shadow-lg shadow-cyan-500/50"></div>
+      <p class="text-xs font-bold text-cyan-400 tracking-[0.2em] uppercase">Synchronisation...</p>
+    </div>
   </div>
 
   <script>
@@ -134,94 +148,88 @@
     
     let currentUser = null;
     let lmsData = null;
-    let currentLang = 'fr';
-    
-    const dict = {
-      fr: { dashboard: "Dashboard", users: "Gestion Utilisateurs", portfolio: "Portfolio Social", save: "Enregistrer", upload: "Uploader Fichier", delete: "Supprimer", edit: "Modifier" },
-      en: { dashboard: "Dashboard", users: "User Management", portfolio: "Social Portfolio", save: "Save", upload: "Upload File", delete: "Delete", edit: "Edit" }
-    };
+    let myChildId = null; 
+    let chartInstance = null;
 
-    const modules = [
-      { id: 'dashboard', label: 'dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z', roles: ['admin', 'teacher', 'student', 'parent'] },
-      { id: 'users', label: 'users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', roles: ['admin'] },
-      { id: 'portfolio', label: 'portfolio', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', roles: ['admin', 'teacher', 'student', 'parent'] }
-      // Add other modules (library, communication, etc.) with role restrictions
+    const baseModules = [
+      { id: 'dashboard', label: 'Dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z' },
+      { id: 'portfolio', label: 'Portfolio Social', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
+      { id: 'communication', label: 'Communiqués', icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z' },
+      { id: 'affectations', label: 'Affectations (Devoirs)', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+      { id: 'notes', label: 'Cahier de Notes', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+      { id: 'bulletins', label: 'Bulletins', icon: 'M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+      { id: 'library', label: 'Bibliothèque', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+      { id: 'timetable', label: 'Emploi du Temps', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+      { id: 'courses', label: 'Cours & IB', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' }
     ];
 
     // ==========================================
-    // UTILITIES & UI
+    // UI & UTILS
     // ==========================================
-    function toggleLoader(show, text = "Synchronisation...") {
-      document.getElementById('loaderText').textContent = text;
-      document.getElementById('loader').classList[show ? 'remove' : 'add']('hidden');
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
     }
 
+    function toggleLoader(show) { document.getElementById('loader').classList[show ? 'remove' : 'add']('hidden'); }
+    
+    function showAlert(title, msg) {
+      document.getElementById('alertTitle').textContent = title;
+      document.getElementById('alertMsg').textContent = msg;
+      document.getElementById('alertModal').classList.remove('hidden');
+    }
+    
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    
     function toggleTheme() { document.documentElement.classList.toggle('dark'); }
     
-    function toggleLanguage() {
-      currentLang = currentLang === 'fr' ? 'en' : 'fr';
-      document.getElementById('langBtn').textContent = currentLang === 'fr' ? 'EN' : 'FR';
-      renderSidebar();
-      if(currentUser) routeView(document.querySelector('.active-nav')?.id.split('-')[1] || 'dashboard');
-    }
-
     function togglePassword() {
       const input = document.getElementById('passwordInput');
       input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    function showModal(title, bodyHtml, actionsHtml) {
-      document.getElementById('modalTitle').textContent = title;
-      document.getElementById('modalBody').innerHTML = bodyHtml;
-      document.getElementById('modalActions').innerHTML = actionsHtml;
-      document.getElementById('customModal').classList.remove('hidden');
-    }
-
-    function closeModal() { document.getElementById('customModal').classList.add('hidden'); }
-
-    // ==========================================
-    // BACKEND COMMUNICATION
-    // ==========================================
     async function callBackend(action, payload) {
       const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action, payload }) });
       return await res.json();
     }
 
-    async function handleFileUpload(file) {
+    function getBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = async (e) => {
-          const base64 = e.target.result.split(',')[1];
-          const res = await callBackend('uploadFile', { base64: base64, filename: file.name, mimeType: file.type });
-          res.success ? resolve(res.fileUrl) : reject(res.error);
-        };
         reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
       });
     }
 
+    // ==========================================
+    // AUTH & DATA
+    // ==========================================
     async function handleLogin(e) {
       e.preventDefault();
       toggleLoader(true);
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      
       try {
-        const res = await callBackend('authenticateUser', {
-          email: document.getElementById('emailInput').value,
-          password: document.getElementById('passwordInput').value
-        });
-        if (res.success) {
-          currentUser = res.user;
+        const response = await callBackend('authenticateUser', { email, password });
+        if (response.success) {
+          currentUser = response.user;
+          myChildId = currentUser.related_student_id || null;
           await refreshData();
+          
           document.getElementById('authPortal').classList.add('hidden');
           document.getElementById('appContainer').classList.remove('hidden');
+          
           document.getElementById('userNameDisplay').textContent = currentUser.name;
           document.getElementById('userRoleBadge').textContent = currentUser.role;
           document.getElementById('userAvatar').src = currentUser.profile_image || 'https://placehold.co/150';
+          
           renderSidebar();
           routeView('dashboard');
         } else {
-          document.getElementById('authErrorMessage').textContent = res.message;
-          document.getElementById('authErrorMessage').classList.remove('hidden');
+          showAlert("Erreur d'accès", response.message);
         }
-      } catch (err) { showModal("Erreur", "Connexion serveur échouée.", `<button onclick="closeModal()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg">Fermer</button>`); }
+      } catch (err) { showAlert("Erreur Système", "Connexion serveur échouée."); }
       toggleLoader(false);
     }
 
@@ -230,151 +238,151 @@
       lmsData = res.data;
     }
 
-    // ==========================================
-    // MODULE: PROFILE UPLOAD
-    // ==========================================
-    function openProfileModal() {
-      const body = `<input type="file" id="profilePicInput" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">`;
-      const actions = `
-        <button onclick="closeModal()" class="px-4 py-2 text-slate-500">Annuler</button>
-        <button onclick="uploadNewProfilePic()" class="px-4 py-2 bg-cyan-600 text-white rounded-lg font-bold">Uploader</button>
-      `;
-      showModal("Modifier Photo de Profil", body, actions);
-    }
-
-    async function uploadNewProfilePic() {
-      const file = document.getElementById('profilePicInput').files[0];
-      if (!file) return;
-      closeModal();
-      toggleLoader(true, "Upload vers Google Drive...");
-      try {
-        const fileUrl = await handleFileUpload(file);
-        await callBackend('updateData', { sheetName: 'Users', id: currentUser.id, data: { profile_image: fileUrl } });
-        document.getElementById('userAvatar').src = fileUrl;
-        currentUser.profile_image = fileUrl;
-        showModal("Succès", "Photo mise à jour avec succès !", `<button onclick="closeModal()" class="px-4 py-2 bg-cyan-600 text-white rounded-lg">OK</button>`);
-      } catch(e) {
-        showModal("Erreur", "Echec de l'upload.", `<button onclick="closeModal()" class="px-4 py-2 bg-slate-200 rounded-lg">Fermer</button>`);
-      }
-      toggleLoader(false);
+    function openPhotoUploadModal() {
+      document.getElementById('uploadTitle').textContent = "Modifier la photo de profil";
+      const btn = document.getElementById('uploadBtn');
+      btn.onclick = async () => {
+        const fileInput = document.getElementById('fileInput');
+        if (!fileInput.files.length) return showAlert("Erreur", "Veuillez sélectionner un fichier.");
+        toggleLoader(true);
+        closeModal('uploadModal');
+        
+        const file = fileInput.files[0];
+        const base64 = await getBase64(file);
+        const upRes = await callBackend('uploadFile', { filename: file.name, mimeType: file.type, base64Data: base64 });
+        
+        if (upRes.success) {
+          await callBackend('updateProfilePhoto', { userId: currentUser.id, newImageUrl: upRes.fileUrl });
+          document.getElementById('userAvatar').src = upRes.fileUrl;
+          currentUser.profile_image = upRes.fileUrl;
+          showAlert("Succès", "Photo mise à jour.");
+        } else {
+          showAlert("Erreur", "L'upload a échoué.");
+        }
+        toggleLoader(false);
+      };
+      document.getElementById('uploadModal').classList.remove('hidden');
     }
 
     // ==========================================
-    // ROUTING & VIEWS
+    // ROUTING
     // ==========================================
     function renderSidebar() {
       const nav = document.getElementById('navModules');
       nav.innerHTML = '';
+      
+      let modules = [...baseModules];
+      if (currentUser.role === 'admin') {
+        modules.push({ id: 'adminCrud', label: 'Administration (CRUD)', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' });
+      }
+
       modules.forEach(m => {
-        if (!m.roles.includes(currentUser.role)) return;
         const btn = document.createElement('button');
         btn.id = `btn-${m.id}`;
-        btn.className = `nav-item w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800`;
-        btn.innerHTML = `<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${m.icon}"></path></svg> <span class="text-left truncate">${dict[currentLang][m.label]}</span>`;
+        btn.className = `w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5`;
+        btn.innerHTML = `<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="${m.icon}"></path></svg> <span class="text-left truncate">${m.label}</span>`;
         btn.onclick = () => routeView(m.id);
         nav.appendChild(btn);
       });
     }
 
     function routeView(viewId) {
-      document.querySelectorAll('.nav-item').forEach(b => {
-        b.classList.remove('bg-cyan-50', 'dark:bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'active-nav');
+      document.querySelectorAll('#navModules button').forEach(b => {
+        b.classList.remove('bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'border', 'border-cyan-500/30');
       });
       const activeBtn = document.getElementById(`btn-${viewId}`);
-      if(activeBtn) activeBtn.classList.add('bg-cyan-50', 'dark:bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'active-nav');
+      if(activeBtn) activeBtn.classList.add('bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'border', 'border-cyan-500/30');
       
-      const titleConfig = modules.find(m => m.id === viewId);
-      document.getElementById('viewTitle').textContent = dict[currentLang][titleConfig.label];
+      const titleConfig = [...baseModules, {id: 'adminCrud', label: 'Administration'}].find(m => m.id === viewId);
+      document.getElementById('viewTitle').textContent = titleConfig ? titleConfig.label : '';
       
       const container = document.getElementById('viewContainer');
       container.innerHTML = '';
-      container.classList.remove('fade-in'); void container.offsetWidth; container.classList.add('fade-in');
-      
-      if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('-translate-x-full');
+      container.classList.remove('fade-in');
+      void container.offsetWidth; 
+      container.classList.add('fade-in');
 
       if (viewId === 'dashboard') renderDashboard(container);
-      if (viewId === 'users') renderUsersAdmin(container);
       if (viewId === 'portfolio') renderPortfolio(container);
+      if (viewId === 'communication') renderCommunication(container);
+      if (viewId === 'affectations') renderAffectations(container);
+      if (viewId === 'notes') renderNotes(container);
+      if (viewId === 'bulletins') renderBulletins(container);
+      if (viewId === 'library') renderLibrary(container);
+      if (viewId === 'timetable') renderTimetable(container);
+      if (viewId === 'courses') renderCourses(container);
+      if (viewId === 'adminCrud') renderAdminCrud(container);
+    }
+
+    function getMyClasses() {
+      if (currentUser.role === 'admin') return lmsData.classes.map(c => c.id);
+      if (currentUser.role === 'teacher') return currentUser.class_id ? currentUser.class_id.split(',') : [];
+      if (currentUser.role === 'student') return [currentUser.class_id];
+      if (currentUser.role === 'parent') {
+        const child = lmsData.users.find(u => u.id === myChildId);
+        return child ? [child.class_id] : [];
+      }
+      return [];
     }
 
     // ==========================================
-    // MODULE: ADMIN USER MANAGEMENT (CRUD)
+    // RENDERERS
     // ==========================================
-    function renderUsersAdmin(container) {
-      let html = `
-        <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold text-slate-900 dark:text-white mb-4">Ajouter un Utilisateur</h4>
-          <form id="frmUser" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <input type="text" id="uName" placeholder="Nom Complet" required class="bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-            <input type="email" id="uEmail" placeholder="Email" required class="bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-            <input type="password" id="uPwd" placeholder="Mot de passe" required class="bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-            <select id="uRole" class="bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-              <option value="student">Élève</option><option value="teacher">Professeur</option><option value="admin">Administrateur</option><option value="parent">Parent</option>
-            </select>
-            <input type="text" id="uClass" placeholder="ID Classe (ex: C-101)" class="bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-            <button type="submit" class="md:col-span-3 bg-cyan-600 text-white font-bold py-2 rounded-xl">Créer Utilisateur</button>
-          </form>
+    function renderDashboard(container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="glass p-6 rounded-2xl border-l-4 border-cyan-500">
+            <h4 class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-2">Statut Serveur</h4>
+            <div class="text-3xl font-extrabold text-slate-900 dark:text-white">Opérationnel</div>
+          </div>
+          <div class="glass p-6 rounded-2xl border-l-4 border-purple-500">
+            <h4 class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-2">Devoirs Actifs</h4>
+            <div class="text-3xl font-extrabold text-slate-900 dark:text-white">${lmsData.assignments.length}</div>
+          </div>
+          <div class="glass p-6 rounded-2xl border-l-4 border-emerald-500 flex justify-between items-center">
+            <div>
+              <h4 class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-2">Profil</h4>
+              <div class="text-xl font-extrabold text-slate-900 dark:text-white uppercase">${currentUser.role}</div>
+            </div>
+            ${currentUser.role === 'teacher' ? `<button onclick="showAlert('Génération', 'Certificat PDF en cours de traitement.')" class="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-emerald-500 hover:text-white transition-all">Certificat Travail</button>` : ''}
+          </div>
         </div>
-        <div class="glass rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 overflow-x-auto">
-          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-            <thead class="bg-slate-100 dark:bg-slate-900/80 text-slate-800 dark:text-white uppercase text-[10px]">
-              <tr><th class="p-4">Nom</th><th class="p-4">Email</th><th class="p-4">Rôle</th><th class="p-4">Classe</th><th class="p-4">Actions</th></tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200 dark:divide-slate-700/50">`;
-      
-      lmsData.users.forEach(u => {
-        html += `
-          <tr>
-            <td class="p-4 font-bold dark:text-white">${u.name}</td><td class="p-4">${u.email}</td><td class="p-4 uppercase text-xs">${u.role}</td><td class="p-4">${u.class_id || '-'}</td>
-            <td class="p-4 flex gap-2">
-              <button onclick="deleteRecord('Users', '${u.id}', 'users')" class="px-3 py-1 bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded hover:bg-rose-500 hover:text-white transition-all text-xs font-bold">Supprimer</button>
-            </td>
-          </tr>`;
-      });
-      container.innerHTML = html + `</tbody></table></div>`;
-
-      document.getElementById('frmUser').onsubmit = async (e) => {
-        e.preventDefault();
-        await crudCreate('Users', {
-          name: document.getElementById('uName').value, email: document.getElementById('uEmail').value,
-          password: document.getElementById('uPwd').value, role: document.getElementById('uRole').value,
-          class_id: document.getElementById('uClass').value, profile_image: ''
-        }, 'users');
-      };
+      `;
     }
 
-    // ==========================================
-    // MODULE: PORTFOLIO (UPLOAD + CRUD)
-    // ==========================================
+    // Example of Portfolio with File Upload
     function renderPortfolio(container) {
-      let html = `<div class="rubric-header" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop');"><div class="rubric-title">${dict[currentLang].portfolio}</div></div>`;
+      const myClasses = getMyClasses();
+      const visiblePosts = currentUser.role === 'admin' ? lmsData.portfolio : lmsData.portfolio.filter(p => myClasses.includes(p.class_id));
+      
+      let html = `<div class="rubric-header" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop');"><div class="rubric-title">Portfolio Social</div></div>`;
 
       if (['admin', 'teacher', 'student'].includes(currentUser.role)) {
         html += `
-          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+          <div class="glass p-6 rounded-2xl mb-8">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-4">Créer un Post</h4>
             <form id="frmPort" class="space-y-4">
-              <input type="text" id="pTitle" placeholder="Titre du projet..." required class="w-full bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none">
-              <textarea id="pContent" placeholder="Description du projet..." required class="w-full bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl dark:text-white outline-none"></textarea>
-              <div class="flex items-center gap-4">
-                 <input type="file" id="pFile" accept="image/*,video/*" required class="flex-1 text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
-                 <button type="submit" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl transition-all">Publier</button>
-              </div>
+              <input type="text" id="pTitle" placeholder="Titre du projet..." class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl text-slate-900 dark:text-white outline-none" required>
+              <textarea id="pContent" placeholder="Description du projet..." class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl text-slate-900 dark:text-white outline-none" required></textarea>
+              <label class="block text-sm text-slate-600 dark:text-slate-400 font-bold">Uploader Image / Vidéo</label>
+              <input type="file" id="pImgFile" accept="image/*,video/*" class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl text-slate-900 dark:text-white" required>
+              <button type="submit" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl w-full">Publier</button>
             </form>
           </div>
         `;
       }
 
       html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
-      lmsData.portfolio.forEach(post => {
+      visiblePosts.forEach(post => {
         html += `
-          <div class="glass rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col">
-            <img src="${post.media_url}" class="w-full h-48 object-cover bg-slate-200 dark:bg-slate-800">
-            <div class="p-5 flex-1 flex flex-col">
+          <div class="glass rounded-2xl overflow-hidden shadow-lg">
+            <img src="${post.media_url}" class="w-full h-48 object-cover">
+            <div class="p-5">
               <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2">${post.title}</h4>
-              <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex-1">${post.content}</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">${post.content}</p>
               <div class="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest border-t border-slate-200 dark:border-slate-700 pt-3">
                 <span>Par: ${post.author_id}</span>
-                ${(currentUser.role === 'admin' || currentUser.id === post.author_id) ? `<button onclick="deleteRecord('Portfolio', '${post.id}', 'portfolio')" class="text-rose-500 hover:underline">Supprimer</button>` : ''}
+                <span class="text-cyan-500">❤️ ${post.likes || 0}</span>
               </div>
             </div>
           </div>
@@ -382,56 +390,125 @@
       });
       container.innerHTML = html + `</div>`;
 
-      document.getElementById('frmPort')?.addEventListener('submit', async (e) => {
+      const form = document.getElementById('frmPort');
+      if (form) form.onsubmit = async (e) => {
         e.preventDefault();
-        const file = document.getElementById('pFile').files[0];
-        toggleLoader(true, "Upload du fichier...");
-        try {
-          const fileUrl = await handleFileUpload(file);
-          await crudCreate('Portfolio', {
-            author_id: currentUser.id, class_id: currentUser.class_id || 'Global',
-            type: file.type.includes('video') ? 'video' : 'image',
-            media_url: fileUrl, title: document.getElementById('pTitle').value,
-            content: document.getElementById('pContent').value, likes: 0
-          }, 'portfolio');
-        } catch(err) {
-          showModal("Erreur", "Echec.", `<button onclick="closeModal()" class="px-4 py-2 bg-slate-200 rounded-lg">Fermer</button>`);
-          toggleLoader(false);
+        const fileInput = document.getElementById('pImgFile');
+        if (!fileInput.files.length) return;
+        
+        toggleLoader(true);
+        const file = fileInput.files[0];
+        const base64 = await getBase64(file);
+        
+        const upRes = await callBackend('uploadFile', { filename: file.name, mimeType: file.type, base64Data: base64 });
+        if(upRes.success) {
+          await callBackend('postData', {
+            sheetName: 'Portfolio',
+            data: {
+              author_id: currentUser.id, class_id: myClasses[0] || 'C-101', 
+              type: 'media', media_url: upRes.fileUrl,
+              title: document.getElementById('pTitle').value, content: document.getElementById('pContent').value,
+              likes: 0
+            }
+          });
+          await refreshData();
+          routeView('portfolio');
+        } else {
+          showAlert('Erreur', 'Upload échoué.');
         }
+        toggleLoader(false);
+      };
+    }
+
+    function renderCommunication(container) {
+       container.innerHTML = `<div class="rubric-header" style="background-image: url('https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=2070&auto=format&fit=crop');"><div class="rubric-title">Centre de Communication</div></div><div class="glass p-6 rounded-2xl"><p class="text-slate-500">Module synchronisé (Affichage abrégé pour l'exemple).</p></div>`;
+    }
+    function renderAffectations(container) {
+       container.innerHTML = `<div class="rubric-header" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop');"><div class="rubric-title">Affectations (Devoirs)</div></div><div class="glass p-6 rounded-2xl"><p class="text-slate-500">Intégration d'upload requise pour les soumissions élèves.</p></div>`;
+    }
+    function renderNotes(container) { container.innerHTML = `<h2 class="text-2xl font-bold dark:text-white">Cahier de Notes</h2>`; }
+    function renderBulletins(container) { container.innerHTML = `<h2 class="text-2xl font-bold dark:text-white">Bulletins Officiels</h2>`; }
+    function renderLibrary(container) { container.innerHTML = `<h2 class="text-2xl font-bold dark:text-white">Bibliothèque</h2>`; }
+    function renderTimetable(container) { container.innerHTML = `<h2 class="text-2xl font-bold dark:text-white">Emploi du Temps</h2>`; }
+    function renderCourses(container) { container.innerHTML = `<h2 class="text-2xl font-bold dark:text-white">Cours & Map</h2>`; }
+
+    // ==========================================
+    // ADMIN CRUD
+    // ==========================================
+    function renderAdminCrud(container) {
+      if(currentUser.role !== 'admin') return;
+      
+      let sheets = Object.keys(lmsData);
+      let sheetOpts = sheets.map(s => `<option value="${s}">${s.toUpperCase()}</option>`).join('');
+
+      let html = `
+        <div class="glass p-6 rounded-2xl mb-8">
+          <h4 class="font-bold text-slate-900 dark:text-white mb-4">Gestionnaire de Données (CRUD)</h4>
+          <div class="flex gap-4 mb-4">
+            <select id="crudTableSelect" onchange="loadCrudTable()" class="flex-1 bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 p-3 rounded-xl text-slate-900 dark:text-white outline-none">
+              <option value="" disabled selected>Sélectionner une table...</option>
+              ${sheetOpts}
+            </select>
+            <button onclick="openAddRecordModal()" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl">+ Ajouter</button>
+          </div>
+          <div id="crudGrid" class="overflow-x-auto"></div>
+        </div>
+      `;
+      container.innerHTML = html;
+    }
+
+    window.loadCrudTable = function() {
+      const sheet = document.getElementById('crudTableSelect').value;
+      const data = lmsData[sheet];
+      const grid = document.getElementById('crudGrid');
+      
+      if(!data || data.length === 0) {
+        grid.innerHTML = `<p class="text-sm text-slate-500">Aucune donnée trouvée.</p>`;
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      let table = `<table class="w-full text-left text-sm text-slate-600 dark:text-slate-300"><thead class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white uppercase text-[10px] tracking-wider"><tr>`;
+      headers.forEach(h => table += `<th class="p-3">${h}</th>`);
+      table += `<th class="p-3">Actions</th></tr></thead><tbody class="divide-y divide-slate-200 dark:divide-slate-700/50">`;
+      
+      data.forEach(row => {
+        table += `<tr class="hover:bg-white/50 dark:hover:bg-slate-800/30">`;
+        headers.forEach(h => {
+          let val = row[h];
+          if(typeof val === 'string' && val.length > 30) val = val.substring(0,30) + '...';
+          table += `<td class="p-3 whitespace-nowrap">${val}</td>`;
+        });
+        table += `<td class="p-3 flex gap-2">
+          <button onclick="deleteRecord('${sheet}', '${row.id}')" class="text-rose-500 font-bold hover:underline">Supprimer</button>
+        </td></tr>`;
       });
+      table += `</tbody></table>`;
+      grid.innerHTML = table;
     }
 
-    // ==========================================
-    // GLOBAL CRUD ACTIONS
-    // ==========================================
-    async function crudCreate(sheetName, dataObj, viewRoute) {
-      toggleLoader(true);
-      await callBackend('postData', { sheetName, data: dataObj });
-      await refreshData();
-      routeView(viewRoute);
-      toggleLoader(false);
+    window.deleteRecord = async function(sheet, id) {
+      if(confirm("Êtes-vous sûr de vouloir supprimer cet enregistrement ?")) {
+        toggleLoader(true);
+        const res = await callBackend('deleteData', { sheetName: sheet, id: id });
+        if(res.success) {
+          await refreshData();
+          loadCrudTable();
+          showAlert("Succès", "Enregistrement supprimé.");
+        } else {
+          showAlert("Erreur", "Suppression échouée.");
+        }
+        toggleLoader(false);
+      }
     }
 
-    function deleteRecord(sheetName, id, viewRoute) {
-      showModal("Confirmation", "Voulez-vous vraiment supprimer cet enregistrement ?", `
-        <button onclick="closeModal()" class="px-4 py-2 text-slate-500">Annuler</button>
-        <button onclick="confirmDelete('${sheetName}', '${id}', '${viewRoute}')" class="px-4 py-2 bg-rose-600 text-white rounded-lg font-bold">Confirmer</button>
-      `);
+    window.openAddRecordModal = function() {
+      const sheet = document.getElementById('crudTableSelect').value;
+      if(!sheet) return showAlert('Erreur', 'Sélectionnez une table d\'abord.');
+      
+      showAlert("Fonctionnalité CRUD", `L'interface de création dynamique pour la table '${sheet}' nécessiterait un formulaire généré par les entêtes (Headers). Pour l'ajout d'utilisateurs, vous devez utiliser le module d'intégration backend respectif.`);
     }
 
-    async function confirmDelete(sheetName, id, viewRoute) {
-      closeModal();
-      toggleLoader(true);
-      await callBackend('deleteData', { sheetName, id });
-      await refreshData();
-      routeView(viewRoute);
-      toggleLoader(false);
-    }
-
-    // Placeholder Dashboard
-    function renderDashboard(container) {
-      container.innerHTML = `<div class="p-8 text-center text-slate-500"><h2 class="text-2xl font-bold mb-2">Bienvenue ${currentUser.name}</h2><p>Le module de tableau de bord est actif.</p></div>`;
-    }
   </script>
 </body>
 </html>

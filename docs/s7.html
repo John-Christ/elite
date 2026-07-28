@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiddy Planet – Plateforme LMS Élite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <style>
+    body { font-family: 'Outfit', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.1); }
+    .dark .glass { background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); }
+    
+    .rubric-header { height: 220px; background-size: cover; background-position: center; border-radius: 1.5rem; position: relative; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); }
+    .rubric-header::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+    .rubric-title { position: absolute; bottom: 20px; left: 30px; z-index: 10; font-size: 2.5rem; font-weight: 800; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .edit-header-btn { position: absolute; top: 15px; right: 15px; z-index: 20; background: rgba(0,0,0,0.5); color: white; padding: 8px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+    .edit-header-btn:hover { background: #06b6d4; }
+    
+    .drag-active { border-color: #06b6d4 !important; background: rgba(6, 182, 212, 0.1) !important; }
+    
+    /* Google Translate Widget Override */
+    .goog-te-gadget { font-family: 'Outfit', sans-serif !important; color: transparent !important; }
+    .goog-te-gadget .goog-te-combo { padding: 4px 8px; border-radius: 8px; outline: none; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; font-size: 12px; font-weight: bold; }
+    .dark .goog-te-gadget .goog-te-combo { background: #1e293b; border: 1px solid #475569; color: white; }
+    .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none; }
+  </style>
+</head>
+<body class="antialiased h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-200 transition-colors duration-300">
+
+  <!-- TOP-RIGHT WIDGETS -->
+  <div class="fixed top-4 right-4 z-[100] flex items-center gap-3 glass px-4 py-2 rounded-full shadow-lg">
+    <div id="google_translate_element" class="h-6 overflow-hidden"></div>
+    <button onclick="toggleTheme()" class="text-slate-600 dark:text-yellow-400 hover:scale-110 transition-transform">
+      <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+  </div>
+
+  <!-- AUTH PORTAL -->
+  <div id="authPortal" class="fixed inset-0 z-50 flex items-center justify-center bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center">
+    <div class="absolute inset-0 bg-white/60 dark:bg-slate-900/80 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-md glass rounded-3xl p-10 shadow-2xl text-center">
+      <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+      </div>
+      <h1 class="text-3xl font-extrabold dark:text-white mb-2 tracking-tight">Kiddy Planet</h1>
+      <p class="text-xs text-cyan-600 dark:text-cyan-400 uppercase tracking-[0.3em] mb-8 font-bold">Élite LMS Gateway</p>
+      
+      <div id="authErrorMessage" class="hidden bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-200 p-3 text-sm rounded-xl mb-6"></div>
+      
+      <form onsubmit="handleLogin(event)" class="space-y-5 text-left">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Institutionnel</label>
+          <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 outline-none focus:border-cyan-500 transition-all">
+        </div>
+        <div class="relative">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Mot de Passe</label>
+          <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 outline-none focus:border-cyan-500 transition-all pr-10">
+          <button type="button" onclick="togglePassword()" class="absolute right-3 top-9 text-slate-500">👁️</button>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg hover:opacity-90 transition-all mt-4">S'authentifier</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="appContainer" class="hidden flex-1 flex h-screen w-full relative">
+    
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 glass border-r dark:border-white/5 flex flex-col h-full z-40 shrink-0 absolute md:relative -translate-x-full md:translate-x-0 transition-transform duration-300">
+      <div class="p-6 border-b border-slate-200 dark:border-white/5 flex items-center gap-4">
+        <div class="relative group cursor-pointer" onclick="openDriveUploadModal('Photo de Profil', base64 => updateUserProfile({profile_image: base64}))">
+          <img id="userAvatar" src="" class="w-14 h-14 rounded-xl object-cover border border-slate-300 dark:border-slate-600 group-hover:opacity-50 transition-all">
+          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 rounded-xl">📷</div>
+        </div>
+        <div class="overflow-hidden">
+          <p id="userNameDisplay" class="text-sm font-bold truncate"></p>
+          <p id="userRoleBadge" class="text-[10px] uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-bold mt-1"></p>
+        </div>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="navModules"></nav>
+      
+      <div class="p-4 border-t border-slate-200 dark:border-white/5 space-y-2">
+        <button onclick="routeView('settings')" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-cyan-500 rounded-xl transition-all">⚙️ Paramètres</button>
+        <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold tracking-widest uppercase text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all">🚪 Déconnexion</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+      <!-- TOPBAR -->
+      <header class="glass h-20 px-4 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-30 border-b border-slate-200 dark:border-white/5">
+        <div class="flex items-center gap-4">
+          <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="md:hidden text-2xl">☰</button>
+          <h3 id="viewTitle" class="text-xl font-bold tracking-tight hidden md:block">Tableau de Bord</h3>
+        </div>
+        <div class="relative w-full md:w-96 ml-4">
+          <input type="text" onkeyup="performSearch(this.value)" placeholder="Recherche globale..." class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 rounded-full py-2.5 pl-12 pr-4 text-sm outline-none focus:border-cyan-500 transition-all">
+          <span class="absolute left-4 top-3 text-slate-400">🔍</span>
+          <!-- Search Results Dropdown -->
+          <div id="searchDropdown" class="hidden absolute top-12 left-0 w-full glass rounded-xl shadow-xl max-h-64 overflow-y-auto z-50"></div>
+        </div>
+      </header>
+      
+      <div id="viewContainer" class="p-4 md:p-8 w-full max-w-7xl mx-auto overflow-y-auto h-full pb-32"></div>
+    </main>
+  </div>
+
+  <!-- GENERIC MODAL -->
+  <div id="genericModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      <button onclick="document.getElementById('genericModal').classList.add('hidden')" class="absolute top-4 right-4 text-2xl text-slate-500 hover:text-rose-500">&times;</button>
+      <div id="modalContent" class="p-8"></div>
+    </div>
+  </div>
+
+  <!-- DRIVE UPLOAD MODAL -->
+  <div id="driveUploadModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md p-8 shadow-2xl text-center relative border border-cyan-500">
+      <button onclick="document.getElementById('driveUploadModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-500">&times;</button>
+      <h3 id="driveModalTitle" class="text-xl font-bold mb-4">Importer un Fichier</h3>
+      <div id="dropZone" class="border-2 border-dashed border-slate-400 dark:border-slate-600 rounded-xl p-10 cursor-pointer hover:border-cyan-500 transition-all" onclick="document.getElementById('fileInput').click()">
+        <span class="text-4xl block mb-2">☁️</span>
+        <p class="text-sm text-slate-500 font-bold">Glissez & Déposez ou Cliquez pour Parcourir</p>
+        <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(event)">
+      </div>
+      <p id="uploadStatus" class="mt-4 text-sm font-bold text-cyan-500 hidden">Upload vers Drive en cours...</p>
+    </div>
+  </div>
+
+  <!-- LOADER -->
+  <div id="loader" class="hidden fixed inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-[100] flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4 shadow-lg"></div>
+      <p class="text-xs font-bold text-cyan-600 dark:text-cyan-400 tracking-[0.2em] uppercase">Synchronisation...</p>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION & SETUP
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbxXOGASuSXE_HWZG9dDIQuuap0VjpP3MpXHiG0jXJvbQUeIvCxeohYIOVg6-xDuoxV-/exec"; 
+    
+    let currentUser = null;
+    let lmsData = null;
+    let myChildId = null;
+    let uploadCallback = null;
+
+    const modules = [
+      { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+      { id: 'portfolio', label: 'Portfolio Social', icon: '🎨' },
+      { id: 'communication', label: 'Communiqués', icon: '📢' },
+      { id: 'affectations', label: 'Affectations (Devoirs)', icon: '📝' },
+      { id: 'notes', label: 'Cahier de Notes', icon: '💯' },
+      { id: 'bulletins', label: 'Bulletins Pédagogiques', icon: '🎓' },
+      { id: 'library', label: 'Bibliothèque', icon: '📚' },
+      { id: 'timetable', label: 'Emploi du Temps', icon: '📅' },
+      { id: 'courses', label: 'Cours & IB Map', icon: '🗺️' },
+      { id: 'classe', label: 'Espace Classe', icon: '🏫' }
+    ];
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('themeIcon').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>`;
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('themeIcon').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
+      }
+    }
+
+    // Auto-load Theme & Session
+    window.onload = () => {
+      if (localStorage.getItem('theme') === 'dark' || !localStorage.getItem('theme')) {
+        document.documentElement.classList.add('dark');
+      }
+      const savedUser = localStorage.getItem('lms_session');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        initApp();
+      }
+    };
+
+    function togglePassword() {
+      const p = document.getElementById('passwordInput');
+      p.type = p.type === 'password' ? 'text' : 'password';
+    }
+
+    function toggleLoader(show) { document.getElementById('loader').classList[show ? 'remove' : 'add']('hidden'); }
+
+    async function callBackend(action, payload) {
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action, payload }) });
+      return await res.json();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      toggleLoader(true);
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      
+      const response = await callBackend('authenticateUser', { email, password });
+      if (response.success) {
+        currentUser = response.user;
+        localStorage.setItem('lms_session', JSON.stringify(currentUser));
+        await initApp();
+      } else {
+        const errBox = document.getElementById('authErrorMessage');
+        errBox.textContent = response.message;
+        errBox.classList.remove('hidden');
+        toggleLoader(false);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('lms_session');
+      location.reload();
+    }
+
+    async function initApp() {
+      toggleLoader(true);
+      myChildId = currentUser.related_student_id || null;
+      await refreshData();
+      
+      document.getElementById('authPortal').classList.add('hidden');
+      document.getElementById('appContainer').classList.remove('hidden');
+      
+      document.getElementById('userNameDisplay').textContent = currentUser.name;
+      document.getElementById('userRoleBadge').textContent = currentUser.role;
+      document.getElementById('userAvatar').src = currentUser.profile_image || 'https://ui-avatars.com/api/?name='+currentUser.name;
+      
+      renderSidebar();
+      routeView('dashboard');
+      toggleLoader(false);
+    }
+
+    async function refreshData() {
+      const res = await callBackend('getLMSData', {});
+      if(res.success) lmsData = res.data;
+    }
+
+    // ==========================================
+    // UPLOAD & FILE SYSTEM
+    // ==========================================
+    function openDriveUploadModal(title, callback) {
+      document.getElementById('driveModalTitle').textContent = `Upload : ${title}`;
+      uploadCallback = callback;
+      document.getElementById('uploadStatus').classList.add('hidden');
+      document.getElementById('driveUploadModal').classList.remove('hidden');
+    }
+
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-active'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-active'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-active');
+      if (e.dataTransfer.files.length) processFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFileSelect(e) { if(e.target.files.length) processFile(e.target.files[0]); }
+
+    function processFile(file) {
+      document.getElementById('uploadStatus').classList.remove('hidden');
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result.split(',')[1];
+        const res = await callBackend('uploadToDrive', { filename: file.name, mimeType: file.type, base64: base64 });
+        if(res.success) {
+          document.getElementById('driveUploadModal').classList.add('hidden');
+          if(uploadCallback) uploadCallback(res.url);
+        } else alert('Erreur upload Drive');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ==========================================
+    // CORE UI LOGIC
+    // ==========================================
+    function renderSidebar() {
+      const nav = document.getElementById('navModules');
+      nav.innerHTML = '';
+      modules.forEach(m => {
+        // Parents and students hide specific admin-only modules if needed, but for now we show all and filter data inside
+        const btn = document.createElement('button');
+        btn.id = `btn-${m.id}`;
+        btn.className = `w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all text-slate-500 hover:text-cyan-600 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5`;
+        btn.innerHTML = `<span class="text-xl shrink-0">${m.icon}</span> <span class="text-left truncate">${m.label}</span>`;
+        btn.onclick = () => routeView(m.id);
+        nav.appendChild(btn);
+      });
+    }
+
+    function getHeaderImg(moduleId, defaultImg) {
+      if(!lmsData.moduleHeaders) return defaultImg;
+      const h = lmsData.moduleHeaders.find(x => x.module_id === moduleId);
+      return h ? h.image_url : defaultImg;
+    }
+
+    function generateRubricHeader(title, moduleId, defaultImg) {
+      const img = getHeaderImg(moduleId, defaultImg);
+      return `
+        <div class="rubric-header" style="background-image: url('${img}');">
+          <div class="rubric-title flex items-center gap-3">${title}</div>
+          ${['admin', 'teacher'].includes(currentUser.role) ? 
+          `<button onclick="openDriveUploadModal('Image En-tête', url => changeModuleHeader('${moduleId}', url))" class="edit-header-btn" title="Modifier l'image">✏️</button>` : ''}
+        </div>`;
+    }
+
+    async function changeModuleHeader(moduleId, url) {
+      toggleLoader(true);
+      await callBackend('updateModuleHeader', { moduleId, url });
+      await refreshData();
+      routeView(moduleId);
+      toggleLoader(false);
+    }
+
+    function routeView(viewId) {
+      document.querySelectorAll('#navModules button').forEach(b => {
+        b.classList.remove('bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'border', 'border-cyan-500/30');
+      });
+      const activeBtn = document.getElementById(`btn-${viewId}`);
+      if(activeBtn) activeBtn.classList.add('bg-cyan-500/10', 'text-cyan-600', 'dark:text-cyan-400', 'border', 'border-cyan-500/30');
+      
+      const config = modules.find(m => m.id === viewId) || {label: 'Paramètres'};
+      document.getElementById('viewTitle').textContent = config.label;
+      
+      const container = document.getElementById('viewContainer');
+      container.innerHTML = '';
+      
+      if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('-translate-x-full');
+
+      if (viewId === 'dashboard') renderDashboard(container);
+      if (viewId === 'portfolio') renderPortfolio(container);
+      if (viewId === 'communication') renderCommunication(container);
+      if (viewId === 'affectations') renderAffectations(container);
+      if (viewId === 'notes') renderNotes(container);
+      if (viewId === 'bulletins') renderBulletins(container);
+      if (viewId === 'library') renderLibrary(container);
+      if (viewId === 'timetable') renderTimetable(container);
+      if (viewId === 'courses') renderCourses(container);
+      if (viewId === 'classe') renderClasse(container);
+      if (viewId === 'settings') renderSettings(container);
+    }
+
+    function performSearch(q) {
+      const drop = document.getElementById('searchDropdown');
+      if(!q) { drop.classList.add('hidden'); return; }
+      q = q.toLowerCase();
+      let html = '';
+      lmsData.assignments.filter(x=>x.title.toLowerCase().includes(q)).forEach(x => html += `<div onclick="routeView('affectations')" class="p-3 border-b dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800">📝 ${x.title}</div>`);
+      lmsData.portfolio.filter(x=>x.title.toLowerCase().includes(q)).forEach(x => html += `<div onclick="routeView('portfolio')" class="p-3 border-b dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800">🎨 ${x.title}</div>`);
+      drop.innerHTML = html || '<div class="p-3 text-slate-500">Aucun résultat</div>';
+      drop.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // MODULE RENDERERS
+    // ==========================================
+    function renderDashboard(container) {
+      let shortcuts = '';
+      modules.forEach(m => {
+        if(m.id !== 'dashboard') {
+          shortcuts += `
+            <div onclick="routeView('${m.id}')" class="glass p-4 rounded-2xl cursor-pointer hover:scale-105 transition-all text-center flex flex-col items-center justify-center gap-2">
+              <span class="text-3xl">${m.icon}</span>
+              <span class="text-sm font-bold">${m.label}</span>
+            </div>`;
+        }
+      });
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="glass p-6 rounded-2xl border-l-4 border-cyan-500">
+            <h4 class="text-sm font-bold uppercase tracking-wider mb-2">Statut Serveur</h4>
+            <div class="text-3xl font-extrabold text-cyan-600 dark:text-cyan-400">Opérationnel</div>
+          </div>
+          <div class="glass p-6 rounded-2xl border-l-4 border-purple-500">
+            <h4 class="text-sm font-bold uppercase tracking-wider mb-2">Devoirs Actifs</h4>
+            <div class="text-3xl font-extrabold text-purple-600 dark:text-purple-400">${lmsData.assignments.length}</div>
+          </div>
+          <div class="glass p-6 rounded-2xl border-l-4 border-emerald-500">
+            <h4 class="text-sm font-bold uppercase tracking-wider mb-2">Profil</h4>
+            <div class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 uppercase">${currentUser.role}</div>
+          </div>
+        </div>
+        <h3 class="text-lg font-bold mb-4">Accès Rapide Modules</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">${shortcuts}</div>
+      `;
+    }
+
+    function renderPortfolio(container) {
+      let html = generateRubricHeader('🎨 Portfolio Social', 'portfolio', 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop');
+
+      if (['admin', 'teacher', 'student'].includes(currentUser.role)) {
+        let clsOpts = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Créer un Post</h4>
+            <div class="space-y-4">
+              <input type="text" id="pTitle" placeholder="Titre du projet..." class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none" required>
+              <select id="pClass" class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none">${clsOpts}</select>
+              <textarea id="pContent" placeholder="Description du projet..." class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none" required></textarea>
+              <input type="hidden" id="pImgUrl">
+              <button onclick="openDriveUploadModal('Média', url => { document.getElementById('pImgUrl').value = url; document.getElementById('pImgBtn').textContent = '✅ Média Ajouté'; })" id="pImgBtn" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl">📁 Attacher Média</button>
+              <button onclick="submitPortfolio()" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl ml-4">Publier</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      lmsData.portfolio.forEach(post => {
+        const author = lmsData.users.find(u => u.id === post.author_id) || {name: post.author_id, role: '?', profile_image: ''};
+        html += `
+          <div class="glass rounded-2xl overflow-hidden cursor-pointer hover:shadow-cyan-500/20 transition-all border dark:border-slate-700" onclick="openPostModal('${post.id}')">
+            ${post.media_url ? `<img src="${post.media_url}" class="w-full h-48 object-cover">` : ''}
+            <div class="p-5">
+              <div class="flex items-center gap-3 mb-3">
+                <img src="${author.profile_image || 'https://ui-avatars.com/api/?name='+author.name}" class="w-8 h-8 rounded-full">
+                <div class="text-xs">
+                  <p class="font-bold">${author.name}</p>
+                  <p class="text-cyan-500">${author.role} • ${post.class_id}</p>
+                </div>
+              </div>
+              <h4 class="text-xl font-bold mb-2">${post.title}</h4>
+              <div class="flex justify-between items-center text-xs font-bold pt-3 mt-3 border-t dark:border-slate-700">
+                <span class="text-slate-500">${post.timestamp}</span>
+                <button onclick="event.stopPropagation(); triggerLike('${post.id}')" class="text-rose-500 hover:scale-125 transition-transform text-lg">❤️ ${post.likes || 0}</button>
+              </div>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function triggerLike(postId) {
+      const res = await callBackend('likePost', {postId});
+      if(res.success) { await refreshData(); routeView('portfolio'); }
+    }
+
+    async function submitPortfolio() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Portfolio', data: {
+        author_id: currentUser.id,
+        class_id: document.getElementById('pClass').value,
+        type: document.getElementById('pImgUrl').value ? 'media' : 'text',
+        media_url: document.getElementById('pImgUrl').value,
+        title: document.getElementById('pTitle').value,
+        content: document.getElementById('pContent').value,
+        likes: 0
+      }});
+      await refreshData(); routeView('portfolio'); toggleLoader(false);
+    }
+
+    function openPostModal(id) {
+      const p = lmsData.portfolio.find(x => x.id === id);
+      const a = lmsData.users.find(u => u.id === p.author_id);
+      document.getElementById('modalContent').innerHTML = `
+        <h2 class="text-2xl font-bold mb-4">${p.title}</h2>
+        <div class="flex items-center gap-3 mb-4"><img src="${a.profile_image}" class="w-10 h-10 rounded-full"><div><p class="font-bold">${a.name}</p><p class="text-sm text-cyan-500">${a.role} • ${p.class_id}</p></div></div>
+        ${p.media_url ? `<img src="${p.media_url}" class="w-full rounded-xl mb-4 max-h-[50vh] object-contain">` : ''}
+        <p class="text-lg">${p.content}</p>
+      `;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function renderCommunication(container) {
+      let html = generateRubricHeader('📢 Communiqués', 'communication', 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=2070&auto=format&fit=crop');
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8">
+            <h4 class="font-bold mb-4">Diffuser</h4>
+            <div class="space-y-4">
+              <input type="text" id="aTitle" placeholder="Titre" class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none">
+              <textarea id="aContent" placeholder="Message..." class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none h-24"></textarea>
+              <select id="aTarget" class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none"><option value="all">Tous</option><option value="teachers">Professeurs</option><option value="parents">Parents</option><option value="students">Élèves</option></select>
+              <button onclick="submitAnn()" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl">Envoyer</button>
+            </div>
+          </div>`;
+      }
+      lmsData.announcements.forEach(ann => {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-4 border-l-4 border-cyan-500">
+            <div class="flex justify-between items-start mb-2"><h4 class="text-xl font-bold">${ann.title}</h4> <span class="text-xs bg-cyan-100 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300 px-2 py-1 rounded font-bold">${ann.date}</span></div>
+            <p class="text-sm text-slate-500 font-bold mb-3">Par: ${ann.author}</p>
+            <p class="whitespace-pre-line">${ann.content}</p>
+          </div>`;
+      });
+      container.innerHTML = html;
+    }
+    
+    async function submitAnn() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Announcements', data: {
+        title: document.getElementById('aTitle').value, content: document.getElementById('aContent').value, author: currentUser.name, target_audience: document.getElementById('aTarget').value
+      }});
+      await refreshData(); routeView('communication'); toggleLoader(false);
+    }
+
+    function renderAffectations(container) {
+      let html = generateRubricHeader('📝 Affectations', 'affectations', 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let clsOpts = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Créer une Affectation</h4>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="asTitle" placeholder="Titre" class="w-full bg-transparent border p-3 rounded-xl outline-none">
+                <input type="date" id="asDue" class="w-full bg-transparent border p-3 rounded-xl outline-none">
+              </div>
+              <select id="asClass" class="w-full bg-transparent border p-3 rounded-xl outline-none">${clsOpts}</select>
+              
+              <!-- Rich Text Editor -->
+              <div class="border dark:border-slate-600 rounded-xl overflow-hidden">
+                <div class="bg-slate-200 dark:bg-slate-800 p-2 flex gap-2">
+                  <button type="button" onclick="document.execCommand('bold')" class="px-2 py-1 font-bold">B</button>
+                  <button type="button" onclick="document.execCommand('italic')" class="px-2 py-1 italic">I</button>
+                  <button type="button" onclick="document.execCommand('underline')" class="px-2 py-1 underline">U</button>
+                </div>
+                <div id="asDesc" contenteditable="true" class="p-4 min-h-[100px] bg-white dark:bg-slate-900 outline-none"></div>
+              </div>
+              
+              <input type="hidden" id="asLink">
+              <button onclick="openDriveUploadModal('Document (PDF/Word)', url => { document.getElementById('asLink').value = url; document.getElementById('asLinkBtn').textContent = '✅ Pièce Jointe Ajoutée'; })" id="asLinkBtn" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl">📁 Importer Fichier (Drive)</button>
+              
+              <button onclick="submitAss()" class="bg-cyan-600 text-white font-bold py-2 px-6 rounded-xl block">Assigner</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      lmsData.assignments.forEach(ass => {
+        html += `
+          <div class="glass p-6 rounded-2xl cursor-pointer hover:border-cyan-500 transition-all border dark:border-slate-700 flex flex-col justify-between" onclick="openAssModal('${ass.id}')">
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-xs font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/50 px-2 py-1 rounded">${ass.class_id}</span>
+                <span class="text-xs font-bold text-rose-500 bg-rose-100 dark:bg-rose-900/50 px-2 py-1 rounded">Échéance: ${ass.due_date}</span>
+              </div>
+              <h4 class="text-xl font-bold mb-3">${ass.title}</h4>
+            </div>
+            <p class="text-sm mt-4 text-cyan-600">Voir les détails & soumissions ↗</p>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitAss() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Assignments', data: {
+        title: document.getElementById('asTitle').value,
+        due_date: document.getElementById('asDue').value,
+        class_id: document.getElementById('asClass').value,
+        description: document.getElementById('asDesc').innerHTML,
+        drive_resource_link: document.getElementById('asLink').value
+      }});
+      await refreshData(); routeView('affectations'); toggleLoader(false);
+    }
+
+    function openAssModal(id) {
+      const ass = lmsData.assignments.find(a => a.id === id);
+      let mHtml = `<h2 class="text-2xl font-bold mb-2">${ass.title}</h2><p class="text-sm font-bold text-cyan-500 mb-6">Classe: ${ass.class_id} | Échéance: ${ass.due_date}</p><div class="prose dark:prose-invert mb-6">${ass.description}</div>`;
+      
+      if(ass.drive_resource_link) {
+        mHtml += `<a href="${ass.drive_resource_link}" target="_blank" class="inline-block bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-bold px-4 py-2 rounded-lg mb-6">📄 Voir la pièce jointe (Drive)</a>`;
+      }
+
+      if(currentUser.role === 'student') {
+        mHtml += `
+          <div class="mt-6 border-t dark:border-slate-700 pt-6">
+            <h3 class="font-bold text-lg mb-4">Soumettre votre Travail</h3>
+            <textarea id="subDesc" class="w-full bg-transparent border p-3 rounded-xl outline-none h-24 mb-4" placeholder="Votre réponse ou remarque..."></textarea>
+            <input type="hidden" id="subLink">
+            <div class="flex gap-4">
+              <button onclick="openDriveUploadModal('Travail (PDF/Word)', url => { document.getElementById('subLink').value = url; document.getElementById('subBtnFile').textContent = '✅ Fichier Ajouté'; })" id="subBtnFile" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl">📁 Joindre Fichier</button>
+              <button onclick="submitWork('${ass.id}')" class="bg-emerald-600 text-white font-bold py-2 px-6 rounded-xl">Envoyer</button>
+            </div>
+          </div>`;
+      } else if (['admin', 'teacher'].includes(currentUser.role)) {
+        const subs = lmsData.submissions.filter(s => s.assignment_id === ass.id);
+        mHtml += `<div class="mt-6 border-t dark:border-slate-700 pt-6"><h3 class="font-bold text-lg mb-4">Travaux Rendus (${subs.length})</h3><div class="space-y-3">`;
+        subs.forEach(s => {
+          const st = lmsData.users.find(u=>u.id===s.student_id)?.name || s.student_id;
+          mHtml += `<div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl flex justify-between items-center"><p class="font-bold">${st}</p> ${s.file_link ? `<a href="${s.file_link}" target="_blank" class="text-cyan-500 font-bold">Voir Fichier ↗</a>` : ''}</div>`;
+        });
+        mHtml += `</div></div>`;
+      }
+      
+      document.getElementById('modalContent').innerHTML = mHtml;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    async function submitWork(assId) {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Submissions', data: {
+        assignment_id: assId, student_id: currentUser.id, content: document.getElementById('subDesc').value, file_link: document.getElementById('subLink').value
+      }});
+      await refreshData(); document.getElementById('genericModal').classList.add('hidden'); toggleLoader(false);
+    }
+
+    function renderNotes(container) {
+      let html = generateRubricHeader('💯 Cahier de Notes', 'notes', 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop');
+      
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let stdOpts = lmsData.users.filter(u=>u.role==='student').map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+        let assOpts = lmsData.assignments.map(a=>`<option value="${a.id}">${a.title}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Saisir une Note</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <select id="gStd" class="bg-transparent border p-3 rounded-xl">${stdOpts}</select>
+              <select id="gAss" class="bg-transparent border p-3 rounded-xl">${assOpts}</select>
+              <input type="text" id="gScore" placeholder="Note (ex: 18/20)" class="bg-transparent border p-3 rounded-xl">
+              <input type="text" id="gFeed" placeholder="Appréciation..." class="bg-transparent border p-3 rounded-xl">
+              <button onclick="submitGrade()" class="md:col-span-2 bg-emerald-600 text-white font-bold py-2 rounded-xl">Enregistrer Note</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="glass rounded-2xl overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-100 dark:bg-slate-900 uppercase font-bold text-[10px]"><tr><th class="p-4">Élève</th><th class="p-4">Affectation</th><th class="p-4">Note</th><th class="p-4">Appréciation</th></tr></thead><tbody class="divide-y divide-slate-200 dark:divide-slate-700/50">`;
+      lmsData.grades.forEach(g => {
+        let sName = lmsData.users.find(u=>u.id === g.student_id)?.name || g.student_id;
+        let aTitle = lmsData.assignments.find(a=>a.id === g.assignment_id)?.title || g.assignment_id;
+        html += `<tr><td class="p-4 font-bold">${sName}</td><td class="p-4">${aTitle}</td><td class="p-4 font-bold text-emerald-500">${g.score}</td><td class="p-4">${g.feedback_comments}</td></tr>`;
+      });
+      container.innerHTML = html + `</tbody></table></div>`;
+    }
+    
+    async function submitGrade() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Grades', data: { student_id: document.getElementById('gStd').value, assignment_id: document.getElementById('gAss').value, score: document.getElementById('gScore').value, feedback_comments: document.getElementById('gFeed').value }});
+      await refreshData(); routeView('notes'); toggleLoader(false);
+    }
+
+    function renderBulletins(container) {
+      let html = generateRubricHeader('🎓 Bulletins Pédagogiques', 'bulletins', 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070&auto=format&fit=crop');
+      if (currentUser.role === 'admin') {
+        let stdOpts = lmsData.users.filter(u=>u.role==='student').map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Uploader un Bulletin</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <select id="bStd" class="bg-transparent border p-3 rounded-xl">${stdOpts}</select>
+              <input type="text" id="bTerm" placeholder="Trimestre..." class="bg-transparent border p-3 rounded-xl">
+              <input type="hidden" id="bLink">
+              <button onclick="openDriveUploadModal('Bulletin (PDF)', url => { document.getElementById('bLink').value = url; submitBulletin(); })" class="bg-purple-600 text-white font-bold py-2 rounded-xl">Uploader PDF (Drive) & Publier</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
+      lmsData.bulletins.forEach(b => {
+        let sName = lmsData.users.find(u=>u.id === b.student_id)?.name || b.student_id;
+        html += `
+          <div class="glass p-6 rounded-2xl text-center border dark:border-slate-700">
+            <div class="text-4xl mb-4">📄</div>
+            <h4 class="text-lg font-bold">${sName}</h4>
+            <p class="text-sm text-cyan-600 font-bold mb-4">${b.term}</p>
+            <a href="${b.pdf_link}" target="_blank" class="block w-full bg-slate-800 text-white py-2 rounded-lg text-sm font-bold">Télécharger PDF</a>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+    
+    async function submitBulletin() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Bulletins', data: { student_id: document.getElementById('bStd').value, term: document.getElementById('bTerm').value, pdf_link: document.getElementById('bLink').value }});
+      await refreshData(); routeView('bulletins'); toggleLoader(false);
+    }
+
+    function renderLibrary(container) {
+      let html = generateRubricHeader('📚 Bibliothèque Numérique', 'library', 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2190&auto=format&fit=crop');
+      if (currentUser.role === 'admin') {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" id="lTitle" placeholder="Titre" class="bg-transparent border p-3 rounded-xl">
+              <input type="text" id="lCat" placeholder="Catégorie" class="bg-transparent border p-3 rounded-xl">
+              <textarea id="lDesc" placeholder="Description..." class="md:col-span-2 bg-transparent border p-3 rounded-xl"></textarea>
+              <input type="hidden" id="lImg"><input type="hidden" id="lLink">
+              <button onclick="openDriveUploadModal('Couverture', url => { document.getElementById('lImg').value = url; document.getElementById('lImgBtn').textContent = '✅ Image OK'; })" id="lImgBtn" class="bg-slate-200 dark:bg-slate-800 font-bold py-2 rounded-xl">1. Ajouter Couverture</button>
+              <button onclick="openDriveUploadModal('Livre/Média', url => { document.getElementById('lLink').value = url; document.getElementById('lLinkBtn').textContent = '✅ Fichier OK'; })" id="lLinkBtn" class="bg-slate-200 dark:bg-slate-800 font-bold py-2 rounded-xl">2. Ajouter Fichier</button>
+              <button onclick="submitLib()" class="md:col-span-2 bg-blue-600 text-white font-bold py-2 rounded-xl">Publier Ressource</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-4 gap-6">`;
+      lmsData.library.forEach(lib => {
+        html += `
+          <div class="glass rounded-2xl overflow-hidden border dark:border-slate-700 shadow-lg">
+            <img src="${lib.image_header || 'https://via.placeholder.com/300'}" class="w-full h-40 object-cover">
+            <div class="p-4">
+              <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">${lib.category}</span>
+              <h4 class="text-lg font-bold mb-2 truncate">${lib.title}</h4>
+              <a href="${lib.resource_link}" target="_blank" class="block text-center bg-slate-900 text-white py-2 rounded-lg text-sm font-bold mt-4">Ouvrir</a>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+    
+    async function submitLib() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Library', data: { title: document.getElementById('lTitle').value, category: document.getElementById('lCat').value, description: document.getElementById('lDesc').value, image_header: document.getElementById('lImg').value, resource_link: document.getElementById('lLink').value }});
+      await refreshData(); routeView('library'); toggleLoader(false);
+    }
+
+    function renderTimetable(container) {
+      let html = generateRubricHeader('📅 Emploi du Temps', 'timetable', 'https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=2070&auto=format&fit=crop');
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let clsOpts = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+              <select id="ttClass" class="col-span-2 md:col-span-1 bg-transparent border p-2 rounded-xl">${clsOpts}</select>
+              <select id="ttDay" class="col-span-2 md:col-span-1 bg-transparent border p-2 rounded-xl"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option></select>
+              <input type="time" id="ttStart" class="bg-transparent border p-2 rounded-xl">
+              <input type="time" id="ttEnd" class="bg-transparent border p-2 rounded-xl">
+              <input type="text" id="ttSub" placeholder="Matière" class="bg-transparent border p-2 rounded-xl">
+              <button onclick="submitTT()" class="col-span-2 md:col-span-1 bg-cyan-600 text-white font-bold py-2 rounded-xl">Ajouter</button>
+            </div>
+          </div>`;
+      }
+      html += `<div class="glass p-6 rounded-2xl"><div class="space-y-2">`;
+      lmsData.timetable.forEach(tt => {
+        html += `
+          <div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl flex justify-between items-center border border-slate-200 dark:border-slate-700/50 cursor-pointer hover:border-cyan-500" onclick="alert('Détails: ${tt.subject} | Prof: ${tt.teacher_id}')">
+            <div class="flex gap-4 items-center">
+              <div class="bg-slate-100 dark:bg-slate-900 text-cyan-600 font-bold px-3 py-2 rounded-lg text-sm">${tt.day_of_week}</div>
+              <div><h4 class="font-bold">${tt.subject}</h4><p class="text-xs text-slate-500">${tt.start_time} - ${tt.end_time}</p></div>
+            </div>
+            <div class="text-xs font-bold bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full">${tt.class_id}</div>
+          </div>`;
+      });
+      container.innerHTML = html + `</div></div>`;
+    }
+
+    async function submitTT() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Timetable', data: { class_id: document.getElementById('ttClass').value, day_of_week: document.getElementById('ttDay').value, start_time: document.getElementById('ttStart').value, end_time: document.getElementById('ttEnd').value, subject: document.getElementById('ttSub').value, teacher_id: currentUser.id }});
+      await refreshData(); routeView('timetable'); toggleLoader(false);
+    }
+
+    function renderCourses(container) {
+      let html = generateRubricHeader('🗺️ Architecture des Cours', 'courses', 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1974&auto=format&fit=crop');
+      
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      lmsData.courses.forEach(c => {
+        html += `
+          <div class="glass p-6 rounded-2xl border border-l-4 border-l-purple-500 cursor-pointer" onclick="openCourseModal('${c.id}')">
+            <span class="text-[10px] uppercase font-bold tracking-widest text-purple-500">${c.subject_group}</span>
+            <h4 class="text-lg font-bold mt-1">${c.course_name}</h4>
+            <span class="inline-block mt-3 text-xs bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded font-bold">${c.program_level}</span>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+    
+    function openCourseModal(id) {
+      const c = lmsData.courses.find(x => x.id === id);
+      document.getElementById('modalContent').innerHTML = `<h2 class="text-2xl font-bold mb-2">${c.course_name}</h2><p class="font-bold text-purple-500 mb-6">${c.subject_group} | ${c.program_level}</p><p>Détails du cours et ressources curriculaires à venir.</p>`;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function renderClasse(container) {
+      let html = generateRubricHeader('🏫 Espace Classe', 'classe', 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop');
+      if (currentUser.role === 'admin') {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border">
+            <h4 class="font-bold mb-4">Créer une Classe</h4>
+            <div class="grid grid-cols-3 gap-4">
+              <input type="text" id="clName" placeholder="Nom (ex: P4 - IT)" class="bg-transparent border p-2 rounded-xl">
+              <select id="clProg" class="bg-transparent border p-2 rounded-xl"><option>PYP</option><option>MYP</option></select>
+              <button onclick="submitClass()" class="bg-cyan-600 text-white font-bold rounded-xl">Ajouter Classe</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
+      lmsData.classes.forEach(c => {
+        html += `
+          <div class="glass p-6 rounded-2xl text-center border cursor-pointer hover:border-cyan-500" onclick="openClassModal('${c.id}')">
+            <h4 class="text-xl font-bold mb-2">${c.name}</h4>
+            <span class="bg-cyan-100 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full text-xs font-bold">${c.program_level}</span>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitClass() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Classes', data: { name: document.getElementById('clName').value, program_level: document.getElementById('clProg').value, teacher_id: currentUser.id }});
+      await refreshData(); routeView('classe'); toggleLoader(false);
+    }
+
+    function openClassModal(id) {
+      const c = lmsData.classes.find(x => x.id === id);
+      document.getElementById('modalContent').innerHTML = `
+        <h2 class="text-3xl font-bold mb-4">${c.name} <span class="text-sm bg-cyan-500 text-white px-3 py-1 rounded-full ml-4">${c.program_level}</span></h2>
+        
+        <div class="flex gap-4 border-b dark:border-slate-700 mb-6">
+          <button class="pb-2 border-b-2 border-cyan-500 font-bold">Plan de Cours / Unit Planner</button>
+          <button class="pb-2 font-bold text-slate-500">Ressources (Drive)</button>
+        </div>
+        
+        <div class="bg-slate-100 dark:bg-slate-900 p-6 rounded-xl border dark:border-slate-700">
+          <h4 class="font-bold text-lg mb-4 text-center">Structure Curriculaire IB</h4>
+          <div class="flex flex-col items-center gap-2">
+            <div class="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-bold px-6 py-2 rounded-lg w-full max-w-sm text-center shadow">Vision / Mission IB</div>
+            <div class="text-xl text-slate-400">↓</div>
+            <div class="bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 font-bold px-6 py-2 rounded-lg w-full max-w-sm text-center shadow">Objectifs d'apprentissage</div>
+            <div class="text-xl text-slate-400">↓</div>
+            <div class="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-bold px-6 py-2 rounded-lg w-full max-w-sm text-center shadow">Curriculum Map (Unit Planner)</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('genericModal').classList.remove('hidden');
+    }
+
+    function renderSettings(container) {
+      container.innerHTML = `
+        <h2 class="text-2xl font-bold mb-8">Paramètres du Profil</h2>
+        <div class="glass p-8 rounded-2xl max-w-lg border dark:border-slate-700">
+          <div class="space-y-4">
+            <label class="block font-bold">Nom Complet</label>
+            <input type="text" id="set_name" value="${currentUser.name}" class="w-full bg-transparent border p-3 rounded-xl">
+            
+            <label class="block font-bold mt-4">Nouveau Mot de passe (optionnel)</label>
+            <input type="password" id="set_pwd" placeholder="Laissez vide pour conserver l'actuel" class="w-full bg-transparent border p-3 rounded-xl">
+            
+            <button onclick="saveSettings()" class="w-full bg-cyan-600 text-white font-bold py-3 rounded-xl mt-6">Mettre à jour</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function saveSettings() {
+      toggleLoader(true);
+      const name = document.getElementById('set_name').value;
+      const pwd = document.getElementById('set_pwd').value;
+      await callBackend('updateProfile', { userId: currentUser.id, name: name, password: pwd || currentUser.password });
+      currentUser.name = name; 
+      if(pwd) currentUser.password = pwd;
+      localStorage.setItem('lms_session', JSON.stringify(currentUser));
+      await initApp();
+    }
+
+    async function updateUserProfile(data) {
+      toggleLoader(true);
+      await callBackend('updateProfile', { userId: currentUser.id, ...data });
+      if(data.profile_image) currentUser.profile_image = data.profile_image;
+      localStorage.setItem('lms_session', JSON.stringify(currentUser));
+      await initApp();
+    }
+  </script>
+</body>
+</html>

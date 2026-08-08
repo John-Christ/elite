@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kiddy Planet – Plateforme LMS Élite</title>
+  <title>Kiddy Planet – ELITE Plateforme LMS Élite</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -124,7 +124,6 @@
           <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="md:hidden text-2xl">☰</button>
           <h3 id="viewTitle" class="text-xl font-bold tracking-tight hidden md:block">Tableau de Bord</h3>
         </div>
-        <!-- Search moved inside modules! -->
       </header>
       
       <div id="viewContainer" class="p-4 md:p-8 w-full max-w-7xl mx-auto overflow-y-auto h-full pb-32 relative"></div>
@@ -377,14 +376,6 @@
         </div>`;
     }
 
-    async function changeModuleHeader(moduleId, url) {
-      toggleLoader(true);
-      await callBackend('updateModuleHeader', { moduleId, url });
-      await refreshData();
-      routeView(moduleId);
-      toggleLoader(false);
-    }
-
     // Global Search Component embedded per view
     function getSearchBar(moduleId) {
       return `
@@ -446,6 +437,7 @@
     // ==========================================
     // MODULE RENDERERS
     // ==========================================
+    
     function renderDashboard(container) {
       let statsHtml = '';
       if (currentUser.role === 'admin') {
@@ -468,7 +460,6 @@
       
       mList.forEach(m => {
         if(m.id !== 'dashboard') {
-          // Determine Unread Notifications (fake logic for display)
           let notif = '';
           if(m.id === 'affectations' && lmsData.assignments.length > 0) notif = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-bounce">${lmsData.assignments.length}</span>`;
           if(m.id === 'communication' && lmsData.announcements.length > 0) notif = `<span class="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-bounce">Nouv.</span>`;
@@ -562,7 +553,6 @@
       document.getElementById('genericModal').classList.remove('hidden');
     }
 
-    // [Communiqués, Affectations, Notes, etc. implementations omitted for brevity but they follow identical strict upgraded structures with the requested checks.]
     function renderCommunication(container) {
       let html = generateRubricHeader('📢 Communiqués', 'communication', 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=2070&auto=format&fit=crop');
       html += getSearchBar('communication');
@@ -573,7 +563,6 @@
             <h4 class="font-bold mb-4">Diffuser</h4>
             <div class="space-y-4">
               <input type="text" id="aTitle" placeholder="Titre" class="w-full bg-white dark:bg-slate-900 border p-3 rounded-xl outline-none">
-              <!-- Full Complet Text Area -->
               <div class="border dark:border-slate-600 rounded-xl overflow-hidden">
                 <div class="bg-slate-200 dark:bg-slate-800 p-2 flex gap-2">
                   <button type="button" onclick="document.execCommand('bold')" class="px-3 py-1 font-bold bg-white dark:bg-slate-700 rounded shadow-sm">B</button>
@@ -622,6 +611,297 @@
       toggleLoader(true);
       await callBackend('markAnnouncementSeen', { userId: currentUser.id, annId: annId });
       await refreshData(); routeView('communication'); toggleLoader(false);
+    }
+
+    function renderAffectations(container) {
+      let html = generateRubricHeader('📝 Devoirs & Affectations', 'affectations', 'https://images.unsplash.com/photo-1455309036818-605282090011?q=80&w=2076&auto=format&fit=crop');
+      html += getSearchBar('affectations');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let clsOpts = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-cyan-500">
+            <h4 class="font-bold mb-4">Nouvelle Affectation</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" id="asgTitle" placeholder="Titre du devoir" class="bg-transparent border p-3 rounded-xl outline-none">
+              <input type="date" id="asgDate" class="bg-transparent border p-3 rounded-xl outline-none">
+              <select id="asgClass" class="bg-transparent border p-3 rounded-xl outline-none">${clsOpts}</select>
+              <input type="text" id="asgDesc" placeholder="Description" class="bg-transparent border p-3 rounded-xl outline-none">
+              <input type="hidden" id="asgLink">
+              <button onclick="openDriveUploadModal('Ressource', url => { document.getElementById('asgLink').value = url; document.getElementById('asgBtn').innerHTML = '✅ Document joint'; })" id="asgBtn" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl text-sm">📁 Joindre Document</button>
+              <button onclick="submitAssignment()" class="bg-cyan-600 text-white font-bold rounded-xl shadow-lg">Publier</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      lmsData.assignments.forEach(asg => {
+        let cName = lmsData.classes.find(c => c.id === asg.class_id)?.name || asg.class_id;
+        html += `
+          <div class="affectations-item glass p-6 rounded-2xl border-l-4 border-amber-500">
+            <div class="flex justify-between items-start mb-2">
+              <h4 class="text-xl font-bold">${asg.title}</h4>
+              <span class="text-xs font-bold text-amber-500">Échéance: ${asg.due_date}</span>
+            </div>
+            <p class="text-sm font-bold text-slate-500 mb-2">Classe: ${cName}</p>
+            <p class="text-sm mb-4">${asg.description}</p>
+            ${asg.drive_resource_link ? `<a href="${asg.drive_resource_link}" target="_blank" class="text-cyan-500 font-bold text-sm">📎 Voir la ressource attachée</a>` : ''}
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitAssignment() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Assignments', data: {
+        title: document.getElementById('asgTitle').value, due_date: document.getElementById('asgDate').value,
+        class_id: document.getElementById('asgClass').value, description: document.getElementById('asgDesc').value,
+        drive_resource_link: document.getElementById('asgLink').value, author_id: currentUser.id
+      }});
+      await refreshData(); routeView('affectations'); toggleLoader(false);
+    }
+
+    function renderNotes(container) {
+      let html = generateRubricHeader('📊 Cahier de Notes', 'notes', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop');
+      html += getSearchBar('notes');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let stdOpts = lmsData.users.filter(u=>u.role==='student').map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        let asgOpts = lmsData.assignments.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-emerald-500">
+            <h4 class="font-bold mb-4">Saisir une Note</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <select id="grdStudent" class="bg-transparent border p-3 rounded-xl outline-none">${stdOpts}</select>
+              <select id="grdAsg" class="bg-transparent border p-3 rounded-xl outline-none">${asgOpts}</select>
+              <input type="number" id="grdScore" placeholder="Note (ex: 85)" class="bg-transparent border p-3 rounded-xl outline-none">
+              <input type="text" id="grdComment" placeholder="Commentaire" class="bg-transparent border p-3 rounded-xl outline-none">
+              <button onclick="submitGrade()" class="bg-emerald-600 text-white font-bold rounded-xl shadow-lg md:col-span-4 py-3">Enregistrer Note</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="overflow-x-auto glass rounded-2xl border dark:border-slate-700">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-100 dark:bg-slate-800 uppercase font-bold text-slate-500">
+            <tr><th class="p-4">Élève</th><th class="p-4">Affectation</th><th class="p-4">Score</th><th class="p-4">Commentaire</th></tr>
+          </thead>
+          <tbody>`;
+      
+      lmsData.grades.forEach(g => {
+        let sName = lmsData.users.find(u => u.id === g.student_id)?.name || g.student_id;
+        let aTitle = lmsData.assignments.find(a => a.id === g.assignment_id)?.title || g.assignment_id;
+        html += `
+          <tr class="notes-item border-t dark:border-slate-700">
+            <td class="p-4 font-bold">${sName}</td>
+            <td class="p-4">${aTitle}</td>
+            <td class="p-4 font-bold text-emerald-500">${g.score}</td>
+            <td class="p-4 italic">${g.feedback_comments}</td>
+          </tr>`;
+      });
+      container.innerHTML = html + `</tbody></table></div>`;
+    }
+
+    async function submitGrade() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Grades', data: {
+        student_id: document.getElementById('grdStudent').value, assignment_id: document.getElementById('grdAsg').value,
+        score: document.getElementById('grdScore').value, feedback_comments: document.getElementById('grdComment').value, author_id: currentUser.id
+      }});
+      await refreshData(); routeView('notes'); toggleLoader(false);
+    }
+
+    function renderBulletins(container) {
+      let html = generateRubricHeader('📜 Bulletins Officiels', 'bulletins', 'https://images.unsplash.com/photo-1589330694653-efa6475320d5?q=80&w=2074&auto=format&fit=crop');
+      html += getSearchBar('bulletins');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let stdOpts = lmsData.users.filter(u=>u.role==='student').map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-purple-500">
+            <h4 class="font-bold mb-4">Uploader Bulletin (PDF)</h4>
+            <div class="flex flex-col md:flex-row gap-4">
+              <select id="bulStudent" class="bg-transparent border p-3 rounded-xl outline-none flex-1">${stdOpts}</select>
+              <input type="text" id="bulTerm" placeholder="Trimestre/Semestre (ex: Trimestre 1)" class="bg-transparent border p-3 rounded-xl outline-none flex-1">
+              <input type="hidden" id="bulPdf">
+              <button onclick="openDriveUploadModal('Bulletin PDF', url => { document.getElementById('bulPdf').value = url; document.getElementById('bulBtn').innerHTML = '✅ PDF Chargé'; })" id="bulBtn" class="bg-slate-200 dark:bg-slate-700 font-bold py-3 px-6 rounded-xl text-sm flex-1">📁 Charger PDF</button>
+              <button onclick="submitBulletin()" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg flex-1">Publier Bulletin</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
+      lmsData.bulletins.forEach(b => {
+        let sName = lmsData.users.find(u => u.id === b.student_id)?.name || b.student_id;
+        html += `
+          <div class="bulletins-item glass p-6 rounded-2xl flex flex-col justify-between items-center text-center shadow-lg hover:scale-105 transition-transform">
+            <svg class="w-16 h-16 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <h4 class="font-bold text-lg">${sName}</h4>
+            <p class="text-xs text-slate-500 mb-4 uppercase tracking-widest font-bold">${b.term}</p>
+            <a href="${b.pdf_link}" target="_blank" class="w-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold py-2 rounded-xl">Télécharger</a>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitBulletin() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Bulletins', data: {
+        student_id: document.getElementById('bulStudent').value, term: document.getElementById('bulTerm').value, pdf_link: document.getElementById('bulPdf').value
+      }});
+      await refreshData(); routeView('bulletins'); toggleLoader(false);
+    }
+
+    function renderLibrary(container) {
+      let html = generateRubricHeader('📚 Bibliothèque & Ressources', 'library', 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2190&auto=format&fit=crop');
+      html += getSearchBar('library');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-blue-500">
+            <h4 class="font-bold mb-4">Ajouter une ressource</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" id="libTitle" placeholder="Titre du livre/ressource" class="bg-transparent border p-3 rounded-xl outline-none">
+              <input type="text" id="libCategory" placeholder="Catégorie (ex: Sciences)" class="bg-transparent border p-3 rounded-xl outline-none">
+              <input type="text" id="libDesc" placeholder="Description" class="bg-transparent border p-3 rounded-xl outline-none md:col-span-2">
+              <input type="hidden" id="libHeader">
+              <input type="hidden" id="libLink">
+              <button onclick="openDriveUploadModal('Couverture', url => { document.getElementById('libHeader').value = url; document.getElementById('libBtnCover').innerHTML = '✅ Couverture ajoutée'; })" id="libBtnCover" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl text-sm">🖼️ Couverture</button>
+              <button onclick="openDriveUploadModal('Lien Ressource', url => { document.getElementById('libLink').value = url; document.getElementById('libBtnLink').innerHTML = '✅ Fichier ajouté'; })" id="libBtnLink" class="bg-slate-200 dark:bg-slate-700 font-bold py-2 px-4 rounded-xl text-sm">📁 Fichier (PDF, etc.)</button>
+              <button onclick="submitLibrary()" class="bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg md:col-span-2">Ajouter à la bibliothèque</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-6">`;
+      lmsData.library.forEach(lib => {
+        html += `
+          <div class="library-item glass rounded-2xl overflow-hidden hover:shadow-xl transition-all border dark:border-slate-700 flex flex-col h-full">
+            <div class="h-40 bg-cover bg-center" style="background-image: url('${lib.image_header || 'https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=1974&auto=format&fit=crop'}')"></div>
+            <div class="p-4 flex flex-col flex-1">
+              <span class="text-[10px] uppercase font-bold text-blue-500 mb-1">${lib.category}</span>
+              <h4 class="font-bold text-lg mb-2 leading-tight">${lib.title}</h4>
+              <p class="text-xs text-slate-500 mb-4 flex-1">${lib.description}</p>
+              ${lib.resource_link ? `<a href="${lib.resource_link}" target="_blank" class="block w-full text-center bg-slate-100 dark:bg-slate-800 hover:bg-blue-500 hover:text-white transition-colors font-bold py-2 rounded-xl text-xs">Ouvrir</a>` : ''}
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitLibrary() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Library', data: {
+        title: document.getElementById('libTitle').value, category: document.getElementById('libCategory').value,
+        description: document.getElementById('libDesc').value, image_header: document.getElementById('libHeader').value, resource_link: document.getElementById('libLink').value
+      }});
+      await refreshData(); routeView('library'); toggleLoader(false);
+    }
+
+    function renderTimetable(container) {
+      let html = generateRubricHeader('📅 Emploi du Temps', 'timetable', 'https://images.unsplash.com/photo-1506784951206-3962def05322?q=80&w=2073&auto=format&fit=crop');
+      html += getSearchBar('timetable');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        let clsOpts = lmsData.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        let tOpts = lmsData.users.filter(u=>u.role==='teacher').map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Ajouter un Cours à l'horaire</h4>
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+              <select id="ttClass" class="bg-transparent border p-2 rounded-xl outline-none">${clsOpts}</select>
+              <select id="ttDay" class="bg-transparent border p-2 rounded-xl outline-none"><option>Lundi</option><option>Mardi</option><option>Mercredi</option><option>Jeudi</option><option>Vendredi</option></select>
+              <input type="time" id="ttStart" class="bg-transparent border p-2 rounded-xl outline-none">
+              <input type="time" id="ttEnd" class="bg-transparent border p-2 rounded-xl outline-none">
+              <input type="text" id="ttSubj" placeholder="Matière" class="bg-transparent border p-2 rounded-xl outline-none">
+              <select id="ttTeacher" class="bg-transparent border p-2 rounded-xl outline-none">${tOpts}</select>
+              <button onclick="submitTimetable()" class="bg-cyan-600 text-white font-bold py-2 rounded-xl md:col-span-6 shadow">Ajouter</button>
+            </div>
+          </div>`;
+      }
+
+      const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+      html += `<div class="grid grid-cols-1 md:grid-cols-5 gap-4">`;
+      
+      days.forEach(day => {
+        let dayItems = lmsData.timetable.filter(t => t.day_of_week === day);
+        // Sort by start time
+        dayItems.sort((a,b) => a.start_time.localeCompare(b.start_time));
+        
+        html += `<div class="glass rounded-2xl p-4 border dark:border-slate-700 min-h-[300px]">
+          <h4 class="font-bold text-center mb-4 uppercase tracking-widest text-cyan-500 border-b dark:border-slate-700 pb-2">${day}</h4>
+          <div class="space-y-3">`;
+          
+        dayItems.forEach(item => {
+          let cName = lmsData.classes.find(c => c.id === item.class_id)?.name || item.class_id;
+          let tName = lmsData.users.find(u => u.id === item.teacher_id)?.name || item.teacher_id;
+          html += `
+            <div class="timetable-item bg-slate-50 dark:bg-slate-800 p-3 rounded-xl shadow-sm border-l-4 border-cyan-500 text-sm">
+              <div class="font-bold text-slate-700 dark:text-slate-200">${item.subject}</div>
+              <div class="text-xs font-bold text-cyan-600 dark:text-cyan-400 mt-1">${item.start_time} - ${item.end_time}</div>
+              <div class="text-xs text-slate-500 mt-1">${cName} • ${tName}</div>
+            </div>`;
+        });
+        
+        if(dayItems.length === 0) html += `<p class="text-xs text-center text-slate-400 italic">Aucun cours</p>`;
+        
+        html += `</div></div>`;
+      });
+
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitTimetable() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Timetable', data: {
+        class_id: document.getElementById('ttClass').value, day_of_week: document.getElementById('ttDay').value,
+        start_time: document.getElementById('ttStart').value, end_time: document.getElementById('ttEnd').value,
+        subject: document.getElementById('ttSubj').value, teacher_id: document.getElementById('ttTeacher').value
+      }});
+      await refreshData(); routeView('timetable'); toggleLoader(false);
+    }
+
+    function renderCourses(container) {
+      let html = generateRubricHeader('🗺️ Cours & Curriculum Maps (IB)', 'courses', 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');
+      html += getSearchBar('courses');
+
+      if (['admin', 'teacher'].includes(currentUser.role)) {
+        html += `
+          <div class="glass p-6 rounded-2xl mb-8 border border-slate-200 dark:border-slate-700">
+            <h4 class="font-bold mb-4">Définir un Plan d'Unité (IB)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input type="text" id="cmapTitle" placeholder="Titre de l'unité" class="bg-transparent border p-3 rounded-xl outline-none">
+              <select id="cmapTrans" class="bg-transparent border p-3 rounded-xl outline-none">
+                <option>Qui nous sommes</option><option>Où nous nous situons</option><option>Comment nous nous exprimons</option><option>Comment le monde fonctionne</option><option>Comment nous nous organisons</option><option>Le partage de la planète</option>
+              </select>
+              <select id="cmapProg" class="bg-transparent border p-3 rounded-xl outline-none"><option>PYP</option><option>MYP</option></select>
+              <textarea id="cmapDesc" placeholder="Idée centrale & Lignes de recherche..." class="bg-transparent border p-3 rounded-xl outline-none md:col-span-3 h-24"></textarea>
+              <button onclick="submitCurriculum()" class="bg-cyan-600 text-white font-bold py-3 rounded-xl shadow-lg md:col-span-3">Sauvegarder le Plan</button>
+            </div>
+          </div>`;
+      }
+
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+      // We will render Curriculum Maps here
+      lmsData.curriculumMaps.forEach(map => {
+        html += `
+          <div class="courses-item glass p-6 rounded-2xl border dark:border-slate-700">
+            <span class="text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold px-2 py-1 rounded mb-2 inline-block">${map.trans_discipline}</span>
+            <h4 class="text-xl font-bold mb-2 mt-2">${map.unit_title}</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 whitespace-pre-wrap">${map.description}</p>
+            <div class="text-xs text-slate-400 font-bold uppercase tracking-widest border-t dark:border-slate-700 pt-3">Structure Curriculum IB</div>
+          </div>`;
+      });
+      container.innerHTML = html + `</div>`;
+    }
+
+    async function submitCurriculum() {
+      toggleLoader(true);
+      await callBackend('postData', { sheetName: 'Curriculum_Maps', data: {
+        unit_title: document.getElementById('cmapTitle').value, trans_discipline: document.getElementById('cmapTrans').value,
+        description: document.getElementById('cmapDesc').value, course_id: 'C-' + new Date().getTime()
+      }});
+      await refreshData(); routeView('courses'); toggleLoader(false);
     }
 
     // Admin Entity Management
@@ -685,9 +965,7 @@
       }
 
       html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-6">`;
-      // Parents follow linked classes, students follow assigned, teachers follow their own
       let visibleClasses = lmsData.classes;
-      // Filter logic can be applied here based on relations if present in data
       
       visibleClasses.forEach(c => {
         html += `

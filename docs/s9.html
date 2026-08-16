@@ -619,8 +619,10 @@
           </div>`;
       }
 
-      let visiblePosts = lmsData.portfolio.filter(p => vClasses.some(c => c.id === p.class_id));
-      if(currentUser.role === 'admin') visiblePosts = lmsData.portfolio;
+
+      let visiblePosts = lmsData.portfolio;
+    //  let visiblePosts = lmsData.portfolio.filter(p => vClasses.some(c => c.id === p.class_id));
+   //   if(currentUser.role === 'admin') visiblePosts = lmsData.portfolio;
 
       html += `<div class="grid grid-cols-1 md:grid-cols-3 gap-8">`;
       visiblePosts.forEach(post => {

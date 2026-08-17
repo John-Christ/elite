@@ -554,6 +554,11 @@
   let visiblePortCount = visiblePortfolio.length;
 
 
+      //Communication
+        let visibleAnn = lmsData.announcements.filter(d => vClasses.some(c => c.id === a.class_id));
+  if(currentUser.role === 'admin') visibleAnn = lmsData.announcements;
+  let visibleAnnCount = visibleAnn.length;
+
       
       if (currentUser.role === 'admin') {
         statsHtml = `
@@ -582,7 +587,7 @@
         statsHtml = `
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div class="glass p-6 rounded-3xl border-b-4 border-amber-500 text-center"><h4 class="text-xs uppercase font-bold text-slate-500 mb-2">Devoirs Actifs</h4><p class="text-3xl font-extrabold text-amber-500">${visibleAsgCount}</p></div>
-        <div class="glass p-6 rounded-3xl border-b-4 border-blue-500 text-center"><h4 class="text-xs uppercase font-bold text-slate-500 mb-2">Annonces</h4><p class="text-3xl font-extrabold text-blue-500">${lmsData.announcements.length}</p></div>
+        <div class="glass p-6 rounded-3xl border-b-4 border-blue-500 text-center"><h4 class="text-xs uppercase font-bold text-slate-500 mb-2">Annonces</h4><p class="text-3xl font-extrabold text-blue-500">${visibleAnnCount}</p></div>
         <div class="glass p-6 rounded-3xl border-b-4 border-emerald-500 text-center"><h4 class="text-xs uppercase font-bold text-slate-500 mb-2">Posts Portfolio</h4><p class="text-3xl font-extrabold text-emerald-500">${visiblePortCount}</p></div>
       </div>
      `;
@@ -602,7 +607,7 @@
       mList.forEach(m => {
         let notif = '';
         if(m.id === 'affectations' && visibleAsgCount > 0) notif = `<span class="absolute -top-3 -right-3 bg-rose-500 text-white text-[11px] font-bold px-3 py-1 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">${visibleAsgCount} Nouveaux</span>`;
-       if(m.id === 'communication' && visibleAnnCount > 0) notif = `<span class="absolute -top-3 -right-3 bg-blue-500 text-white text-[11px] font-bold px-3 py-1 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">${visibleAsgCount} Nouvelle</span>`;
+       if(m.id === 'communication' && visibleAnnCount > 0) notif = `<span class="absolute -top-3 -right-3 bg-blue-500 text-white text-[11px] font-bold px-3 py-1 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">${visibleAnnCount} Nouvelle</span>`;
         // if(m.id === 'affectations' && lmsData.assignments.length > 0) notif = `<span class="absolute -top-3 -right-3 bg-rose-500 text-white text-[11px] font-bold px-3 py-1 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">${lmsData.assignments.length} Nouveaux</span>`;
       //  if(m.id === 'communication' && lmsData.announcements.length > 0) notif = `<span class="absolute -top-3 -right-3 bg-blue-500 text-white text-[11px] font-bold px-3 py-1 rounded-full border-2 border-white dark:border-slate-900 shadow-lg">Nouvelle</span>`;
         

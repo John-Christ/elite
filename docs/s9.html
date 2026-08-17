@@ -555,7 +555,7 @@
 
 
       //Communication
-        let visibleAnn = lmsData.announcements.filter(d => vClasses.some(c => c.id === a.class_id));
+        let visibleAnn = lmsData.announcements.filter(a => vClasses.some(c => c.id === a.class_id));
   if(currentUser.role === 'admin') visibleAnn = lmsData.announcements;
   let visibleAnnCount = visibleAnn.length;
 

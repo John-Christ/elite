@@ -542,11 +542,39 @@
 
       // Calculate exact visible elements for the current user
   let vClasses = getVisibleClasses();
-  
-  // Filter Assignments
+
+
+      // Filter Assignments
   let visibleAsg = lmsData.assignments.filter(a => vClasses.some(c => c.id === a.class_id));
   if(currentUser.role === 'admin') visibleAsg = lmsData.assignments;
-  let visibleAsgCount = visibleAsg.length;
+  
+  // Filter out submitted assignments for students and parents
+  let pendingAsg = visibleAsg;
+  if (currentUser.role === 'student') {
+    pendingAsg = visibleAsg.filter(a => 
+      !lmsData.submissions.some(s => s.assignment_id === a.id && s.student_id === currentUser.id)
+    );
+  } else if (currentUser.role === 'parent') {
+    const child = lmsData.users.find(u => u.id === currentUser.child_id);
+    if (child) {
+      pendingAsg = visibleAsg.filter(a => 
+        !lmsData.submissions.some(s => s.assignment_id === a.id && s.student_id === child.id)
+      );
+    }
+  }
+  
+  // Update the count to only show unsubmitted assignments
+  let visibleAsgCount = pendingAsg.length;
+      
+      
+  
+  /* Filter Assignments
+  let visibleAsg = lmsData.assignments.filter(a => vClasses.some(c => c.id === a.class_id));
+  if(currentUser.role === 'admin') visibleAsg = lmsData.assignments;
+  let visibleAsgCount = visibleAsg.length;  */
+
+
+    
 
   // Filter Portfolio (Optional, but recommended for consistency)
   let visiblePortfolio = lmsData.portfolio.filter(p => vClasses.some(c => c.id === p.class_id));

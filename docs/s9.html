@@ -367,7 +367,57 @@
       }
     }
 
-    // Advanced Privacy Filter
+
+
+
+    function getVisibleClasses() {
+  if (currentUser.role === 'admin') return lmsData.classes;
+  
+  if (currentUser.role === 'student') {
+     const sClasses = (currentUser.class_id || "").split(',').map(s => s.trim());
+     return lmsData.classes.filter(c => sClasses.includes(c.id));
+  }
+  
+  if (currentUser.role === 'parent') {
+     const child = lmsData.users.find(u => u.id === currentUser.child_id);
+     const childClasses = (child && child.class_id ? child.class_id : "").split(',').map(s => s.trim());
+     return lmsData.classes.filter(c => childClasses.includes(c.id));
+  }
+  
+  if (currentUser.role === 'teacher') {
+     const tClasses = (currentUser.classes || "").split(',').map(s => s.trim());
+     return lmsData.classes.filter(c => tClasses.includes(c.id));
+  }
+  
+  return [];
+}
+
+
+
+
+function getVisibleUsers(roleFilter) {
+  if (currentUser.role === 'admin') return lmsData.users.filter(u => u.role === roleFilter);
+  
+  if (currentUser.role === 'teacher' && roleFilter === 'student') {
+     const myClsIds = getVisibleClasses().map(c => c.id);
+     return lmsData.users.filter(u => {
+         if (u.role !== 'student') return false;
+         
+         // Split the student's classes into an array
+         const studentClasses = (u.class_id || "").split(',').map(s => s.trim());
+         
+         // Return true if any of the student's classes intersect with the teacher's classes
+         return studentClasses.some(id => myClsIds.includes(id));
+     });
+  }
+  return [];
+}
+
+    
+
+    
+
+    /* Advanced Privacy Filter
     function getVisibleClasses() {
       if (currentUser.role === 'admin') return lmsData.classes;
       if (currentUser.role === 'student') return lmsData.classes.filter(c => c.id === currentUser.class_id);
@@ -389,7 +439,9 @@
          return lmsData.users.filter(u => u.role === 'student' && myClsIds.includes(u.class_id));
       }
       return [];
-    }
+    }   */
+
+    
 
     function openDriveUploadModal(title, callback) {
       document.getElementById('driveModalTitle').textContent = `Import : ${title}`;

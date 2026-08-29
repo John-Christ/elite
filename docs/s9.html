@@ -356,7 +356,30 @@
       toggleLoader(false);
     }
 
+
+
     async function refreshData() {
+  const res = await callBackend('getLMSData', {});
+  if(res.success) {
+     lmsData = res.data;
+     // Clean undefined fields just in case
+     ['classes', 'users', 'portfolio', 'announcements', 'assignments', 'submissions', 'grades'].forEach(k => {
+         if(!lmsData[k]) lmsData[k] = [];
+     });
+
+     // --- NEW FIX: Update the active session with fresh user data ---
+     if (currentUser && lmsData.users) {
+        const freshUserData = lmsData.users.find(u => u.id === currentUser.id);
+        if (freshUserData) {
+            currentUser = freshUserData; // Update live memory
+            localStorage.setItem('lms_session', JSON.stringify(currentUser)); // Update local storage
+        }
+     }
+  }
+}
+    
+
+ /*   async function refreshData() {
       const res = await callBackend('getLMSData', {});
       if(res.success) {
          lmsData = res.data;
@@ -366,7 +389,7 @@
          });
       }
     }
-
+*/
 
 
 

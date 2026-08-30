@@ -354,47 +354,38 @@
       const lastModule = localStorage.getItem('last_module') || 'dashboard';
       routeView(lastModule);
       toggleLoader(false);
+
+
+      // ADD THIS LINE: Fetch sheet updates silently every 30 seconds
+  setInterval(silentRefresh, 3000);
+
+      
     }
 
 
 
-    async function refreshData() {
+  async function silentRefresh() {
   const res = await callBackend('getLMSData', {});
   if(res.success) {
      lmsData = res.data;
-     
-     // 1. Clean undefined arrays
+     // Clean undefined fields to match your existing logic
      ['classes', 'users', 'portfolio', 'announcements', 'assignments', 'submissions', 'grades'].forEach(k => {
          if(!lmsData[k]) lmsData[k] = [];
      });
-
-     // 2. SAFE SESSION SYNC: Match by email or username, NEVER by a potentially undefined ID
-     if (currentUser && lmsData.users) {
-        const freshUserData = lmsData.users.find(u => 
-            (u.email && u.email === currentUser.email) || 
-            (u.username && u.username === currentUser.username)
-        );
-        
-        if (freshUserData) {
-            currentUser = freshUserData; // Update live memory securely
-            localStorage.setItem('lms_session', JSON.stringify(currentUser)); // Save securely
-        }
-     }
-
-     // 3. INSTANT UI UPDATE: You must re-render the current view so the new data appears.
-     // Call whatever function builds your current interface (e.g., renderDashboard, showClasses, etc.)
-     // Example:
-     if (typeof renderDashboard === 'function') {
-         renderDashboard(); 
+     
+     // Only re-render the view if the user doesn't have a modal open (to prevent wiping their typed inputs)
+     const modal = document.getElementById('genericModal');
+     const uploadModal = document.getElementById('driveUploadModal');
+     if (modal.classList.contains('hidden') && uploadModal.classList.contains('hidden')) {
+        const lastModule = localStorage.getItem('last_module') || 'dashboard';
+        routeView(lastModule);
      }
   }
 }
 
 
-
-
     
- /*   async function refreshData() {
+    async function refreshData() {
       const res = await callBackend('getLMSData', {});
       if(res.success) {
          lmsData = res.data;
@@ -404,7 +395,7 @@
          });
       }
     }
-*/
+
 
 
 

@@ -362,23 +362,41 @@
   const res = await callBackend('getLMSData', {});
   if(res.success) {
      lmsData = res.data;
-     // Clean undefined fields just in case
+     
+     // 1. Clean undefined arrays
      ['classes', 'users', 'portfolio', 'announcements', 'assignments', 'submissions', 'grades'].forEach(k => {
          if(!lmsData[k]) lmsData[k] = [];
      });
 
-     // --- NEW FIX: Update the active session with fresh user data ---
+     // 2. SAFE SESSION SYNC: Match by email or username, NEVER by a potentially undefined ID
      if (currentUser && lmsData.users) {
-        const freshUserData = lmsData.users.find(u => u.id === currentUser.id);
+        const freshUserData = lmsData.users.find(u => 
+            (u.email && u.email === currentUser.email) || 
+            (u.username && u.username === currentUser.username)
+        );
+        
         if (freshUserData) {
-            currentUser = freshUserData; // Update live memory
-            localStorage.setItem('lms_session', JSON.stringify(currentUser)); // Update local storage
+            currentUser = freshUserData; // Update live memory securely
+            localStorage.setItem('lms_session', JSON.stringify(currentUser)); // Save securely
         }
+     }
+
+     // 3. INSTANT UI UPDATE: You must re-render the current view so the new data appears.
+     // Call whatever function builds your current interface (e.g., renderDashboard, showClasses, etc.)
+     // Example:
+     if (typeof renderDashboard === 'function') {
+         renderDashboard(); 
      }
   }
 }
-    
 
+
+    
+    // Automatically sync the platform with the Google Sheet every 15 seconds
+setInterval(refreshData, 3000);
+
+
+    
  /*   async function refreshData() {
       const res = await callBackend('getLMSData', {});
       if(res.success) {

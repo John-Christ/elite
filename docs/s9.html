@@ -355,10 +355,6 @@
       routeView(lastModule);
       toggleLoader(false);
 
-
-      // ADD THIS LINE: Fetch sheet updates silently every 30 seconds
-  setInterval(silentRefresh, 3000);
-
       
     }
 
@@ -383,6 +379,10 @@
   }
 }
 
+
+    
+      // ADD THIS LINE: Fetch sheet updates silently every 30 seconds
+  setInterval(silentRefresh, 3000);
 
     
     async function refreshData() {

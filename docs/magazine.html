@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gazette de l'École - Kiddy Planet & ELITE International School</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --brand-navy: #1A2B4C;
+            --brand-gold: #D4AF37;
+            --brand-cream: #FDFBF7;
+            --brand-dark-gold: #B38F2A;
+            --brand-accent: #E07A5F;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+            color: #334155;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Perspective Stage */
+        .book-viewport {
+            perspective: 2200px;
+            width: 100%;
+            height: calc(100vh - 120px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Book Container */
+        .book {
+            position: relative;
+            width: 920px;
+            height: 620px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 18px 36px -18px rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+        }
+
+        /* Responsive Scaling for smaller screens */
+        @media (max-width: 1024px) {
+            .book {
+                width: 700px;
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book {
+                width: 92vw;
+                height: 75vh;
+            }
+        }
+
+        /* Page Base Structure */
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+            border-radius: 0 8px 8px 0;
+            box-shadow: inset -3px 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Left Side Static/Under Pages */
+        .page.left-side {
+            right: auto;
+            left: 0;
+            transform-origin: right center;
+            border-radius: 8px 0 0 8px;
+            box-shadow: inset 3px 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Page Faces (Front and Back) */
+        .page-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            background-color: var(--brand-cream);
+            padding: 2.25rem 2rem;
+            overflow-y: auto;
+            box-sizing: border-box;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .page-face.back {
+            transform: rotateY(180deg);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .page-face.front {
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Flip Animation Helpers */
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        /* Book Spine Shadow Effect */
+        .spine-shadow {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, 
+                rgba(0,0,0,0.25) 0%, 
+                rgba(0,0,0,0.05) 40%, 
+                rgba(0,0,0,0.05) 60%, 
+                rgba(0,0,0,0.25) 100%);
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        /* Scrollbar customization for magazine pages */
+        .page-face::-webkit-scrollbar {
+            width: 4px;
+        }
+        .page-face::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+        }
+        .page-face::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+
+        /* Drop cap styling */
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            line-height: 0.8;
+            float: left;
+            margin-right: 0.5rem;
+            margin-top: 0.1rem;
+            color: var(--brand-navy);
+            font-weight: 700;
+        }
+
+        /* Custom Ribbon Badge */
+        .badge-ribbon {
+            background: linear-gradient(135deg, var(--brand-gold), var(--brand-dark-gold));
+            color: #FFFFFF;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Zoomed State Effect */
+        .zoom-active {
+            transform: scale(1.25) translateY(-20px) !important;
+            z-index: 100;
+        }
+
+        /* Drawer Overlay */
+        .thumb-drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+        .thumb-drawer.closed {
+            transform: translateY(100%);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between overflow-hidden text-slate-800">
+
+    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/60 text-white px-6 py-3 flex justify-between items-center z-40 shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-600 flex items-center justify-center shadow-md border border-amber-300/40">
+                <i class="fa-solid fa-book-open text-slate-900 font-bold text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-serif-title font-bold text-base md:text-lg text-amber-200 tracking-wide leading-tight">
+                    Kiddy Planet & ELITE International School
+                </h1>
+                <p class="text-xs text-slate-400 tracking-wider">Kiddy Planet – Elite International School Group • SPECIAL EDITION 2026</p>
+            </div>
+        </div>
+
+        <!-- Controls Toolbar Top Right -->
+        <div class="flex items-center space-x-2 md:space-x-4">
+            <button id="toggle-sound" title="Activer/Désactiver le son" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition-all border border-slate-700">
+                <i class="fa-solid fa-volume-high text-sm"></i>
+            </button>
+            <button id="toggle-zoom" title="Mode Zoom" class="p-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-amber-400 transition-all border border-slate-700">
+                <i class="fa-solid fa-magnifying-glass-plus text-sm"></i>
+            </button>
+            <button id="toggle-thumbs" title="Sommaire des pages" class="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center space-x-2 transition-all shadow-md">
+                <i class="fa-solid fa-border-all"></i>
+                <span class="hidden md:inline">Aperçu Pages</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="book-viewport p-4 my-2">
+        <div id="magazine" class="book">
+            <!-- Central Spine Shadow -->
+            <div class="spine-shadow"></div>
+
+            <!-- PAGE 1 (Front Cover) & PAGE 2 Spread -->
+            <div class="page" id="page-1" style="z-index: 5;">
+                <!-- FRONT FACE: PAGE 1 (Cover) -->
+                <div class="page-face front bg-stone-50 p-0 overflow-hidden relative border-r border-slate-200">
+                    <div class="h-full flex flex-col justify-between p-8 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+                        <!-- Cover Header -->
+                        <div class="text-center border-b-2 border-slate-900 pb-4">
+                            <span class="inline-block px-3 py-1 bg-slate-900 text-amber-400 text-xs font-semibold tracking-widest uppercase rounded-full mb-3">Édition Spéciale • Octobre 2026</span>
+                            <h2 class="font-serif-title text-3xl md:text-4xl font-extrabold text-slate-900 leading-none">GAZETTE DE L'ÉCOLE</h2>
+                            <p class="text-xs font-medium tracking-widest text-slate-600 uppercase mt-2">School Official Gazette & News</p>
+                        </div>
+
+                        <!-- Hero Graphic Feature -->
+                        <div class="my-4 relative rounded-xl overflow-hidden shadow-md border-2 border-amber-500/30 bg-slate-900 text-white p-6 text-center">
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-500/10 rounded-full blur-xl"></div>
+                            <i class="fa-solid fa-school-flag text-5xl text-amber-400 mb-3"></i>
+                            <h3 class="font-serif-title text-xl font-bold text-amber-100">Une matinée au cœur de l'école</h3>
+                            <p class="text-xs text-slate-300 mt-2 italic">A Morning at the Heart of Our School</p>
+                            <div class="mt-4 pt-3 border-t border-slate-700/80 flex justify-center space-x-4 text-xs text-amber-300">
+                                <span><i class="fa-regular fa-calendar-check mr-1"></i> Samedi 3 Oct.</span>
+                                <span><i class="fa-regular fa-clock mr-1"></i> 10h00 - 14h00</span>
+                            </div>
+                        </div>
+
+                        <!-- Table of Contents Brief -->
+                        <div class="bg-amber-50/80 p-4 rounded-lg border border-amber-200/60 text-slate-800 text-xs space-y-1.5">
+                            <p class="font-bold uppercase tracking-wider text-amber-900 mb-1 border-b border-amber-200 pb-1">Au sommaire / Highlights:</p>
+                            <div class="flex justify-between text-slate-700"><span>• Mot d'Accueil & Invitations</span><span class="font-mono text-slate-500">p. 2-3</span></div>
+                            <div class="flex justify-between text-slate-700"><span>• Vie à l'école & Informations Toddle</span><span class="font-mono text-slate-500">p. 4-5</span></div>
+                            <div class="flex justify-between text-slate-700"><span>• Santé, Repas et Jouets à l'École</span><span class="font-mono text-slate-500">p. 6</span></div>
+                            <div class="flex justify-between text-slate-700"><span>• Event Halloween: Mission Impossible !</span><span class="font-mono text-slate-500">p. 7-8</span></div>
+                        </div>
+
+                        <!-- Cover Footer -->
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-300 text-[10px] text-slate-500">
+                            <span>Kiddy Planet & ELITE International School</span>
+                            <span class="font-serif-title italic">Libreville, Gabon</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: PAGE 2 (FR - Welcome & Invitation) -->
+                <div class="page-face back p-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-4 border-amber-500/30">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-700">Invitation Officielle</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 2</span>
+                        </div>
+                        <h2 class="font-serif-title text-xl font-bold text-slate-900 mb-2">Une matinée au cœur de l'école</h2>
+                        <h3 class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-3">Chers Parents,</h3>
+                        
+                        <div class="text-xs leading-relaxed text-slate-700 space-y-2.5 text-justify">
+                            <p class="drop-cap">
+                                À l’occasion de cette rentrée scolaire, nous sommes heureux de vous inviter, vous et vos enfants, à partager un moment convivial organisé simultanément sur nos deux campus, le <strong>samedi 3 octobre, entre 10h et 14h</strong>.
+                            </p>
+                            <p>
+                                Cette rencontre sera l’occasion de nous retrouver, de découvrir l’environnement scolaire de votre enfant, d’échanger et de démarrer cette nouvelle année ensemble dans un climat de confiance, de bien-être et de convivialité.
+                            </p>
+                            <div class="bg-amber-50 p-3 rounded-lg border-l-4 border-amber-500 my-2 text-slate-800 italic">
+                                <i class="fa-solid fa-chalkboard-user text-amber-600 mr-1"></i>
+                                Rencontrez les enseignants, visitez les salles de classe et découvrez le quotidien et les apprentissages de vos enfants.
+                            </div>
+                            <p>
+                                Notre équipe sera également à votre disposition pour répondre à toutes vos questions concernant l’approche <strong>Montessori</strong> en Pré-Primaire ainsi que le programme de l’<strong>IB (Baccalauréat International)</strong> pour les plus grands.
+                            </p>
+                            <p>
+                                Nous vous présenterons également <strong>Toddle</strong>, notre nouvelle plateforme pédagogique qui facilitera les échanges entre l’école et les familles.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Kiddy Planet & ELITE International School</span>
+                        <span>02</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3 & 4 Spread -->
+            <div class="page" id="page-2" style="z-index: 4;">
+                <!-- FRONT FACE: PAGE 3 (EN - Welcome & Invitation) -->
+                <div class="page-face front p-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-4 border-amber-500/30">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-700">Official Invitation</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 3</span>
+                        </div>
+                        <h2 class="font-serif-title text-xl font-bold text-slate-900 mb-2">A Morning at the Heart of Our School</h2>
+                        <h3 class="text-xs font-bold text-amber-700 uppercase tracking-wide mb-3">Dear Parents,</h3>
+
+                        <div class="text-xs leading-relaxed text-slate-700 space-y-2.5 text-justify">
+                            <p class="drop-cap">
+                                As we begin this new school year, we are delighted to invite you and your children to a special family gathering taking place simultaneously across both of our campuses on <strong>Saturday, October 3, between 10:00 a.m. and 2:00 p.m.</strong>
+                            </p>
+                            <p>
+                                This will be a wonderful opportunity to come together, discover your child’s school environment, meet our team, share experiences, and start the year in a warm atmosphere of trust and connection.
+                            </p>
+                            <div class="bg-slate-100 p-3 rounded-lg border-l-4 border-slate-800 my-2">
+                                <p class="font-semibold text-slate-900 mb-1"><i class="fa-solid fa-vial-virus text-amber-600 mr-1"></i> STEM Partner Spotlight:</p>
+                                <p class="text-[11px] text-slate-600">Discover extracurricular activities and meet our partner <strong>ACTE ACADEMY</strong>, supporting our innovative STEM curriculum.</p>
+                            </div>
+                            <p>
+                                Children and adults will be invited to take part in a variety of fun and educational workshops with plenty of opportunities to explore, create, experiment, and enjoy time together.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>03</span>
+                        <span>Warm regards, The School Team</span>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: PAGE 4 (FR - Practical Info & Toddle) -->
+                <div class="page-face back p-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-3 border-amber-500/30">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-800">Vie à l'École (FR)</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 4</span>
+                        </div>
+                        <h2 class="font-serif-title text-lg font-bold text-slate-900 mb-2">Communication & Plateforme Toddle</h2>
+
+                        <div class="text-[11px] leading-relaxed text-slate-700 space-y-2">
+                            <p>
+                                Nous poursuivons le déploiement de Toddle avec l'équipe support. En cas de question, <strong>Monsieur John</strong> (référent Toddle et prof d'informatique) et toute l'équipe éducative sont à votre disposition.
+                            </p>
+                            
+                            <div class="p-2.5 bg-amber-50/80 rounded border border-amber-200 text-slate-800">
+                                <p class="font-bold text-amber-900 text-xs mb-1"><i class="fa-solid fa-paper-plane mr-1"></i> Envoi de Messages Toddle :</p>
+                                <p>Sélectionnez impérativement le contact : <br><span class="font-mono font-semibold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-300">"communicationkiddyplanet – School Administrator"</span>.</p>
+                                <p class="text-[10px] text-slate-500 mt-1">*Les enseignants ne reçoivent pas directement les messages adressés à leur nom propre.*</p>
+                            </div>
+
+                            <p class="font-bold text-slate-900 pt-1">Contacts de la Direction :</p>
+                            <ul class="space-y-1 pl-2 text-slate-700">
+                                <li><strong class="text-slate-900">• Mme Justine Bernard</strong> (Dir. Adjointe Campus ELITE) : <br><i class="fa-brands fa-whatsapp text-green-600"></i> 00241 66 62 02 95 | <i class="fa-regular fa-envelope"></i> eliteschoolgabon@gmail.com</li>
+                                <li><strong class="text-slate-900">• Mme Nissrin Makarem Anguilet</strong> (Directrice Générale)</li>
+                                <li><strong class="text-slate-900">• Mme Sandra Al Thoumy</strong> (Dir. Adjointe Campus Kiddy Planet)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Kiddy Planet & ELITE International School</span>
+                        <span>04</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 5 & 6 Spread -->
+            <div class="page" id="page-3" style="z-index: 3;">
+                <!-- FRONT FACE: PAGE 5 (EN - Practical Info & Toddle) -->
+                <div class="page-face front p-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-3 border-amber-500/30">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-800">School Life (EN)</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 5</span>
+                        </div>
+                        <h2 class="font-serif-title text-lg font-bold text-slate-900 mb-2">Communication & Toddle Guidance</h2>
+
+                        <div class="text-[11px] leading-relaxed text-slate-700 space-y-2 text-justify">
+                            <p>
+                                As we continue rolling out Toddle, your feedback is extremely helpful. Thank you for your patience and support as our teaching team becomes fully familiar with all features.
+                            </p>
+                            <div class="bg-blue-50/80 p-2.5 rounded border border-blue-200 text-slate-800">
+                                <p class="font-bold text-blue-900 mb-0.5"><i class="fa-solid fa-circle-info mr-1"></i> How to Contact Us on Toddle:</p>
+                                <p>Go to Messages and select <span class="font-mono text-slate-900 font-semibold bg-white px-1 rounded">"communicationkiddyplanet – School Administrator"</span> to reach Management.</p>
+                            </div>
+                            <p class="font-semibold text-slate-900 mt-2">Class Parent WhatsApp Groups:</p>
+                            <p>
+                                For data protection compliance, the school cannot create class WhatsApp groups directly. However, parents are welcome to invite a member of the Management team to their group to receive accurate updates.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>05</span>
+                        <span>Toddle & Community</span>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: PAGE 6 (Santé, Goûters & Objets Personnels) -->
+                <div class="page-face back p-6">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-3 border-amber-500/30">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-800">Santé & Quotidien / Health & Well-being</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 6</span>
+                        </div>
+                        <h2 class="font-serif-title text-base font-bold text-slate-900 mb-2">Repas, Goûters et Jouets / Meals & Personal Belongings</h2>
+
+                        <div class="grid grid-cols-1 gap-2.5 text-[11px] text-slate-700">
+                            <!-- Section Repas -->
+                            <div class="bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-200">
+                                <h3 class="font-bold text-emerald-900 flex items-center mb-1">
+                                    <i class="fa-solid fa-apple-whole text-emerald-600 mr-1.5"></i>
+                                    Goûters Équilibrés / Healthy Snacks
+                                </h3>
+                                <p class="mb-1">
+                                    <strong>FR:</strong> Privilégiez les fruits frais, compotes sans sucres ajoutés et eau. Évitez les confiseries et chips trop sucrées ou salées qui coupent l'appétit au déjeuner.
+                                </p>
+                                <p class="text-slate-600 italic border-t border-emerald-200/60 pt-1">
+                                    <strong>EN:</strong> Fresh fruit, unsweetened purées, and water are strongly encouraged over sugary or salty snacks to ensure healthy energy for lunch.
+                                </p>
+                            </div>
+
+                            <!-- Section Jouets -->
+                            <div class="bg-amber-50/70 p-2.5 rounded-lg border border-amber-200">
+                                <h3 class="font-bold text-amber-900 flex items-center mb-1">
+                                    <i class="fa-solid fa-shapes text-amber-600 mr-1.5"></i>
+                                    Jouets et Objet Personnels / Toys Policy
+                                </h3>
+                                <p class="mb-1">
+                                    <strong>FR:</strong> Pour éviter distractions, pertes ou dégradations, merci de garder les jouets personnels à la maison, sauf demande spécifique de l'enseignant.
+                                </p>
+                                <p class="text-slate-600 italic border-t border-amber-200/60 pt-1">
+                                    <strong>EN:</strong> Please ensure toys remain at home to avoid loss, damage, or classroom distractions, unless explicitly requested for a class project.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Kiddy Planet & ELITE International School</span>
+                        <span>06</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 7 & 8 Spread (Halloween Special Event) -->
+            <div class="page" id="page-4" style="z-index: 2;">
+                <!-- FRONT FACE: PAGE 7 (FR - Halloween Mission Impossible) -->
+                <div class="page-face front p-6 bg-slate-900 text-slate-100">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-3 border-amber-500/40">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400"><i class="fa-solid fa-ghost mr-1"></i> Événement Spécial</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 7</span>
+                        </div>
+                        <h2 class="font-serif-title text-xl font-bold text-amber-300 mb-1">Halloween : Mission Impossible !</h2>
+                        <p class="text-xs text-slate-300 font-semibold mb-2">Vendredi 16 Octobre 2026 • Classes P3, P4, P5 & PEI 1 (6e)</p>
+
+                        <div class="text-[11px] leading-relaxed text-slate-300 space-y-2">
+                            <p>
+                                Une grande aventure mystérieuse attend nos élèves : défis scientifiques, épreuves sportives, théâtre, vocabulaire et énigmes en équipe !
+                            </p>
+                            <div class="bg-slate-800/90 p-2.5 rounded-lg border border-amber-500/30 text-amber-100 space-y-1">
+                                <p class="font-bold text-amber-400 text-xs"><i class="fa-solid fa-mask mr-1"></i> Déguisements & Couleurs :</p>
+                                <p>Déguisements bienvenus (sorcières, créatures fantastiques...) ou tenues aux couleurs d'Halloween : <strong>Orange et Noir !</strong></p>
+                            </div>
+                            <div class="bg-slate-800/90 p-2.5 rounded-lg border border-amber-500/30 text-amber-100 space-y-1">
+                                <p class="font-bold text-amber-400 text-xs"><i class="fa-solid fa-cookie-bite mr-1"></i> Gourmandises à Partager :</p>
+                                <p>Gâteaux, crêpes ou cupcakes maison ! <strong class="text-amber-300">Merci de joindre une étiquette indiquant tous les ingrédients</strong> pour prévenir les allergies.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-700 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>ELITE International School</span>
+                        <span>07</span>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: PAGE 8 (EN - Halloween & Vacances) -->
+                <div class="page-face back p-6 bg-slate-900 text-slate-100">
+                    <div>
+                        <div class="flex justify-between items-center border-b pb-2 mb-3 border-amber-500/40">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Special Event & Holidays</span>
+                            <span class="text-xs font-serif italic text-slate-400">Page 8</span>
+                        </div>
+                        <h2 class="font-serif-title text-lg font-bold text-amber-300 mb-1">Halloween & Extracurricular Schedule</h2>
+                        <p class="text-xs text-slate-300 font-semibold mb-2">Friday, October 16, 2026</p>
+
+                        <div class="text-[11px] leading-relaxed text-slate-300 space-y-2.5">
+                            <p>
+                                Students in P3, P4, P5, and MYP 1 will solve team puzzles, science challenges, and sports missions while discovering Halloween traditions worldwide.
+                            </p>
+                            <div class="bg-amber-950/60 p-3 rounded-lg border border-amber-600/40">
+                                <h3 class="font-bold text-amber-300 mb-1"><i class="fa-regular fa-calendar-days mr-1"></i> Holidays & Extracurricular Activities</h3>
+                                <p class="text-slate-200">
+                                    Extracurricular activities <strong>will be maintained during the first week of school holidays</strong> according to usual schedules.
+                                </p>
+                                <p class="text-amber-400 font-bold mt-1 text-xs">
+                                    <i class="fa-solid fa-bell mr-1"></i> Resumption of regular classes: Monday, November 2, 2026.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-700 flex justify-between items-center text-[10px] text-slate-400">
+                        <span>08</span>
+                        <span>Kiddy Planet & ELITE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 9 (Back Cover) -->
+            <div class="page" id="page-5" style="z-index: 1;">
+                <!-- FRONT FACE: PAGE 9 (Back Cover / Contacts) -->
+                <div class="page-face front bg-slate-950 text-white p-8 flex flex-col justify-between border-l border-slate-800">
+                    <div class="text-center mt-4">
+                        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center shadow-lg mb-4">
+                            <i class="fa-solid fa-graduation-cap text-2xl text-slate-950"></i>
+                        </div>
+                        <h2 class="font-serif-title text-2xl font-bold text-amber-300">Kiddy Planet & ELITE</h2>
+                        <p class="text-xs text-slate-400 tracking-widest uppercase mt-1">International School • Libreville, Gabon</p>
+                    </div>
+
+                    <!-- Contact Details Card -->
+                    <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 space-y-3 text-xs">
+                        <h3 class="font-serif-title text-sm font-bold text-amber-400 border-b border-slate-800 pb-2 text-center">
+                            Informations & Contacts
+                        </h3>
+
+                        <div class="flex items-center space-x-3 text-slate-300">
+                            <i class="fa-solid fa-phone text-amber-400 w-4"></i>
+                            <span>Ligne directe: <strong>00241.66.70.41.66</strong></span>
+                        </div>
+
+                        <div class="flex items-center space-x-3 text-slate-300">
+                            <i class="fa-solid fa-location-dot text-amber-400 w-4"></i>
+                            <span>Libreville, Gabon</span>
+                        </div>
+
+                        <div class="flex items-center space-x-3 text-slate-300">
+                            <i class="fa-solid fa-globe text-amber-400 w-4"></i>
+                            <span>www.kiddy-planet.com | eliteschoolgabon.com</span>
+                        </div>
+
+                        <div class="flex items-start space-x-3 text-slate-300">
+                            <i class="fa-regular fa-envelope text-amber-400 w-4 mt-0.5"></i>
+                            <div class="flex flex-col">
+                                <span>eliteschoolgabon@gmail.com</span>
+                                <span>Kiddymontessori@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="text-center pt-4 border-t border-slate-900">
+                        <p class="text-xs font-serif italic text-amber-200/80">Nissrin Makarem Anguilet, Director</p>
+                        <p class="text-[10px] text-slate-500 mt-2">© 2026 Kiddy Planet & ELITE International School. Tous droits réservés.</p>
+                    </div>
+                </div>
+
+                <!-- BACK FACE: (Blank End Cover) -->
+                <div class="page-face back bg-slate-900 p-6 flex items-center justify-center">
+                    <span class="text-slate-700 font-serif italic text-sm">Fin de publication</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="w-full bg-slate-900/95 border-t border-slate-800 text-white px-6 py-3 flex flex-col sm:flex-row justify-between items-center z-40 gap-3">
+        <!-- Pagination Nav Buttons -->
+        <div class="flex items-center space-x-2">
+            <button id="btn-first" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                <i class="fa-solid fa-backward-step"></i>
+            </button>
+            <button id="btn-prev" class="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-md">
+                <i class="fa-solid fa-chevron-left"></i>
+                <span>Précédent</span>
+            </button>
+            <span id="page-indicator" class="text-xs font-mono px-3 py-1 bg-slate-950 rounded border border-slate-800 text-amber-300">
+                Page 1 / 9
+            </span>
+            <button id="btn-next" class="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold flex items-center space-x-1.5 transition-all shadow-md">
+                <span>Suivant</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <button id="btn-last" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+                <i class="fa-solid fa-forward-step"></i>
+            </button>
+        </div>
+
+        <!-- Slideshow Auto-Flip Toggle -->
+        <div class="flex items-center space-x-3">
+            <button id="btn-autoflip" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center space-x-2 border border-slate-700 transition-all">
+                <i class="fa-solid fa-play text-amber-400"></i>
+                <span id="autoflip-text">Lecture Auto</span>
+            </button>
+        </div>
+    </footer>
+
+    <div id="thumb-drawer" class="thumb-drawer closed fixed bottom-14 left-0 right-0 bg-slate-900/95 border-t border-amber-500/40 p-4 z-30 shadow-2xl backdrop-blur-lg">
+        <div class="flex justify-between items-center mb-3 max-w-5xl mx-auto">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center">
+                <i class="fa-solid fa-book-open mr-2"></i> Navigation Rapide (Aperçu des Spreads)
+            </h3>
+            <button id="close-thumbs" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex space-x-4 overflow-x-auto pb-2 max-w-5xl mx-auto scrollbar-thin">
+            <button onclick="goToPage(0)" class="flex-shrink-0 w-24 h-32 bg-amber-100 rounded border-2 border-amber-500 flex flex-col justify-between p-2 text-[10px] text-slate-900 font-semibold text-center hover:scale-105 transition-all shadow-md">
+                <span>Page 1</span>
+                <i class="fa-solid fa-book-cover text-2xl text-amber-700"></i>
+                <span>Couverture</span>
+            </button>
+            <button onclick="goToPage(1)" class="flex-shrink-0 w-32 h-32 bg-stone-100 rounded border border-slate-700 flex flex-col justify-between p-2 text-[10px] text-slate-900 font-semibold text-center hover:scale-105 transition-all shadow-md">
+                <span>Pages 2 - 3</span>
+                <i class="fa-solid fa-envelope-open-text text-2xl text-slate-700"></i>
+                <span>Invitation</span>
+            </button>
+            <button onclick="goToPage(2)" class="flex-shrink-0 w-32 h-32 bg-stone-100 rounded border border-slate-700 flex flex-col justify-between p-2 text-[10px] text-slate-900 font-semibold text-center hover:scale-105 transition-all shadow-md">
+                <span>Pages 4 - 5</span>
+                <i class="fa-solid fa-comments text-2xl text-slate-700"></i>
+                <span>Toddle Info</span>
+            </button>
+            <button onclick="goToPage(3)" class="flex-shrink-0 w-32 h-32 bg-stone-100 rounded border border-slate-700 flex flex-col justify-between p-2 text-[10px] text-slate-900 font-semibold text-center hover:scale-105 transition-all shadow-md">
+                <span>Pages 6 - 7</span>
+                <i class="fa-solid fa-apple-whole text-2xl text-slate-700"></i>
+                <span>Santé & Halloween</span>
+            </button>
+            <button onclick="goToPage(4)" class="flex-shrink-0 w-24 h-32 bg-slate-950 rounded border border-amber-500 flex flex-col justify-between p-2 text-[10px] text-amber-300 font-semibold text-center hover:scale-105 transition-all shadow-md">
+                <span>Page 8 - 9</span>
+                <i class="fa-solid fa-address-card text-2xl text-amber-500"></i>
+                <span>Contacts</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        let currentSpread = 0;
+        const totalSpreads = 5; // 5 double spreads representing 9 pages
+        const pages = document.querySelectorAll('.page');
+        let autoFlipInterval = null;
+        let soundEnabled = true;
+        let isZoomed = false;
+
+        // Web Audio API Synthesizer for realistic page flip sound
+        function playFlipSound() {
+            if (!soundEnabled) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                
+                // White noise buffer for paper rustle sound
+                const bufferSize = ctx.sampleRate * 0.15; // 150ms sound
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                // Dynamic lowpass filter to mimic soft paper fold
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(800, ctx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.15);
+
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                noise.start();
+            } catch (e) {
+                console.log('Audio playback initialized on user event.');
+            }
+        }
+
+        // Update active page states and 3D stacking indices
+        function updatePageStates() {
+            pages.forEach((page, index) => {
+                if (index < currentSpread) {
+                    page.classList.add('flipped');
+                    page.style.zIndex = index + 1;
+                } else {
+                    page.classList.remove('flipped');
+                    page.style.zIndex = totalSpreads - index;
+                }
+            });
+
+            // Update page display indicator label
+            const indicator = document.getElementById('page-indicator');
+            if (currentSpread === 0) {
+                indicator.textContent = 'Page 1 / 9';
+            } else if (currentSpread === totalSpreads - 1) {
+                indicator.textContent = 'Page 8 - 9 / 9';
+            } else {
+                const pStart = currentSpread * 2;
+                indicator.textContent = `Page ${pStart} - ${pStart + 1} / 9`;
+            }
+        }
+
+        function nextPage() {
+            if (currentSpread < totalSpreads - 1) {
+                currentSpread++;
+                playFlipSound();
+                updatePageStates();
+            }
+        }
+
+        function prevPage() {
+            if (currentSpread > 0) {
+                currentSpread--;
+                playFlipSound();
+                updatePageStates();
+            }
+        }
+
+        function goToPage(spreadIndex) {
+            if (spreadIndex >= 0 && spreadIndex < totalSpreads) {
+                currentSpread = spreadIndex;
+                playFlipSound();
+                updatePageStates();
+                document.getElementById('thumb-drawer').classList.add('closed');
+            }
+        }
+
+        // Event Listeners Initialization
+        window.onload = function() {
+            // Click listeners on page faces
+            pages.forEach((page, index) => {
+                page.addEventListener('click', function(e) {
+                    // Prevent flipping if clicking zoom or interactive links
+                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+                    
+                    if (index === currentSpread) {
+                        nextPage();
+                    } else if (index === currentSpread - 1) {
+                        prevPage();
+                    }
+                });
+            });
+
+            // Controls buttons
+            document.getElementById('btn-next').addEventListener('click', nextPage);
+            document.getElementById('btn-prev').addEventListener('click', prevPage);
+            document.getElementById('btn-first').addEventListener('click', () => goToPage(0));
+            document.getElementById('btn-last').addEventListener('click', () => goToPage(totalSpreads - 1));
+
+            // Auto flip slideshow mode
+            const autoflipBtn = document.getElementById('btn-autoflip');
+            const autoflipText = document.getElementById('autoflip-text');
+            
+            autoflipBtn.addEventListener('click', () => {
+                if (autoFlipInterval) {
+                    clearInterval(autoFlipInterval);
+                    autoFlipInterval = null;
+                    autoflipText.textContent = "Lecture Auto";
+                    autoflipBtn.classList.remove('bg-amber-600');
+                    autoflipBtn.classList.add('bg-slate-800');
+                } else {
+                    autoflipText.textContent = "Pause Auto";
+                    autoflipBtn.classList.remove('bg-slate-800');
+                    autoflipBtn.classList.add('bg-amber-600');
+                    autoFlipInterval = setInterval(() => {
+                        if (currentSpread < totalSpreads - 1) {
+                            nextPage();
+                        } else {
+                            goToPage(0);
+                        }
+                    }, 4000);
+                }
+            });
+
+            // Toggle Audio Sound Effects
+            const soundBtn = document.getElementById('toggle-sound');
+            soundBtn.addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                soundBtn.innerHTML = soundEnabled 
+                    ? '<i class="fa-solid fa-volume-high text-sm"></i>' 
+                    : '<i class="fa-solid fa-volume-xmark text-sm text-red-400"></i>';
+            });
+
+            // Toggle Zoom Mode
+            const zoomBtn = document.getElementById('toggle-zoom');
+            const magazine = document.getElementById('magazine');
+            zoomBtn.addEventListener('click', () => {
+                isZoomed = !isZoomed;
+                if (isZoomed) {
+                    magazine.classList.add('zoom-active');
+                    zoomBtn.classList.add('text-amber-400');
+                } else {
+                    magazine.classList.remove('zoom-active');
+                    zoomBtn.classList.remove('text-amber-400');
+                }
+            });
+
+            // Toggle Thumbnail Drawer
+            const thumbBtn = document.getElementById('toggle-thumbs');
+            const closeThumbsBtn = document.getElementById('close-thumbs');
+            const thumbDrawer = document.getElementById('thumb-drawer');
+
+            thumbBtn.addEventListener('click', () => {
+                thumbDrawer.classList.toggle('closed');
+            });
+            closeThumbsBtn.addEventListener('click', () => {
+                thumbDrawer.classList.add('closed');
+            });
+
+            // Keyboard Arrow Controls
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'Space') {
+                    nextPage();
+                } else if (e.key === 'ArrowLeft') {
+                    prevPage();
+                }
+            });
+
+            // Touch Swipe Gesture Support
+            let touchStartX = 0;
+            let touchEndX = 0;
+            magazine.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            magazine.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 40) {
+                    nextPage();
+                }
+                if (touchEndX > touchStartX + 40) {
+                    prevPage();
+                }
+            }
+
+            // Initial view setup
+            updatePageStates();
+        };
+    </script>
+</body>
+</html>

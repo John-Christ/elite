@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Détective des Objets : Maison, École ou Les Deux ?</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (playful, rounded, very legible for kids) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for fun web audio sound effects without external URLs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #E0F2FE 0%, #FEF9C3 50%, #FCE7F3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Custom playful animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            70% { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px) rotate(-3deg); }
+            40% { transform: translateX(10px) rotate(3deg); }
+            60% { transform: translateX(-8px) rotate(-2deg); }
+            80% { transform: translateX(8px) rotate(2deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+            50% { box-shadow: 0 0 0 14px rgba(250, 204, 21, 0); }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-pop {
+            animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .btn-3d {
+            transition: all 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        /* Drag & Drop styling */
+        .draggable-card {
+            cursor: grab;
+            touch-action: none;
+        }
+        .draggable-card:active {
+            cursor: grabbing;
+        }
+        .drop-zone-active {
+            transform: scale(1.03);
+            border-style: solid !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Confetti canvas overlay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Custom scrollbar for sorted items */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #93C5FD;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between">
+
+    <!-- Confetti Overlay -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Top Navigation & Score Bar -->
+    <header class="w-full max-w-6xl mx-auto px-4 pt-4 pb-2">
+        <div class="bg-white/90 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-lg border-4 border-sky-300 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Brand / Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-amber-300 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl shadow-inner border-2 border-amber-400">
+                    🕵️
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-sky-900 leading-tight">
+                        Le Détective des Objets
+                    </h1>
+                    <p class="text-xs sm:text-sm font-medium text-sky-600">
+                        Maison 🏠 • École 🏫 • ou Les Deux 🔄 ?
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs & Controls -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <!-- Mode Switcher -->
+                <div class="bg-sky-100 p-1.5 rounded-2xl flex gap-1 border-2 border-sky-200">
+                    <button id="tab-sort" onclick="switchMode('sort')" class="px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all bg-sky-600 text-white shadow">
+                        🔍 Enquête (Tri)
+                    </button>
+                    <button id="tab-elite" onclick="switchMode('elite')" class="px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all text-sky-800 hover:bg-sky-200">
+                        👑 Défi Élites
+                    </button>
+                </div>
+
+                <!-- Stars Score Counter -->
+                <div class="bg-amber-100 border-2 border-amber-300 px-3 sm:px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm">
+                    <span class="text-2xl">⭐</span>
+                    <span id="score-display" class="text-xl sm:text-2xl font-bold text-amber-800">0 / 14</span>
+                </div>
+
+                <!-- Sound Toggle -->
+                <button id="sound-btn" onclick="toggleSound()" title="Activer/Couper le son" class="p-2.5 sm:p-3 bg-purple-100 hover:bg-purple-200 text-purple-800 border-2 border-purple-300 rounded-2xl text-xl transition-all">
+                    🔊
+                </button>
+
+                <!-- Reset Button -->
+                <button onclick="resetGame()" class="btn-3d bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 sm:px-4 py-2.5 rounded-2xl text-sm sm:text-base flex items-center gap-1.5 border-2 border-rose-700">
+                    <span>🔄</span>
+                    <span class="hidden sm:inline">Recommencer</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN GAME AREA -->
+    <main class="w-full max-w-6xl mx-auto px-4 py-3 flex-grow flex flex-col justify-center">
+
+        <!-- ========================================================= -->
+        <!-- MODE 1: INTERACTIVE SORTING GAME (ENQUÊTE)                -->
+        <!-- ========================================================= -->
+        <section id="view-sort" class="space-y-4">
+
+            <!-- Hand Signal Legend for Online Teaching -->
+            <div class="bg-white/80 rounded-2xl px-4 py-2 border-2 border-indigo-200 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm sm:text-base font-semibold text-indigo-900 shadow-sm">
+                <span class="text-indigo-600 font-bold">👋 Signes de l'élève :</span>
+                <span class="flex items-center gap-1.5 bg-emerald-100 px-3 py-1 rounded-xl border border-emerald-300">☝️ 1 doigt = Maison</span>
+                <span class="flex items-center gap-1.5 bg-blue-100 px-3 py-1 rounded-xl border border-blue-300">✌️ 2 doigts = École</span>
+                <span class="flex items-center gap-1.5 bg-amber-100 px-3 py-1 rounded-xl border border-amber-300">🙅 Bras croisés = Les Deux</span>
+            </div>
+
+            <!-- Active Mystery Card + Big Action Buttons -->
+            <div id="active-stage" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                
+                <!-- Left/Center: The Object Card to Classify -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                    <div id="current-card" draggable="true" class="draggable-card animate-pop w-full max-w-sm bg-white rounded-3xl p-6 shadow-xl border-4 border-amber-400 flex flex-col items-center text-center relative">
+                        
+                        <span class="absolute top-3 left-4 bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full border border-sky-300">
+                            Indice #<span id="item-number">1</span> / 14
+                        </span>
+
+                        <span class="absolute top-3 right-4 text-xs font-semibold text-slate-400 hidden sm:inline">
+                            Glisse ou clique 👉
+                        </span>
+
+                        <!-- Huge Emoji Icon -->
+                        <div id="item-emoji" class="text-8xl sm:text-9xl my-4 animate-float drop-shadow-md">
+                            📺
+                        </div>
+
+                        <!-- Object Name -->
+                        <h2 id="item-name" class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">
+                            La Télévision
+                        </h2>
+                        <p id="item-subtitle" class="text-sm sm:text-base text-slate-500 font-medium">
+                            Où utilise-t-on cet appareil ?
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Giant Kid-Friendly Buttons & Feedback Banner -->
+                <div class="lg:col-span-7 flex flex-col gap-3">
+                    
+                    <!-- Feedback Message Box -->
+                    <div id="feedback-box" class="min-h-[76px] bg-white/95 rounded-2xl p-4 border-3 border-sky-200 shadow-md flex items-center justify-center text-center transition-all">
+                        <p id="feedback-text" class="text-lg sm:text-xl font-bold text-sky-900">
+                            🕵️ Observe bien l'objet et choisis sa famille !
+                        </p>
+                    </div>
+
+                    <!-- 3 Big Choice Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <!-- MAISON BUTTON -->
+                        <button onclick="checkAnswer('maison')" class="btn-3d bg-emerald-400 hover:bg-emerald-500 text-emerald-950 border-4 border-emerald-600 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                            <span class="text-4xl sm:text-5xl">🏠</span>
+                            <span class="text-xl sm:text-2xl font-extrabold">Maison</span>
+                            <span class="text-xs font-bold bg-emerald-200/80 px-2.5 py-0.5 rounded-full">☝️ 1 doigt</span>
+                        </button>
+
+                        <!-- ÉCOLE BUTTON -->
+                        <button onclick="checkAnswer('ecole')" class="btn-3d bg-sky-400 hover:bg-sky-500 text-sky-950 border-4 border-sky-600 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                            <span class="text-4xl sm:text-5xl">🏫</span>
+                            <span class="text-xl sm:text-2xl font-extrabold">École</span>
+                            <span class="text-xs font-bold bg-sky-200/80 px-2.5 py-0.5 rounded-full">✌️ 2 doigts</span>
+                        </button>
+
+                        <!-- LES DEUX BUTTON -->
+                        <button onclick="checkAnswer('les_deux')" class="btn-3d bg-amber-400 hover:bg-amber-500 text-amber-950 border-4 border-amber-600 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                            <span class="text-4xl sm:text-5xl">🔄</span>
+                            <span class="text-xl sm:text-2xl font-extrabold">Les Deux</span>
+                            <span class="text-xs font-bold bg-amber-200/80 px-2.5 py-0.5 rounded-full">🙅 Voyageur !</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Victory Screen (Shown when all 14 items are sorted) -->
+            <div id="victory-banner" class="hidden animate-pop bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 rounded-3xl p-6 sm:p-8 border-4 border-amber-500 shadow-2xl text-center space-y-4">
+                <div class="text-6xl sm:text-7xl">🏆🎉🕵️‍♂️</div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-amber-950">
+                    Mission Accomplie, Super Détective !
+                </h2>
+                <p class="text-lg sm:text-xl font-semibold text-amber-900 max-w-2xl mx-auto">
+                    Tu as classé tous les appareils ! Maintenant, passe au <strong>Défi Élites</strong> pour piéger ton professeur avec des devinettes !
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 pt-2">
+                    <button onclick="switchMode('elite')" class="btn-3d bg-purple-600 hover:bg-purple-700 text-white text-xl font-bold px-8 py-4 rounded-2xl border-4 border-purple-800 flex items-center gap-2">
+                        <span>👑</span> Aller au Défi Élites !
+                    </button>
+                    <button onclick="resetGame()" class="btn-3d bg-white hover:bg-slate-100 text-slate-800 text-lg font-bold px-6 py-4 rounded-2xl border-4 border-slate-300">
+                        🔄 Rejouer l'enquête
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom 3 Columns (Drop Zones + Visual History of Sorted Items) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                
+                <!-- Column 1: Maison -->
+                <div id="zone-maison" data-category="maison" class="drop-zone bg-emerald-50/90 rounded-3xl p-3 sm:p-4 border-4 border-dashed border-emerald-400 min-h-[160px] flex flex-col transition-all">
+                    <div class="flex items-center justify-between border-b-2 border-emerald-200 pb-2 mb-2">
+                        <h3 class="text-lg sm:text-xl font-bold text-emerald-800 flex items-center gap-2">
+                            <span>🏠</span> À la Maison
+                        </h3>
+                        <span id="count-maison" class="bg-emerald-200 text-emerald-900 font-bold px-2.5 py-0.5 rounded-full text-sm">0</span>
+                    </div>
+                    <div id="list-maison" class="flex flex-wrap gap-2 content-start"></div>
+                </div>
+
+                <!-- Column 2: École -->
+                <div id="zone-ecole" data-category="ecole" class="drop-zone bg-sky-50/90 rounded-3xl p-3 sm:p-4 border-4 border-dashed border-sky-400 min-h-[160px] flex flex-col transition-all">
+                    <div class="flex items-center justify-between border-b-2 border-sky-200 pb-2 mb-2">
+                        <h3 class="text-lg sm:text-xl font-bold text-sky-800 flex items-center gap-2">
+                            <span>🏫</span> À l'École
+                        </h3>
+                        <span id="count-ecole" class="bg-sky-200 text-sky-900 font-bold px-2.5 py-0.5 rounded-full text-sm">0</span>
+                    </div>
+                    <div id="list-ecole" class="flex flex-wrap gap-2 content-start"></div>
+                </div>
+
+                <!-- Column 3: Les Deux (Voyageurs) -->
+                <div id="zone-les_deux" data-category="les_deux" class="drop-zone bg-amber-50/90 rounded-3xl p-3 sm:p-4 border-4 border-dashed border-amber-400 min-h-[160px] flex flex-col transition-all">
+                    <div class="flex items-center justify-between border-b-2 border-amber-200 pb-2 mb-2">
+                        <h3 class="text-lg sm:text-xl font-bold text-amber-800 flex items-center gap-2">
+                            <span>🔄</span> Les Deux (Voyageurs)
+                        </h3>
+                        <span id="count-les_deux" class="bg-amber-200 text-amber-900 font-bold px-2.5 py-0.5 rounded-full text-sm">0</span>
+                    </div>
+                    <div id="list-les_deux" class="flex flex-wrap gap-2 content-start"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODE 2: DÉFI ÉLITES / MODE DEVINETTE (ROLE REVERSAL)      -->
+        <!-- ========================================================= -->
+        <section id="view-elite" class="hidden space-y-6">
+            
+            <!-- Header Banner for Elite Mode -->
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-3xl p-5 sm:p-6 shadow-xl border-4 border-purple-300 text-center">
+                <div class="inline-block bg-amber-300 text-purple-950 font-extrabold px-4 py-1 rounded-full text-sm mb-2">
+                    👑 DÉFI ÉLITES — INVERSION DES RÔLES
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mb-1">
+                    À toi d'être le Professeur ! 🎓
+                </h2>
+                <p class="text-purple-100 text-base sm:text-lg max-w-2xl mx-auto">
+                    Tire une carte mystère d'un objet <strong>« Voyageur »</strong> (utilisé à la maison ET à l'école). Lis ou écoute les indices et fais deviner l'objet à ton professeur !
+                </p>
+            </div>
+
+            <!-- Mystery Riddle Card Generator -->
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-purple-400 space-y-6">
+                
+                <!-- Card Top Controls -->
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-purple-100 pb-4">
+                    <span class="bg-purple-100 text-purple-900 font-bold px-4 py-1.5 rounded-2xl text-base">
+                        Carte Mystère #<span id="riddle-number">1</span> / 6
+                    </span>
+                    <button onclick="nextRiddle()" class="btn-3d bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold px-5 py-2.5 rounded-2xl border-2 border-amber-600 flex items-center gap-2 text-base sm:text-lg">
+                        <span>🎲</span> Nouvelle Carte Mystère
+                    </button>
+                </div>
+
+                <!-- Clues Section (Always visible so the kid can give hints) -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-purple-900 flex items-center gap-2">
+                        <span>🗣️</span> Indices à donner au professeur :
+                    </h3>
+                    <div id="riddle-clues" class="grid grid-cols-1 gap-3">
+                        <!-- Clues injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Secret Answer Box (Hidden until revealed) -->
+                <div class="pt-2">
+                    <div id="riddle-secret-box" class="bg-purple-50 rounded-3xl p-6 border-4 border-dashed border-purple-300 text-center transition-all">
+                        
+                        <!-- Hidden State -->
+                        <div id="riddle-hidden-state" class="space-y-3">
+                            <div class="text-5xl">🎁❓</div>
+                            <p class="text-purple-800 font-bold text-lg">
+                                Le professeur a-t-il trouvé la bonne réponse ?
+                            </p>
+                            <button onclick="revealRiddleAnswer()" class="btn-3d bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-6 py-3 rounded-2xl border-2 border-purple-800 text-lg">
+                                👀 Révéler l'objet secret !
+                            </button>
+                        </div>
+
+                        <!-- Revealed State -->
+                        <div id="riddle-revealed-state" class="hidden animate-pop space-y-2">
+                            <div id="riddle-emoji" class="text-7xl sm:text-8xl my-2">💻</div>
+                            <h4 id="riddle-answer-name" class="text-3xl font-extrabold text-purple-950">
+                                L'Ordinateur Portable
+                            </h4>
+                            <p id="riddle-explanation" class="text-base sm:text-lg font-medium text-purple-800 bg-white p-3 rounded-2xl border border-purple-200">
+                                À la maison on regarde des dessins animés ou on travaille, et à l'école la maîtresse l'utilise pour la classe !
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Back to Sorting Game Button -->
+            <div class="text-center">
+                <button onclick="switchMode('sort')" class="text-sky-800 hover:text-sky-950 font-bold underline text-base sm:text-lg">
+                    ← Retourner au jeu de classement
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-3 text-xs sm:text-sm text-slate-600 font-medium">
+        P1 / CP • ATL : Organisation & Classification • Jeu interactif pour la classe en ligne 🌟
+    </footer>
+
+    <!-- JAVASCRIPT GAME LOGIC -->
+    <script>
+        // ==========================================
+        // 1. GAME DATA (14 Kid-Friendly Devices)
+        // ==========================================
+        const GAME_ITEMS = [
+            {
+                id: 1,
+                name: "La Télévision",
+                emoji: "📺",
+                category: "maison",
+                successMsg: "Bravo Détective ! La télévision est dans le salon à la maison !",
+                hints: {
+                    ecole: "Hmm, regarde bien autour de ta classe : on a rarement un canapé et une télé !",
+                    les_deux: "Presque ! À l'école on utilise plutôt un grand projecteur ou un tableau."
+                }
+            },
+            {
+                id: 2,
+                name: "Le Tableau Interactif",
+                emoji: "🧑‍🏫",
+                category: "ecole",
+                successMsg: "Super enquête ! Le grand tableau interactif est dans la salle de classe !",
+                hints: {
+                    maison: "Oh là là, il est beaucoup trop grand pour ta chambre à la maison !",
+                    les_deux: "C'est un outil spécial pour le professeur à l'école !"
+                }
+            },
+            {
+                id: 3,
+                name: "L'Ordinateur Portable",
+                emoji: "💻",
+                category: "les_deux",
+                successMsg: "Génial ! C'est un objet VOYAGEUR : on l'utilise à la maison et à l'école !",
+                hints: {
+                    maison: "Oui, on l'a à la maison, mais regarde : ton professeur en a aussi un à l'école !",
+                    ecole: "Oui à l'école, mais papa ou maman en ont aussi un à la maison !"
+                }
+            },
+            {
+                id: 4,
+                name: "Le Grille-pain",
+                emoji: "🍞",
+                category: "maison",
+                successMsg: "Miam ! Bravo ! Le grille-pain sert pour le petit-déjeuner à la maison !",
+                hints: {
+                    ecole: "Hihi ! On trouve rarement un grille-pain en classe pour faire des tartines !",
+                    les_deux: "Pas à l'école ! Imagine l'odeur des tartines pendant la lecture !"
+                }
+            },
+            {
+                id: 5,
+                name: "Le Microscope",
+                emoji: "🔬",
+                category: "ecole",
+                successMsg: "Excellent ! On utilise le microscope en cours de sciences à l'école !",
+                hints: {
+                    maison: "C'est un appareil de laboratoire qu'on trouve surtout à l'école !",
+                    les_deux: "C'est un outil scientifique très spécial utilisé en classe à l'école."
+                }
+            },
+            {
+                id: 6,
+                name: "La Tablette Tactile",
+                emoji: "📱",
+                category: "les_deux",
+                successMsg: "Bravo Détective ! La tablette sert à jouer à la maison et à apprendre à l'école !",
+                hints: {
+                    maison: "Pas seulement à la maison ! Beaucoup d'écoles ont aussi des tablettes pour lire.",
+                    ecole: "Oui à l'école, mais on en a aussi souvent une à la maison !"
+                }
+            },
+            {
+                id: 7,
+                name: "La Machine à Laver",
+                emoji: "🧺",
+                category: "maison",
+                successMsg: "Super ! La machine à laver nettoie nos vêtements à la maison !",
+                hints: {
+                    ecole: "Imagine faire la lessive pendant les mathématiques à l'école ! Non, c'est à la maison.",
+                    les_deux: "On ne lave pas son linge à l'école ! C'est uniquement à la maison."
+                }
+            },
+            {
+                id: 8,
+                name: "L'Imprimante",
+                emoji: "🖨️",
+                category: "les_deux",
+                successMsg: "Champion ! L'imprimante est un VOYAGEUR : utile à la maison et à l'école !",
+                hints: {
+                    maison: "Oui à la maison, mais comment la maîtresse imprime-t-elle tes fiches à l'école ?",
+                    ecole: "Oui à l'école, mais on peut aussi en avoir une sur le bureau à la maison !"
+                }
+            },
+            {
+                id: 9,
+                name: "Le Vidéoprojecteur",
+                emoji: "📽️",
+                category: "ecole",
+                successMsg: "Bien vu ! Le vidéoprojecteur est accroché au plafond de la classe !",
+                hints: {
+                    maison: "On l'utilise surtout au plafond de la salle de classe à l'école.",
+                    les_deux: "C'est un appareil fait pour projeter les leçons au tableau de l'école !"
+                }
+            },
+            {
+                id: 10,
+                name: "Le Réfrigérateur",
+                emoji: "🧊",
+                category: "maison",
+                successMsg: "Bravo ! Le frigo garde les aliments au frais dans la cuisine de la maison !",
+                hints: {
+                    ecole: "Il n'y a pas de frigo dans ta salle de classe ! Il est dans la cuisine à la maison.",
+                    les_deux: "C'est un appareil de la cuisine familiale à la maison !"
+                }
+            },
+            {
+                id: 11,
+                name: "La Lampe de Bureau",
+                emoji: "🛋️",
+                category: "les_deux",
+                successMsg: "Parfait ! La lampe éclaire nos devoirs à la maison et le bureau à l'école !",
+                hints: {
+                    maison: "Oui pour faire ses devoirs à la maison, mais il y en a aussi sur les bureaux à l'école !",
+                    ecole: "Oui à l'école, et aussi sur ta table de travail à la maison !"
+                }
+            },
+            {
+                id: 12,
+                name: "La Manette de Jeu",
+                emoji: "🎮",
+                category: "maison",
+                successMsg: "Gagné ! La console et la manette de jeu restent à la maison !",
+                hints: {
+                    ecole: "Oh ! Si on apportait la console à l'école, personne ne travaillerait !",
+                    les_deux: "La manette est réservée aux loisirs à la maison !"
+                }
+            },
+            {
+                id: 13,
+                name: "La Calculatrice",
+                emoji: "🧮",
+                category: "les_deux",
+                successMsg: "Super Détective ! On calcule à l'école ET à la maison !",
+                hints: {
+                    maison: "On l'utilise à la maison pour les comptes, mais aussi en classe de maths !",
+                    ecole: "Oui en maths à l'école, mais papa et maman en ont aussi une à la maison !"
+                }
+            },
+            {
+                id: 14,
+                name: "L'Aspirateur",
+                emoji: "🧹",
+                category: "maison",
+                successMsg: "Bravo ! L'aspirateur nettoie les tapis et le sol de la maison !",
+                hints: {
+                    ecole: "Ce n'est pas un appareil pour les élèves en classe, c'est pour nettoyer la maison !",
+                    les_deux: "On l'utilise surtout pour nettoyer sa chambre et le salon à la maison."
+                }
+            }
+        ];
+
+        // ==========================================
+        // 2. ELITE MODE RIDDLES ("VOYAGEUR" OBJECTS)
+        // ==========================================
+        const ELITE_RIDDLES = [
+            {
+                name: "L'Ordinateur Portable",
+                emoji: "💻",
+                clues: [
+                    "1️⃣ J'ai un écran qui s'ouvre et se ferme, et plein de touches avec des lettres.",
+                    "2️⃣ À la maison, je sers à regarder des vidéos ou envoyer des messages.",
+                    "3️⃣ À l'école, le professeur m'utilise pour montrer la leçon !"
+                ],
+                explanation: "C'est un appareil voyageur indispensable aussi bien au bureau à la maison qu'en classe !"
+            },
+            {
+                name: "L'Imprimante",
+                emoji: "🖨️",
+                clues: [
+                    "1️⃣ Je mange des feuilles de papier toutes blanches.",
+                    "2️⃣ Je fais un petit bruit rigolo et je ressors des dessins ou des textes en couleur.",
+                    "3️⃣ À l'école, je prépare les feuilles d'exercices des élèves !"
+                ],
+                explanation: "On trouve l'imprimante dans le bureau de l'école et souvent à la maison !"
+            },
+            {
+                name: "La Tablette Tactile",
+                emoji: "📱",
+                clues: [
+                    "1️⃣ Je suis plate comme un cahier, mais mon écran s'allume quand on me touche.",
+                    "2️⃣ Je n'ai pas de clavier avec des boutons : on utilise son doigt.",
+                    "3️⃣ On m'utilise pour lire des histoires à l'école et jouer à la maison."
+                ],
+                explanation: "Facile à transporter, la tablette voyage entre la maison et l'école !"
+            },
+            {
+                name: "L'Horloge Murale",
+                emoji: "🕒",
+                clues: [
+                    "1️⃣ Je suis ronde, accrochée au mur, et j'ai des chiffres de 1 à 12.",
+                    "2️⃣ Mes deux aiguilles tournent toute la journée sans jamais s'arrêter.",
+                    "3️⃣ À l'école, tout le monde me regarde pour savoir quand sonne la récréation !"
+                ],
+                explanation: "L'horloge nous indique l'heure dans la cuisine à la maison et au-dessus du tableau à l'école !"
+            },
+            {
+                name: "La Calculatrice",
+                emoji: "🧮",
+                clues: [
+                    "1️⃣ Je tiens dans la main et j'ai des boutons avec les chiffres de 0 à 9.",
+                    "2️⃣ J'ai aussi les signes + , - et =.",
+                    "3️⃣ J'aide à compter vite à l'école et à la maison."
+                ],
+                explanation: "La calculatrice aide les élèves en classe et les parents à la maison !"
+            },
+            {
+                name: "La Lampe de Bureau",
+                emoji: "🛋️",
+                clues: [
+                    "1️⃣ On appuie sur mon interrupteur quand il commence à faire sombre.",
+                    "2️⃣ Je reste posée sur une table pour éclairer un cahier ou un livre.",
+                    "3️⃣ J'éclaire les devoirs du soir à la maison et le bureau à l'école."
+                ],
+                explanation: "Une bonne lumière est utile pour travailler partout : maison et école !"
+            }
+        ];
+
+        // ==========================================
+        // 3. STATE MANAGEMENT
+        // ==========================================
+        let shuffledItems = [];
+        let currentIndex = 0;
+        let score = 0;
+        let isProcessing = false;
+        let soundEnabled = true;
+        let currentRiddleIndex = 0;
+
+        // ==========================================
+        // 4. WEB AUDIO SOUND EFFECTS (TONE.JS)
+        // ==========================================
+        async function playSound(type) {
+            if (!soundEnabled || typeof Tone === 'undefined') return;
+            try {
+                await Tone.start();
+                const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -8;
+
+                if (type === 'correct') {
+                    // Cheerful ascending chime
+                    const now = Tone.now();
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.08);
+                    synth.triggerAttackRelease("G5", "8n", now + 0.16);
+                } else if (type === 'wrong') {
+                    // Gentle soft boing (not harsh for kids)
+                    const now = Tone.now();
+                    synth.triggerAttackRelease("E4", "16n", now);
+                    synth.triggerAttackRelease("C4", "8n", now + 0.12);
+                } else if (type === 'victory') {
+                    // Fanfare
+                    const now = Tone.now();
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.1);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.2);
+                    synth.triggerAttackRelease("C6", "4n", now + 0.3);
+                } else if (type === 'pop') {
+                    synth.triggerAttackRelease("G5", "32n");
+                }
+            } catch (e) {
+                console.warn("Audio non disponible:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-btn');
+            btn.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) playSound('pop');
+        }
+
+        // ==========================================
+        // 5. CONFETTI CELEBRATION ENGINE
+        // ==========================================
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let confettiParticles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function launchConfetti(amount = 45) {
+            const colors = ['#FBBF24', '#34D399', '#38BDF8', '#F472B6', '#A78BFA'];
+            for (let i = 0; i < amount; i++) {
+                confettiParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height * 0.4 + (Math.random() * 100 - 50),
+                    r: Math.random() * 7 + 4,
+                    d: Math.random() * amount,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.floor(Math.random() * 10) - 10,
+                    tiltAngleIncremental: (Math.random() * 0.07) + 0.05,
+                    tiltAngle: 0,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: -(Math.random() * 10 + 5)
+                });
+            }
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = confettiParticles.length - 1; i >= 0; i--) {
+                let p = confettiParticles[i];
+                p.tiltAngle += p.tiltAngleIncremental;
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.35; // gravity
+                p.tilt = Math.sin(p.tiltAngle) * 12;
+
+                ctx.beginPath();
+                ctx.lineWidth = p.r;
+                ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + p.tilt + (p.r / 2), p.y);
+                ctx.lineTo(p.x + p.tilt, p.y + p.tilt + (p.r / 2));
+                ctx.stroke();
+
+                if (p.y > canvas.height + 20) {
+                    confettiParticles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(updateConfetti);
+        }
+        updateConfetti();
+
+        // ==========================================
+        // 6. CORE SORTING GAME LOGIC
+        // ==========================================
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function initGame() {
+            shuffledItems = shuffleArray(GAME_ITEMS);
+            currentIndex = 0;
+            score = 0;
+            isProcessing = false;
+
+            // Reset UI lists
+            ['maison', 'ecole', 'les_deux'].forEach(cat => {
+                document.getElementById(`list-${cat}`).innerHTML = '';
+                document.getElementById(`count-${cat}`).textContent = '0';
+            });
+
+            document.getElementById('score-display').textContent = `0 / ${shuffledItems.length}`;
+            document.getElementById('active-stage').classList.remove('hidden');
+            document.getElementById('victory-banner').classList.add('hidden');
+
+            setFeedback("🕵️ Observe bien l'objet et choisis sa famille !", "neutral");
+            renderCurrentItem();
+        }
+
+        function renderCurrentItem() {
+            if (currentIndex >= shuffledItems.length) {
+                showVictory();
+                return;
+            }
+
+            const item = shuffledItems[currentIndex];
+            const card = document.getElementById('current-card');
+
+            // Re-trigger pop animation
+            card.classList.remove('animate-pop');
+            void card.offsetWidth; // trigger reflow
+            card.classList.add('animate-pop');
+
+            document.getElementById('item-number').textContent = currentIndex + 1;
+            document.getElementById('item-emoji').textContent = item.emoji;
+            document.getElementById('item-name').textContent = item.name;
+        }
+
+        function setFeedback(text, type) {
+            const box = document.getElementById('feedback-box');
+            const label = document.getElementById('feedback-text');
+
+            box.className = "min-h-[76px] rounded-2xl p-4 border-4 shadow-md flex items-center justify-center text-center transition-all ";
+
+            if (type === 'correct') {
+                box.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-950');
+            } else if (type === 'wrong') {
+                box.classList.add('bg-rose-100', 'border-rose-400', 'text-rose-950');
+            } else {
+                box.classList.add('bg-white/95', 'border-sky-200', 'text-sky-900');
+            }
+
+            label.textContent = text;
+        }
+
+        function checkAnswer(chosenCategory) {
+            if (isProcessing || currentIndex >= shuffledItems.length) return;
+
+            const item = shuffledItems[currentIndex];
+            const card = document.getElementById('current-card');
+
+            if (item.category === chosenCategory) {
+                // CORRECT ANSWER!
+                isProcessing = true;
+                score++;
+                document.getElementById('score-display').textContent = `${score} / ${shuffledItems.length}`;
+
+                playSound('correct');
+                launchConfetti(35);
+                setFeedback(`🌟 ${item.successMsg}`, 'correct');
+
+                // Add badge to the corresponding column
+                addItemToColumn(item, chosenCategory);
+
+                // Move to next item after short celebration
+                setTimeout(() => {
+                    currentIndex++;
+                    isProcessing = false;
+                    if (currentIndex < shuffledItems.length) {
+                        setFeedback("🕵️ Nouvel objet ! Où va celui-ci ?", "neutral");
+                    }
+                    renderCurrentItem();
+                }, 1450);
+
+            } else {
+                // GENTLE HINT!
+                playSound('wrong');
+                card.classList.remove('animate-shake');
+                void card.offsetWidth;
+                card.classList.add('animate-shake');
+
+                const hintText = item.hints[chosenCategory] || "Essaie encore, détective !";
+                setFeedback(`💡 Indice : ${hintText}`, 'wrong');
+            }
+        }
+
+        function addItemToColumn(item, category) {
+            const listEl = document.getElementById(`list-${category}`);
+            const countEl = document.getElementById(`count-${category}`);
+
+            const pill = document.createElement('div');
+            pill.className = "animate-pop bg-white px-2.5 py-1.5 rounded-xl shadow-sm border-2 border-slate-200 flex items-center gap-1.5 text-sm font-bold text-slate-700";
+            pill.innerHTML = `<span class="text-lg">${item.emoji}</span><span>${item.name.replace(/^(Le |La |L')/, '')}</span>`;
+
+            listEl.appendChild(pill);
+            countEl.textContent = listEl.children.length;
+        }
+
+        function showVictory() {
+            document.getElementById('active-stage').classList.add('hidden');
+            document.getElementById('victory-banner').classList.remove('hidden');
+            playSound('victory');
+            launchConfetti(100);
+        }
+
+        function resetGame() {
+            playSound('pop');
+            switchMode('sort');
+            initGame();
+        }
+
+        // ==========================================
+        // 7. DRAG & DROP SUPPORT FOR TEACHER SCREEN
+        // ==========================================
+        function setupDragAndDrop() {
+            const card = document.getElementById('current-card');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', 'current-item');
+                card.style.opacity = '0.6';
+            });
+
+            card.addEventListener('dragend', () => {
+                card.style.opacity = '1';
+                dropZones.forEach(z => z.classList.remove('drop-zone-active'));
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drop-zone-active');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drop-zone-active');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drop-zone-active');
+                    const category = zone.getAttribute('data-category');
+                    checkAnswer(category);
+                });
+            });
+        }
+
+        // ==========================================
+        // 8. MODE SWITCHING & ELITE RIDDLE LOGIC
+        // ==========================================
+        function switchMode(mode) {
+            const sortView = document.getElementById('view-sort');
+            const eliteView = document.getElementById('view-elite');
+            const tabSort = document.getElementById('tab-sort');
+            const tabElite = document.getElementById('tab-elite');
+
+            if (mode === 'sort') {
+                sortView.classList.remove('hidden');
+                eliteView.classList.add('hidden');
+
+                tabSort.className = "px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all bg-sky-600 text-white shadow";
+                tabElite.className = "px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all text-sky-800 hover:bg-sky-200";
+            } else {
+                sortView.classList.add('hidden');
+                eliteView.classList.remove('hidden');
+
+                tabElite.className = "px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all bg-purple-600 text-white shadow";
+                tabSort.className = "px-3 py-2 rounded-xl font-bold text-sm sm:text-base transition-all text-sky-800 hover:bg-sky-200";
+
+                renderRiddle();
+            }
+        }
+
+        function renderRiddle() {
+            const riddle = ELITE_RIDDLES[currentRiddleIndex];
+            document.getElementById('riddle-number').textContent = currentRiddleIndex + 1;
+
+            // Populate clues
+            const cluesContainer = document.getElementById('riddle-clues');
+            cluesContainer.innerHTML = '';
+            riddle.clues.forEach(clue => {
+                const div = document.createElement('div');
+                div.className = "animate-pop bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 text-base sm:text-lg font-semibold text-slate-800 shadow-sm";
+                div.textContent = clue;
+                cluesContainer.appendChild(div);
+            });
+
+            // Reset secret box to hidden
+            document.getElementById('riddle-hidden-state').classList.remove('hidden');
+            document.getElementById('riddle-revealed-state').classList.add('hidden');
+
+            // Prepare revealed content
+            document.getElementById('riddle-emoji').textContent = riddle.emoji;
+            document.getElementById('riddle-answer-name').textContent = riddle.name;
+            document.getElementById('riddle-explanation').textContent = riddle.explanation;
+        }
+
+        function revealRiddleAnswer() {
+            document.getElementById('riddle-hidden-state').classList.add('hidden');
+            document.getElementById('riddle-revealed-state').classList.remove('hidden');
+            playSound('correct');
+            launchConfetti(40);
+        }
+
+        function nextRiddle() {
+            playSound('pop');
+            currentRiddleIndex = (currentRiddleIndex + 1) % ELITE_RIDDLES.length;
+            renderRiddle();
+        }
+
+        // ==========================================
+        // 9. INITIALIZE ON WINDOW LOAD
+        // ==========================================
+        window.onload = function() {
+            setupDragAndDrop();
+            initGame();
+            renderRiddle();
+        };
+    </script>
+</body>
+</html>

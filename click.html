@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Atelier Numérique : Mes Premiers Super-Pouvoirs</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for Web Audio API synthesized sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #F0F9FF 0%, #FEFCE8 50%, #F5F3FF 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Animations */
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.03); }
+        }
+
+        @keyframes pulseClick {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.85); }
+        }
+
+        @keyframes doubleClickAnim {
+            0%, 100% { transform: scale(1); }
+            20% { transform: scale(0.82); }
+            40% { transform: scale(1); }
+            60% { transform: scale(0.82); }
+            80% { transform: scale(1); }
+        }
+
+        @keyframes slideHand {
+            0% { transform: translateX(-14px); }
+            50% { transform: translateX(14px); }
+            100% { transform: translateX(-14px); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            75% { transform: scale(1.06); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shakeGentle {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px) rotate(-2deg); }
+            75% { transform: translateX(8px) rotate(2deg); }
+        }
+
+        .anim-float { animation: floatBubble 2.8s ease-in-out infinite; }
+        .anim-click { animation: pulseClick 1.2s ease-in-out infinite; }
+        .anim-double-click { animation: doubleClickAnim 1.6s ease-in-out infinite; }
+        .anim-slide { animation: slideHand 1.8s ease-in-out infinite; }
+        .anim-pop { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .anim-shake { animation: shakeGentle 0.4s ease-in-out; }
+
+        /* Chunky 3D Buttons */
+        .btn-3d {
+            transition: all 0.14s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        /* Drag & Drop Visuals */
+        .draggable-item {
+            touch-action: none;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .dragging-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            transform: scale(1.15) rotate(4deg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+        }
+        .drop-zone-hover {
+            transform: scale(1.03);
+            border-style: solid !important;
+            box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.35);
+        }
+
+        /* Confetti Overlay */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 60;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between">
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ========================================================= -->
+    <!-- TOP HEADER & MISSION NAVIGATION BAR                         -->
+    <!-- ========================================================= -->
+    <header class="w-full max-w-6xl mx-auto px-3 sm:px-4 pt-3 pb-2">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-3 sm:p-4 shadow-lg border-4 border-indigo-200 flex flex-col lg:flex-row items-center justify-between gap-3">
+            
+            <!-- Brand Title -->
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-300 to-orange-400 rounded-2xl flex items-center justify-center text-3xl shadow-inner border-2 border-amber-500">
+                        🖥️
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-2xl font-extrabold text-indigo-950 leading-tight">
+                            L'Atelier Numérique
+                        </h1>
+                        <p class="text-xs sm:text-sm font-semibold text-indigo-500">
+                            Mes Premiers Super-Pouvoirs 💻✨
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobile Audio & Reset Controls -->
+                <div class="flex lg:hidden items-center gap-2">
+                    <button onclick="toggleSound()" id="sound-btn-mobile" class="p-2.5 bg-purple-100 text-purple-800 border-2 border-purple-300 rounded-2xl text-lg">🔊</button>
+                    <button onclick="resetCurrentMission()" title="Recommencer la mission" class="p-2.5 bg-rose-100 text-rose-700 border-2 border-rose-300 rounded-2xl text-lg">🔄</button>
+                </div>
+            </div>
+
+            <!-- 4 Progressive Step Tabs -->
+            <nav class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 rounded-2xl border-2 border-slate-200 w-full lg:w-auto">
+                <button id="nav-m1" onclick="switchMission(1)" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all bg-sky-500 text-white shadow">
+                    <span>1️⃣</span> <span>Clic Magique</span> <span id="check-m1" class="hidden">✅</span>
+                </button>
+                <button id="nav-m2" onclick="switchMission(2)" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all text-slate-700 hover:bg-white">
+                    <span>2️⃣</span> <span>Glisser-Déposer</span> <span id="check-m2" class="hidden">✅</span>
+                </button>
+                <button id="nav-m3" onclick="switchMission(3)" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all text-slate-700 hover:bg-white">
+                    <span>3️⃣</span> <span>Dossiers & 2x Clic</span> <span id="check-m3" class="hidden">✅</span>
+                </button>
+                <button id="nav-cert" onclick="switchMission(4)" class="px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all text-amber-800 bg-amber-100 hover:bg-amber-200 border border-amber-300">
+                    <span>🏆</span> <span>Diplôme</span>
+                </button>
+            </nav>
+
+            <!-- Desktop Audio & Teacher Controls -->
+            <div class="hidden lg:flex items-center gap-2">
+                <button onclick="toggleSound()" id="sound-btn-desktop" title="Son On/Off" class="p-2.5 bg-purple-100 hover:bg-purple-200 text-purple-800 border-2 border-purple-300 rounded-2xl text-xl transition-all">
+                    🔊
+                </button>
+                <button onclick="resetCurrentMission()" title="Recommencer cette mission" class="btn-3d bg-rose-500 hover:bg-rose-600 text-white font-bold px-3.5 py-2 rounded-2xl text-sm border-2 border-rose-700 flex items-center gap-1.5">
+                    <span>🔄</span> Rejouer
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================================= -->
+    <!-- MAIN INTERACTIVE WORKSPACE                                -->
+    <!-- ========================================================= -->
+    <main class="w-full max-w-6xl mx-auto px-3 sm:px-4 py-2 flex-grow flex flex-col justify-center">
+
+        <!-- ===================================================== -->
+        <!-- MISSION 1: LE CLIC MAGIQUE (POINT & CLICK)            -->
+        <!-- ===================================================== -->
+        <section id="mission-1" class="space-y-4">
+            
+            <!-- Gesture Helper Banner -->
+            <div class="bg-sky-100/90 border-4 border-sky-300 rounded-3xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-white rounded-2xl border-2 border-sky-400 flex items-center justify-center text-3xl shadow-inner">
+                        <span class="anim-click inline-block">👆</span>
+                    </div>
+                    <div>
+                        <span class="bg-sky-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase">Pouvoir #1 : Pointer et Cliquer</span>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-sky-950">
+                            Allume tous les appareils en cliquant 1 fois dessus !
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Progress Pill -->
+                <div class="bg-white px-4 py-2 rounded-2xl border-2 border-sky-300 flex items-center gap-2 shadow-sm">
+                    <span class="text-xl">💡</span>
+                    <span id="m1-progress" class="text-lg sm:text-xl font-extrabold text-sky-900">0 / 8 allumés</span>
+                </div>
+            </div>
+
+            <!-- Interactive Click Arena -->
+            <div id="m1-arena" class="relative bg-white/85 rounded-3xl border-4 border-sky-200 shadow-xl p-4 sm:p-6 min-h-[380px] sm:min-h-[420px] grid grid-cols-2 sm:grid-cols-4 gap-4 place-items-center">
+                <!-- Target items injected via JS -->
+            </div>
+
+            <!-- Mission 1 Complete Banner -->
+            <div id="m1-complete" class="hidden anim-pop bg-emerald-100 border-4 border-emerald-400 rounded-3xl p-5 text-center space-y-3 shadow-lg">
+                <div class="text-5xl">🎉👆✨</div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-emerald-950">Bravo ! Tu maîtrises le Clic Magique !</h3>
+                <p class="text-emerald-800 font-semibold text-base sm:text-lg">Tu sais viser avec la souris ou ton doigt et cliquer au bon endroit.</p>
+                <button onclick="switchMission(2)" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-lg sm:text-xl px-8 py-3.5 rounded-2xl border-4 border-emerald-700 inline-flex items-center gap-2">
+                    <span>Mission 2 : Le Glisser-Déposer</span> <span>➡️</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- MISSION 2: LE GLISSER-DÉPOSER (DRAG & DROP)           -->
+        <!-- ===================================================== -->
+        <section id="mission-2" class="hidden space-y-4">
+            
+            <!-- Gesture Helper Banner -->
+            <div class="bg-amber-100/90 border-4 border-amber-300 rounded-3xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-white rounded-2xl border-2 border-amber-400 flex items-center justify-center text-3xl shadow-inner">
+                        <span class="anim-slide inline-block">🤏</span>
+                    </div>
+                    <div>
+                        <span class="bg-amber-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase">Pouvoir #2 : Glisser-Déposer</span>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-amber-950">
+                            Attrape chaque objet, garde le doigt appuyé et glisse-le dans la bonne boîte !
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Progress Pill -->
+                <div class="bg-white px-4 py-2 rounded-2xl border-2 border-amber-300 flex items-center gap-2 shadow-sm">
+                    <span class="text-xl">🎒</span>
+                    <span id="m2-progress" class="text-lg sm:text-xl font-extrabold text-amber-900">0 / 8 rangés</span>
+                </div>
+            </div>
+
+            <!-- Feedback Bar -->
+            <div id="m2-feedback" class="bg-white/95 rounded-2xl p-3 border-2 border-amber-200 text-center font-bold text-base sm:text-lg text-slate-700 shadow-sm">
+                ✊ Attrape un objet au milieu et dépose-le dans le Cartable ou la Chambre !
+            </div>
+
+            <!-- 3-Column Drag & Drop Workspace -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                
+                <!-- Left Drop Zone: Cartable (École) -->
+                <div id="m2-zone-ecole" data-target="ecole" class="m2-dropzone md:col-span-4 bg-sky-50 rounded-3xl p-4 border-4 border-dashed border-sky-400 flex flex-col justify-between min-h-[220px] transition-all">
+                    <div class="text-center border-b-2 border-sky-200 pb-2">
+                        <div class="text-5xl mb-1">🎒</div>
+                        <h3 class="text-xl font-extrabold text-sky-900">Mon Cartable</h3>
+                        <p class="text-xs font-bold text-sky-600">Pour aller à l'école</p>
+                    </div>
+                    <div id="m2-list-ecole" class="flex flex-wrap justify-center gap-2 py-3 min-h-[90px] content-center"></div>
+                </div>
+
+                <!-- Center Source Tray: Items to Drag -->
+                <div class="md:col-span-4 bg-white/90 rounded-3xl p-4 border-4 border-amber-300 shadow-lg flex flex-col justify-between min-h-[240px]">
+                    <p class="text-center text-xs font-extrabold uppercase tracking-wider text-amber-600 mb-2">
+                        Objets à ranger 👇
+                    </p>
+                    <div id="m2-items-pool" class="grid grid-cols-2 gap-3 place-items-center my-auto">
+                        <!-- Draggable items injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right Drop Zone: Chambre (Maison) -->
+                <div id="m2-zone-maison" data-target="maison" class="m2-dropzone md:col-span-4 bg-emerald-50 rounded-3xl p-4 border-4 border-dashed border-emerald-400 flex flex-col justify-between min-h-[220px] transition-all">
+                    <div class="text-center border-b-2 border-emerald-200 pb-2">
+                        <div class="text-5xl mb-1">🛏️</div>
+                        <h3 class="text-xl font-extrabold text-emerald-900">Ma Chambre</h3>
+                        <p class="text-xs font-bold text-emerald-600">Pour rester à la maison</p>
+                    </div>
+                    <div id="m2-list-maison" class="flex flex-wrap justify-center gap-2 py-3 min-h-[90px] content-center"></div>
+                </div>
+
+            </div>
+
+            <!-- Mission 2 Complete Banner -->
+            <div id="m2-complete" class="hidden anim-pop bg-amber-100 border-4 border-amber-400 rounded-3xl p-5 text-center space-y-3 shadow-lg">
+                <div class="text-5xl">🎒✨🏆</div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-amber-950">Super ! Tu es un pro du Glisser-Déposer !</h3>
+                <p class="text-amber-900 font-semibold text-base sm:text-lg">Tu sais déplacer des objets numériques sur un écran comme un grand.</p>
+                <button onclick="switchMission(3)" class="btn-3d bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-lg sm:text-xl px-8 py-3.5 rounded-2xl border-4 border-purple-800 inline-flex items-center gap-2">
+                    <span>Mission 3 : Les Dossiers Secrets</span> <span>➡️</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- MISSION 3: DOUBLE-CLIC & DOSSIERS NUMÉRIQUES          -->
+        <!-- ===================================================== -->
+        <section id="mission-3" class="hidden space-y-4">
+            
+            <!-- Gesture Helper Banner -->
+            <div class="bg-purple-100/90 border-4 border-purple-300 rounded-3xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-white rounded-2xl border-2 border-purple-400 flex items-center justify-center text-3xl shadow-inner">
+                        <span class="anim-double-click inline-block">✌️</span>
+                    </div>
+                    <div>
+                        <span class="bg-purple-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase">Pouvoir #3 : Double-Clic & Dossiers</span>
+                        <h2 id="m3-instruction-title" class="text-lg sm:text-xl font-extrabold text-purple-950">
+                            Étape 1 : Fais un DOUBLE-CLIC (2 clics rapides) sur chaque dossier fermé pour l'ouvrir !
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Progress Pill -->
+                <div class="bg-white px-4 py-2 rounded-2xl border-2 border-purple-300 flex items-center gap-2 shadow-sm">
+                    <span class="text-xl">📁</span>
+                    <span id="m3-progress" class="text-lg sm:text-xl font-extrabold text-purple-900">0 / 3 ouverts</span>
+                </div>
+            </div>
+
+            <!-- Feedback Banner -->
+            <div id="m3-feedback" class="bg-white/95 rounded-2xl p-3 border-2 border-purple-200 text-center font-bold text-base sm:text-lg text-purple-900 shadow-sm">
+                🔒 Les dossiers sont fermés ! Clique 2 fois très vite (Clic-Clic !) sur un dossier pour l'ouvrir.
+            </div>
+
+            <!-- 3 Digital Folders Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                
+                <!-- Folder 1: École -->
+                <div id="folder-ecole" data-folder="ecole" class="m3-folder-zone bg-sky-100 rounded-3xl p-4 border-4 border-sky-400 shadow-md flex flex-col items-center justify-between min-h-[200px] cursor-pointer transition-all">
+                    <div class="text-center">
+                        <div id="folder-icon-ecole" class="text-6xl sm:text-7xl transition-transform">📁</div>
+                        <span id="folder-badge-ecole" class="inline-block mt-1 bg-rose-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">
+                            🔒 Fermé (2x Clic)
+                        </span>
+                        <h3 class="text-xl font-extrabold text-sky-950 mt-1">Dossier École 🏫</h3>
+                    </div>
+                    <div id="folder-files-ecole" class="flex flex-wrap justify-center gap-1.5 mt-2 w-full"></div>
+                </div>
+
+                <!-- Folder 2: Maison -->
+                <div id="folder-maison" data-folder="maison" class="m3-folder-zone bg-emerald-100 rounded-3xl p-4 border-4 border-emerald-400 shadow-md flex flex-col items-center justify-between min-h-[200px] cursor-pointer transition-all">
+                    <div class="text-center">
+                        <div id="folder-icon-maison" class="text-6xl sm:text-7xl transition-transform">📁</div>
+                        <span id="folder-badge-maison" class="inline-block mt-1 bg-rose-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">
+                            🔒 Fermé (2x Clic)
+                        </span>
+                        <h3 class="text-xl font-extrabold text-emerald-950 mt-1">Dossier Maison 🏠</h3>
+                    </div>
+                    <div id="folder-files-maison" class="flex flex-wrap justify-center gap-1.5 mt-2 w-full"></div>
+                </div>
+
+                <!-- Folder 3: Jeux -->
+                <div id="folder-jeux" data-folder="jeux" class="m3-folder-zone bg-amber-100 rounded-3xl p-4 border-4 border-amber-400 shadow-md flex flex-col items-center justify-between min-h-[200px] cursor-pointer transition-all">
+                    <div class="text-center">
+                        <div id="folder-icon-jeux" class="text-6xl sm:text-7xl transition-transform">📁</div>
+                        <span id="folder-badge-jeux" class="inline-block mt-1 bg-rose-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">
+                            🔒 Fermé (2x Clic)
+                        </span>
+                        <h3 class="text-xl font-extrabold text-amber-950 mt-1">Dossier Jeux 🎮</h3>
+                    </div>
+                    <div id="folder-files-jeux" class="flex flex-wrap justify-center gap-1.5 mt-2 w-full"></div>
+                </div>
+
+            </div>
+
+            <!-- Digital Files Tray (Unlocks once all 3 folders are opened) -->
+            <div id="m3-files-dock" class="hidden anim-pop bg-white/95 rounded-3xl p-4 sm:p-5 border-4 border-purple-300 shadow-xl space-y-3">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-base sm:text-lg font-extrabold text-purple-950">
+                        📄 Fichiers sur le bureau (Glisse-les dans le bon dossier ouvert !) :
+                    </h4>
+                    <span id="m3-files-counter" class="bg-purple-100 text-purple-900 font-extrabold px-3 py-1 rounded-full text-sm">
+                        0 / 6 rangés
+                    </span>
+                </div>
+                <div id="m3-files-pool" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    <!-- Digital file cards injected via JS -->
+                </div>
+            </div>
+
+            <!-- Mission 3 Complete Banner -->
+            <div id="m3-complete" class="hidden anim-pop bg-purple-100 border-4 border-purple-400 rounded-3xl p-5 text-center space-y-3 shadow-lg">
+                <div class="text-5xl">📂🌟🎓</div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-purple-950">Incroyable ! Tu sais utiliser les Dossiers Numériques !</h3>
+                <p class="text-purple-900 font-semibold text-base sm:text-lg">Tu as débloqué tous tes super-pouvoirs d'ordinateur. Va chercher ton diplôme !</p>
+                <button onclick="switchMission(4)" class="btn-3d bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold text-lg sm:text-xl px-8 py-3.5 rounded-2xl border-4 border-amber-600 inline-flex items-center gap-2">
+                    <span>🏆 Réclamer mon Diplôme !</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- STEP 4: DIPLÔME DE SUPER-EXPLORATEUR NUMÉRIQUE        -->
+        <!-- ===================================================== -->
+        <section id="mission-4" class="hidden space-y-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-8 border-amber-300 relative overflow-hidden text-center space-y-5">
+                
+                <!-- Decorative Corner Stars -->
+                <div class="text-4xl sm:text-5xl flex justify-center gap-4">
+                    <span>⭐</span><span>🏆</span><span>⭐</span>
+                </div>
+
+                <div>
+                    <span class="bg-indigo-100 text-indigo-800 font-extrabold px-4 py-1 rounded-full text-xs sm:text-sm uppercase tracking-wider">
+                        Certificat Officiel P1 / CP
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-indigo-950 mt-2">
+                        Diplôme de Super-Explorateur Numérique
+                    </h2>
+                </div>
+
+                <!-- Student Name Input + Avatar Picker -->
+                <div class="bg-amber-50/80 rounded-3xl p-4 sm:p-6 border-2 border-amber-200 space-y-4">
+                    <p class="text-base sm:text-lg font-bold text-slate-700">
+                        Ce diplôme est décerné à :
+                    </p>
+                    
+                    <input type="text" id="student-name-input" placeholder="Écris ton prénom ici..." maxlength="24"
+                        class="w-full max-w-md mx-auto text-center text-2xl sm:text-3xl font-extrabold text-indigo-900 bg-white border-4 border-indigo-300 focus:border-indigo-500 focus:outline-none rounded-2xl px-4 py-2.5 shadow-inner">
+
+                    <!-- Avatar Selector -->
+                    <div class="space-y-1.5">
+                        <p class="text-xs font-bold text-slate-500 uppercase">Choisis ton avatar de héros :</p>
+                        <div class="flex justify-center gap-2 sm:gap-3" id="avatar-selector">
+                            <button onclick="selectAvatar('🦁')" class="avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-amber-200 border-2 border-amber-500 scale-110 transition-all">🦁</button>
+                            <button onclick="selectAvatar('🦄')" class="avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-white border-2 border-slate-200 hover:bg-slate-100 transition-all">🦄</button>
+                            <button onclick="selectAvatar('🤖')" class="avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-white border-2 border-slate-200 hover:bg-slate-100 transition-all">🤖</button>
+                            <button onclick="selectAvatar('🐼')" class="avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-white border-2 border-slate-200 hover:bg-slate-100 transition-all">🐼</button>
+                            <button onclick="selectAvatar('🚀')" class="avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-white border-2 border-slate-200 hover:bg-slate-100 transition-all">🚀</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earned Superpowers Badges -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-1">
+                    <div class="bg-sky-50 border-2 border-sky-300 rounded-2xl p-3">
+                        <div class="text-3xl mb-1">👆</div>
+                        <p class="text-xs sm:text-sm font-extrabold text-sky-900">Maître du Clic</p>
+                    </div>
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3">
+                        <div class="text-3xl mb-1">🤏</div>
+                        <p class="text-xs sm:text-sm font-extrabold text-amber-900">Pro du Glisser-Déposer</p>
+                    </div>
+                    <div class="bg-purple-50 border-2 border-purple-300 rounded-2xl p-3">
+                        <div class="text-3xl mb-1">📂</div>
+                        <p class="text-xs sm:text-sm font-extrabold text-purple-900">Champion des Dossiers</p>
+                    </div>
+                </div>
+
+                <!-- Celebrate Button -->
+                <div class="pt-2">
+                    <button onclick="celebrateDiploma()" class="btn-3d bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-extrabold text-xl px-8 py-4 rounded-2xl border-4 border-emerald-700 inline-flex items-center gap-2">
+                        <span>🎉 Féliciter l'élève !</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-2.5 text-xs sm:text-sm text-slate-500 font-semibold">
+        P1 / CP • Compétences Numériques & Organisation • Activité interactive en ligne 💻✨
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT LOGIC (TOUCH + MOUSE + AUDIO + MISSIONS)       -->
+    <!-- ========================================================= -->
+    <script>
+        // ==========================================
+        // 1. GLOBAL STATE & SOUND EFFECTS
+        // ==========================================
+        let currentMission = 1;
+        let soundEnabled = true;
+        const completedMissions = { 1: false, 2: false, 3: false };
+
+        async function playTone(type) {
+            if (!soundEnabled || typeof Tone === 'undefined') return;
+            try {
+                await Tone.start();
+                const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+                synth.volume.value = -8;
+                const now = Tone.now();
+
+                if (type === 'pop') {
+                    synth.triggerAttackRelease("G5", "32n", now);
+                } else if (type === 'success') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.08);
+                    synth.triggerAttackRelease("G5", "8n", now + 0.16);
+                } else if (type === 'openFolder') {
+                    synth.triggerAttackRelease("D5", "16n", now);
+                    synth.triggerAttackRelease("A5", "8n", now + 0.09);
+                } else if (type === 'error') {
+                    synth.triggerAttackRelease("E4", "16n", now);
+                    synth.triggerAttackRelease("C4", "8n", now + 0.12);
+                } else if (type === 'fanfare') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.1);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.2);
+                    synth.triggerAttackRelease("C6", "4n", now + 0.3);
+                }
+            } catch (e) {
+                console.warn("Audio warning:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('sound-btn-desktop').textContent = icon;
+            document.getElementById('sound-btn-mobile').textContent = icon;
+            if (soundEnabled) playTone('pop');
+        }
+
+        // ==========================================
+        // 2. CONFETTI CELEBRATION ENGINE
+        // ==========================================
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function fireConfetti(count = 50) {
+            const palette = ['#38BDF8', '#FBBF24', '#34D399', '#A78BFA', '#F472B6'];
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height * 0.45,
+                    r: Math.random() * 7 + 4,
+                    color: palette[Math.floor(Math.random() * palette.length)],
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: -(Math.random() * 11 + 5),
+                    tilt: Math.random() * 10
+                });
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.35;
+                p.tilt += 0.15;
+
+                ctx.beginPath();
+                ctx.lineWidth = p.r;
+                ctx.strokeStyle = p.color;
+                ctx.moveTo(p.x + Math.sin(p.tilt) * 8, p.y);
+                ctx.lineTo(p.x, p.y + 8);
+                ctx.stroke();
+
+                if (p.y > canvas.height + 20) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateConfetti);
+        }
+        animateConfetti();
+
+        // ==========================================
+        // 3. NAVIGATION BETWEEN MISSIONS
+        // ==========================================
+        function switchMission(num) {
+            currentMission = num;
+            playTone('pop');
+
+            [1, 2, 3, 4].forEach(id => {
+                const sec = document.getElementById(`mission-${id}`);
+                if (sec) sec.classList.toggle('hidden', id !== num);
+            });
+
+            // Update tab styles
+            const navConfigs = [
+                { id: 1, el: 'nav-m1', activeClass: 'bg-sky-500 text-white shadow' },
+                { id: 2, el: 'nav-m2', activeClass: 'bg-amber-500 text-white shadow' },
+                { id: 3, el: 'nav-m3', activeClass: 'bg-purple-600 text-white shadow' },
+                { id: 4, el: 'nav-cert', activeClass: 'bg-amber-400 text-amber-950 shadow border-amber-600' }
+            ];
+
+            navConfigs.forEach(cfg => {
+                const btn = document.getElementById(cfg.el);
+                if (cfg.id === num) {
+                    btn.className = `px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all ${cfg.activeClass}`;
+                } else {
+                    btn.className = `px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all text-slate-700 hover:bg-white`;
+                }
+            });
+
+            if (num === 4) {
+                fireConfetti(70);
+                playTone('fanfare');
+            }
+        }
+
+        function resetCurrentMission() {
+            playTone('pop');
+            if (currentMission === 1) initMission1();
+            if (currentMission === 2) initMission2();
+            if (currentMission === 3) initMission3();
+            if (currentMission === 4) {
+                document.getElementById('student-name-input').value = '';
+            }
+        }
+
+        // ==========================================
+        // 4. MISSION 1: POINT & CLICK (8 DEVICES)
+        // ==========================================
+        const M1_DEVICES = [
+            { id: 1, name: "Ordinateur", emoji: "💻", size: "w-32 h-32 sm:w-36 sm:h-36" },
+            { id: 2, name: "Lampe", emoji: "💡", size: "w-28 h-28 sm:w-32 sm:h-32" },
+            { id: 3, name: "Tablette", emoji: "📱", size: "w-28 h-28 sm:w-32 sm:h-32" },
+            { id: 4, name: "Télévision", emoji: "📺", size: "w-32 h-32 sm:w-36 sm:h-36" },
+            { id: 5, name: "Imprimante", emoji: "🖨️", size: "w-24 h-24 sm:w-28 sm:h-28" },
+            { id: 6, name: "Projecteur", emoji: "📽️", size: "w-24 h-24 sm:w-28 sm:h-28" },
+            { id: 7, name: "Radio", emoji: "📻", size: "w-24 h-24 sm:w-28 sm:h-28" },
+            { id: 8, name: "Appareil Photo", emoji: "📷", size: "w-20 h-20 sm:w-24 sm:h-24" }
+        ];
+
+        let m1LitCount = 0;
+
+        function initMission1() {
+            m1LitCount = 0;
+            document.getElementById('m1-progress').textContent = `0 / ${M1_DEVICES.length} allumés`;
+            document.getElementById('m1-complete').classList.add('hidden');
+            const arena = document.getElementById('m1-arena');
+            arena.innerHTML = '';
+
+            M1_DEVICES.forEach((dev, idx) => {
+                const btn = document.createElement('button');
+                btn.style.animationDelay = `${idx * 0.2}s`;
+                btn.className = `anim-float ${dev.size} rounded-full bg-slate-200 border-4 border-slate-400 shadow-md flex flex-col items-center justify-center p-2 cursor-pointer transition-all hover:scale-105 active:scale-90 relative`;
+                btn.innerHTML = `
+                    <span class="text-4xl sm:text-5xl grayscale opacity-60 transition-all pointer-events-none" id="m1-icon-${dev.id}">${dev.emoji}</span>
+                    <span class="text-xs font-extrabold text-slate-600 mt-1 pointer-events-none" id="m1-label-${dev.id}">${dev.name}</span>
+                    <span class="absolute -top-1 -right-1 text-lg" id="m1-status-${dev.id}">💤</span>
+                `;
+
+                btn.onclick = () => {
+                    if (btn.dataset.lit === 'true') return;
+                    btn.dataset.lit = 'true';
+                    m1LitCount++;
+
+                    // Light up visual state
+                    btn.className = `${dev.size} rounded-full bg-gradient-to-br from-amber-200 to-yellow-300 border-4 border-amber-500 shadow-xl flex flex-col items-center justify-center p-2 scale-105 transition-all relative`;
+                    document.getElementById(`m1-icon-${dev.id}`).className = "text-4xl sm:text-5xl transition-all pointer-events-none";
+                    document.getElementById(`m1-label-${dev.id}`).className = "text-xs font-extrabold text-amber-950 mt-1 pointer-events-none";
+                    document.getElementById(`m1-status-${dev.id}`).textContent = "✨";
+
+                    playTone('success');
+                    document.getElementById('m1-progress').textContent = `${m1LitCount} / ${M1_DEVICES.length} allumés`;
+
+                    if (m1LitCount === M1_DEVICES.length) {
+                        completedMissions[1] = true;
+                        document.getElementById('check-m1').classList.remove('hidden');
+                        document.getElementById('m1-complete').classList.remove('hidden');
+                        fireConfetti(55);
+                        playTone('fanfare');
+                    }
+                };
+
+                arena.appendChild(btn);
+            });
+        }
+
+        // ==========================================
+        // 5. UNIVERSAL POINTER DRAG & DROP HELPER
+        // (Works identically on Mouse, Trackpad & Touch!)
+        // ==========================================
+        function makePointerDraggable(element, onDropCallback) {
+            let isDragging = false;
+            let ghost = null;
+            let startX = 0, startY = 0;
+
+            element.addEventListener('pointerdown', (e) => {
+                if (element.dataset.done === 'true') return;
+                e.preventDefault();
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+
+                // Create floating ghost clone
+                const rect = element.getBoundingClientRect();
+                ghost = element.cloneNode(true);
+                ghost.classList.add('dragging-ghost');
+                ghost.style.width = `${rect.width}px`;
+                ghost.style.height = `${rect.height}px`;
+                ghost.style.left = `${rect.left}px`;
+                ghost.style.top = `${rect.top}px`;
+                document.body.appendChild(ghost);
+
+                element.style.opacity = '0.35';
+                element.setPointerCapture(e.pointerId);
+                playTone('pop');
+            });
+
+            element.addEventListener('pointermove', (e) => {
+                if (!isDragging || !ghost) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                const rect = element.getBoundingClientRect();
+                ghost.style.left = `${rect.left + dx}px`;
+                ghost.style.top = `${rect.top + dy}px`;
+
+                // Highlight drop zones under pointer
+                document.querySelectorAll('.m2-dropzone, .m3-folder-zone').forEach(zone => {
+                    const zRect = zone.getBoundingClientRect();
+                    const inside = e.clientX >= zRect.left && e.clientX <= zRect.right &&
+                                   e.clientY >= zRect.top && e.clientY <= zRect.bottom;
+                    zone.classList.toggle('drop-zone-hover', inside);
+                });
+            });
+
+            element.addEventListener('pointerup', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+
+                if (ghost) {
+                    ghost.remove();
+                    ghost = null;
+                }
+                element.style.opacity = '1';
+
+                // Check which dropzone the pointer landed on
+                let droppedZone = null;
+                document.querySelectorAll('.m2-dropzone, .m3-folder-zone').forEach(zone => {
+                    zone.classList.remove('drop-zone-hover');
+                    const zRect = zone.getBoundingClientRect();
+                    if (e.clientX >= zRect.left && e.clientX <= zRect.right &&
+                        e.clientY >= zRect.top && e.clientY <= zRect.bottom) {
+                        droppedZone = zone;
+                    }
+                });
+
+                if (droppedZone) {
+                    onDropCallback(element, droppedZone);
+                }
+            });
+        }
+
+        // ==========================================
+        // 6. MISSION 2: DRAG & DROP SORTING (8 ITEMS)
+        // ==========================================
+        const M2_ITEMS = [
+            { id: 'm2-1', name: "Cahier", emoji: "📓", target: "ecole" },
+            { id: 'm2-2', name: "Oreiller", emoji: "🛌", target: "maison" },
+            { id: 'm2-3', name: "Trousse", emoji: "✏️", target: "ecole" },
+            { id: 'm2-4', name: "Pyjama", emoji: "👕", target: "maison" },
+            { id: 'm2-5', name: "Règle", emoji: "📏", target: "ecole" },
+            { id: 'm2-6', name: "Doudou", emoji: "🧸", target: "maison" },
+            { id: 'm2-7', name: "Ciseaux", emoji: "✂️", target: "ecole" },
+            { id: 'm2-8', name: "Brosse à dents", emoji: "🪥", target: "maison" }
+        ];
+
+        let m2SortedCount = 0;
+
+        function initMission2() {
+            m2SortedCount = 0;
+            document.getElementById('m2-progress').textContent = `0 / ${M2_ITEMS.length} rangés`;
+            document.getElementById('m2-complete').classList.add('hidden');
+            document.getElementById('m2-list-ecole').innerHTML = '';
+            document.getElementById('m2-list-maison').innerHTML = '';
+            document.getElementById('m2-feedback').textContent = "✊ Attrape un objet au milieu et dépose-le dans le Cartable ou la Chambre !";
+
+            const pool = document.getElementById('m2-items-pool');
+            pool.innerHTML = '';
+
+            M2_ITEMS.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "draggable-item bg-amber-50 hover:bg-amber-100 border-3 border-amber-400 rounded-2xl p-2.5 w-full flex flex-col items-center justify-center shadow-sm";
+                card.innerHTML = `
+                    <span class="text-3xl sm:text-4xl pointer-events-none">${item.emoji}</span>
+                    <span class="text-xs font-extrabold text-slate-800 mt-1 pointer-events-none">${item.name}</span>
+                `;
+
+                makePointerDraggable(card, (el, zone) => {
+                    const chosenTarget = zone.dataset.target;
+                    if (chosenTarget === item.target) {
+                        el.dataset.done = 'true';
+                        el.classList.add('hidden');
+                        m2SortedCount++;
+
+                        playTone('success');
+                        document.getElementById('m2-progress').textContent = `${m2SortedCount} / ${M2_ITEMS.length} rangés`;
+                        document.getElementById('m2-feedback').textContent = `🌟 Bravo ! ${item.name} est bien rangé !`;
+
+                        // Add badge to target zone
+                        const badge = document.createElement('div');
+                        badge.className = "anim-pop bg-white px-2.5 py-1 rounded-xl border-2 border-slate-200 shadow-sm flex items-center gap-1 text-xs font-bold";
+                        badge.innerHTML = `<span class="text-base">${item.emoji}</span><span>${item.name}</span>`;
+                        document.getElementById(`m2-list-${chosenTarget}`).appendChild(badge);
+
+                        if (m2SortedCount === M2_ITEMS.length) {
+                            completedMissions[2] = true;
+                            document.getElementById('check-m2').classList.remove('hidden');
+                            document.getElementById('m2-complete').classList.remove('hidden');
+                            fireConfetti(60);
+                            playTone('fanfare');
+                        }
+                    } else {
+                        playTone('error');
+                        el.classList.remove('anim-shake');
+                        void el.offsetWidth;
+                        el.classList.add('anim-shake');
+                        document.getElementById('m2-feedback').textContent = `💡 Oups ! Est-ce qu'on met "${item.name}" là-bas ? Essaie l'autre côté !`;
+                    }
+                });
+
+                pool.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // 7. MISSION 3: DOUBLE-CLICK & FOLDERS
+        // ==========================================
+        const M3_FILES = [
+            { id: 'f1', name: "Devoir Maths", emoji: "🔢", folder: "ecole" },
+            { id: 'f2', name: "Photo Famille", emoji: "👨‍👩‍👧", folder: "maison" },
+            { id: 'f3', name: "Jeu Voiture", emoji: "🏎️", folder: "jeux" },
+            { id: 'f4', name: "Poésie", emoji: "📝", folder: "ecole" },
+            { id: 'f5', name: "Recette Gâteau", emoji: "🎂", folder: "maison" },
+            { id: 'f6', name: "Puzzle", emoji: "🧩", folder: "jeux" }
+        ];
+
+        const openedFolders = { ecole: false, maison: false, jeux: false };
+        let m3SortedFiles = 0;
+
+        function initMission3() {
+            openedFolders.ecole = false;
+            openedFolders.maison = false;
+            openedFolders.jeux = false;
+            m3SortedFiles = 0;
+
+            document.getElementById('m3-progress').textContent = "0 / 3 ouverts";
+            document.getElementById('m3-complete').classList.add('hidden');
+            document.getElementById('m3-files-dock').classList.add('hidden');
+            document.getElementById('m3-instruction-title').textContent = "Étape 1 : Fais un DOUBLE-CLIC (2 clics rapides) sur chaque dossier fermé pour l'ouvrir !";
+            document.getElementById('m3-feedback').textContent = "🔒 Les dossiers sont fermés ! Clique 2 fois très vite (Clic-Clic !) sur un dossier pour l'ouvrir.";
+
+            ['ecole', 'maison', 'jeux'].forEach(fKey => {
+                document.getElementById(`folder-icon-${fKey}`).textContent = "📁";
+                const badge = document.getElementById(`folder-badge-${fKey}`);
+                badge.textContent = "🔒 Fermé (2x Clic)";
+                badge.className = "inline-block mt-1 bg-rose-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full";
+                document.getElementById(`folder-files-${fKey}`).innerHTML = '';
+
+                const zone = document.getElementById(`folder-${fKey}`);
+                
+                // Single click gentle reminder
+                zone.onclick = () => {
+                    if (!openedFolders[fKey]) {
+                        playTone('pop');
+                        zone.classList.remove('anim-shake');
+                        void zone.offsetWidth;
+                        zone.classList.add('anim-shake');
+                        document.getElementById('m3-feedback').textContent = "👆 Tu as fait 1 seul clic ! Fais 2 clics rapides (Clic-Clic !) pour ouvrir le dossier.";
+                    }
+                };
+
+                // Double click handler
+                zone.ondblclick = () => {
+                    if (openedFolders[fKey]) return;
+                    openedFolders[fKey] = true;
+
+                    playTone('openFolder');
+                    document.getElementById(`folder-icon-${fKey}`).textContent = "📂";
+                    badge.textContent = "🔓 Ouvert !";
+                    badge.className = "inline-block mt-1 bg-emerald-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full";
+
+                    const totalOpen = Object.values(openedFolders).filter(Boolean).length;
+                    document.getElementById('m3-progress').textContent = `${totalOpen} / 3 ouverts`;
+                    document.getElementById('m3-feedback').textContent = `🎉 Super double-clic ! Le dossier est ouvert !`;
+
+                    if (totalOpen === 3) {
+                        unlockMission3Files();
+                    }
+                };
+            });
+        }
+
+        function unlockMission3Files() {
+            document.getElementById('m3-instruction-title').textContent = "Étape 2 : Glisse maintenant chaque fichier dans le bon dossier ouvert !";
+            document.getElementById('m3-feedback').textContent = "✨ Tous les dossiers sont ouverts ! Range les 6 fichiers ci-dessous dans les bons dossiers.";
+            document.getElementById('m3-files-dock').classList.remove('hidden');
+            document.getElementById('m3-files-counter').textContent = `0 / ${M3_FILES.length} rangés`;
+
+            const pool = document.getElementById('m3-files-pool');
+            pool.innerHTML = '';
+
+            M3_FILES.forEach(file => {
+                const fileCard = document.createElement('div');
+                fileCard.className = "draggable-item bg-purple-50 hover:bg-purple-100 border-3 border-purple-400 rounded-2xl p-3 flex flex-col items-center justify-center text-center shadow-sm";
+                fileCard.innerHTML = `
+                    <span class="text-3xl sm:text-4xl pointer-events-none">${file.emoji}</span>
+                    <span class="text-xs font-extrabold text-purple-950 mt-1 pointer-events-none">${file.name}</span>
+                `;
+
+                makePointerDraggable(fileCard, (el, zone) => {
+                    const targetFolder = zone.dataset.folder;
+                    if (targetFolder === file.folder) {
+                        el.dataset.done = 'true';
+                        el.classList.add('hidden');
+                        m3SortedFiles++;
+
+                        playTone('success');
+                        document.getElementById('m3-files-counter').textContent = `${m3SortedFiles} / ${M3_FILES.length} rangés`;
+                        document.getElementById('m3-feedback').textContent = `📂 Parfait ! "${file.name}" est bien rangé dans son dossier !`;
+
+                        const pill = document.createElement('span');
+                        pill.className = "anim-pop bg-white px-2 py-1 rounded-xl text-xs font-extrabold border border-slate-300 shadow-sm";
+                        pill.textContent = `${file.emoji} ${file.name}`;
+                        document.getElementById(`folder-files-${targetFolder}`).appendChild(pill);
+
+                        if (m3SortedFiles === M3_FILES.length) {
+                            completedMissions[3] = true;
+                            document.getElementById('check-m3').classList.remove('hidden');
+                            document.getElementById('m3-complete').classList.remove('hidden');
+                            fireConfetti(70);
+                            playTone('fanfare');
+                        }
+                    } else {
+                        playTone('error');
+                        el.classList.remove('anim-shake');
+                        void el.offsetWidth;
+                        el.classList.add('anim-shake');
+                        document.getElementById('m3-feedback').textContent = `💡 Regarde bien le nom du fichier "${file.name}" : va-t-il dans ce dossier ?`;
+                    }
+                });
+
+                pool.appendChild(fileCard);
+            });
+        }
+
+        // ==========================================
+        // 8. STEP 4: DIPLOMA AVATAR & CELEBRATION
+        // ==========================================
+        function selectAvatar(emoji) {
+            playTone('pop');
+            document.querySelectorAll('.avatar-btn').forEach(btn => {
+                if (btn.textContent.trim() === emoji) {
+                    btn.className = "avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-amber-200 border-2 border-amber-500 scale-110 transition-all";
+                } else {
+                    btn.className = "avatar-btn text-3xl sm:text-4xl p-2 rounded-2xl bg-white border-2 border-slate-200 hover:bg-slate-100 transition-all";
+                }
+            });
+        }
+
+        function celebrateDiploma() {
+            playTone('fanfare');
+            fireConfetti(100);
+        }
+
+        // ==========================================
+        // 9. INITIALIZE ALL MISSIONS ON LOAD
+        // ==========================================
+        window.onload = function() {
+            initMission1();
+            initMission2();
+            initMission3();
+        };
+    </script>
+</body>
+</html>

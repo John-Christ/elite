@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formative : Remplir la liste de la chasse au trésor tech – Kiddy Planet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka for friendly headings & Plus Jakarta Sans for crisp academic readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1E293B',
+                            900: '#0F172A',
+                            950: '#090E1A',
+                        },
+                        gold: {
+                            100: '#FEF3C7',
+                            200: '#FDE68A',
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        teal: {
+                            50: '#F0FDFA',
+                            100: '#CCFBF1',
+                            500: '#14B8A6',
+                            600: '#0D9488',
+                            700: '#0F766E',
+                        },
+                        coral: {
+                            50: '#FFF1F2',
+                            100: '#FFE4E6',
+                            500: '#F43F5E',
+                            600: '#E11D48',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom subtle treasure map pattern for screen background */
+        body {
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: #1E293B;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Dotted writing line aesthetic for printable worksheets */
+        .worksheet-input {
+            border: none;
+            border-bottom: 2px dashed #94A3B8;
+            background-color: rgba(248, 250, 252, 0.8);
+            transition: all 0.2s ease;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .worksheet-input:focus {
+            outline: none;
+            border-bottom: 2px solid #0D9488;
+            background-color: #F0FDFA;
+        }
+
+        .worksheet-input.correct {
+            border-bottom: 2px solid #16A34A;
+            background-color: #DCFCE7;
+            color: #15803D;
+            font-weight: 600;
+        }
+
+        .worksheet-input.incorrect {
+            border-bottom: 2px solid #E11D48;
+            background-color: #FFE4E6;
+            color: #BE123C;
+        }
+
+        /* Custom checkbox styling */
+        .treasure-checkbox {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid #0F172A;
+            border-radius: 6px;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .treasure-checkbox:checked {
+            background-color: #F59E0B;
+            border-color: #B45309;
+        }
+
+        .treasure-checkbox:checked::after {
+            content: '✓';
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        /* Print optimization for A4 / Letter school sheets */
+        @media print {
+            body {
+                background: #FFFFFF !important;
+                background-image: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .sheet-container {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .mission-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1.5px solid #CBD5E1 !important;
+                margin-bottom: 16px !important;
+            }
+            .page-break-before {
+                page-break-before: always;
+                break-before: page;
+            }
+            .worksheet-input {
+                background-color: transparent !important;
+                border-bottom: 1.5px dashed #64748B !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-gold-200 selection:text-navy-900 pb-16">
+
+    <!-- Floating Teacher & Student Action Toolbar (Hidden when printing) -->
+    <div class="no-print sticky top-0 z-50 bg-navy-900/95 backdrop-blur-md text-white border-b border-navy-800 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gold-500 text-navy-950 font-display font-bold text-lg shadow-sm">
+                    🧭
+                </span>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gold-400">Mode Interactif & Impression</p>
+                    <p class="text-sm font-medium text-slate-200 hidden sm:block">Remplis la fiche en ligne ou imprime-la pour la classe</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="checkAllAnswers()" class="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 active:scale-95 text-white font-semibold text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Vérifier mes réponses</span>
+                </button>
+                <button onclick="toggleAnswerKey()" id="btnAnswerKey" class="px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-slate-700 border border-slate-600 text-gold-400 font-semibold text-sm transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
+                    <span>Corrigé Prof</span>
+                </button>
+                <button onclick="resetAssessment()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition flex items-center gap-1.5 cursor-pointer" title="Réinitialiser la fiche">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                    <span class="hidden md:inline">Effacer</span>
+                </button>
+                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 active:scale-95 text-navy-950 font-bold text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
+                    <span>Imprimer / PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Feedback Banner (Appears after clicking "Vérifier mes réponses") -->
+    <div id="feedbackBanner" class="hidden no-print max-w-5xl mx-auto mt-4 px-4">
+        <div class="rounded-2xl bg-gradient-to-r from-navy-900 via-navy-800 to-teal-900 text-white p-5 shadow-xl border-2 border-gold-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div id="feedbackBadge" class="w-14 h-14 rounded-2xl bg-gold-400 text-navy-950 flex items-center justify-center text-3xl shadow-inner shrink-0">
+                    🏆
+                </div>
+                <div>
+                    <h3 id="feedbackTitle" class="font-display text-xl font-bold text-gold-400">Bravo, Explorateur Numérique !</h3>
+                    <p id="feedbackMessage" class="text-sm text-slate-200 mt-0.5">Tu as complété la vérification automatique de tes missions.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 bg-navy-950/60 px-5 py-3 rounded-xl border border-slate-700 shrink-0">
+                <div class="text-right">
+                    <span class="block text-xs uppercase tracking-wider text-slate-400">Score Auto-Corrigé</span>
+                    <span id="scoreDisplay" class="font-display text-2xl font-bold text-teal-400">0 / 22</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSHEET SHEET CONTAINER -->
+    <main class="sheet-container max-w-5xl mx-auto my-6 sm:my-8 bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden">
+        
+        <!-- =====================================================================
+             HEADER: KIDDY PLANET – ELITE INTERNATIONAL SCHOOL GROUP + LOGO SLOT
+             ===================================================================== -->
+        <header class="relative bg-gradient-to-br from-navy-950 via-navy-900 to-slate-900 text-white p-6 sm:p-8 border-b-4 border-gold-500 overflow-hidden">
+            <!-- Decorative background compass & geometric accents -->
+            <svg class="absolute -right-10 -bottom-10 w-64 h-64 text-white/5 pointer-events-none" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="50" cy="50" r="45"/>
+                <circle cx="50" cy="50" r="35" stroke-dasharray="4 4"/>
+                <polygon points="50,10 56,44 90,50 56,56 50,90 44,56 10,50 44,44" fill="currentColor" fill-opacity="0.2"/>
+            </svg>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+                
+                <!-- CORNER LOGO PLACEHOLDER (Top-Left Corner with click-to-upload option for teachers) -->
+                <div class="shrink-0 flex flex-col items-center">
+                    <label for="logoUpload" title="Cliquez pour insérer le logo de l'école (optionnel)" class="group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-dashed border-gold-400/80 flex flex-col items-center justify-center p-2 cursor-pointer transition-all shadow-inner overflow-hidden">
+                        <img id="schoolLogoPreview" src="" alt="Logo de l'école" class="hidden w-full h-full object-contain rounded-xl bg-white p-1" />
+                        <div id="schoolLogoPlaceholder" class="flex flex-col items-center justify-center text-center">
+                            <!-- Emblem SVG -->
+                            <svg class="w-9 h-9 text-gold-400 mb-1 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/>
+                            </svg>
+                            <span class="font-display font-bold text-xs tracking-widest text-gold-300 uppercase">ESPACE LOGO</span>
+                            <span class="no-print text-[10px] text-slate-300 mt-0.5 leading-tight">Cliquer pour importer</span>
+                        </div>
+                    </label>
+                    <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                </div>
+
+                <!-- SCHOOL IDENTITY & ASSESSMENT TITLE -->
+                <div class="flex-1 text-center md:text-left">
+                    <!-- School Name Header -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs sm:text-sm font-bold tracking-wide uppercase mb-2.5">
+                        <span>★</span>
+                        <span>Kiddy Planet – Elite International School Group</span>
+                        <span>★</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm font-semibold uppercase tracking-widest text-teal-400 mb-1">
+                        Département de Technologie & Culture Numérique • Évaluation Formative
+                    </p>
+
+                    <h1 class="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+                        Formative : Remplir la liste de la chasse au trésor tech
+                    </h1>
+
+                    <p class="text-slate-300 text-xs sm:text-sm mt-2.5 max-w-2xl leading-relaxed">
+                        Bienvenue dans l'expédition numérique de <strong>Kiddy Planet</strong> ! Résous chaque énigme technologique pour compléter ta liste officielle d'explorateur et déverrouiller le grand coffre au trésor.
+                    </p>
+                </div>
+
+                <!-- TEACHER SCORE BOX (Top-Right) -->
+                <div class="shrink-0 w-full md:w-40 rounded-2xl bg-white text-navy-900 p-3.5 border-2 border-gold-400 shadow-lg flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-2">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-navy-800">Résultat</span>
+                        <span class="text-base">🏅</span>
+                    </div>
+                    <div class="flex items-baseline justify-center my-1">
+                        <input type="text" id="teacherScoreInput" placeholder="   " class="w-14 text-center font-display text-2xl font-bold text-navy-900 border-b-2 border-slate-400 focus:outline-none focus:border-teal-600">
+                        <span class="font-display text-xl font-bold text-slate-500 ml-1">/ 30</span>
+                    </div>
+                    <div class="mt-2 pt-1.5 border-t border-slate-100 text-center">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Niveau Atteint</span>
+                        <div class="flex justify-center gap-1 mt-1 text-[10px] font-bold">
+                            <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">A</span>
+                            <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">B</span>
+                            <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">C</span>
+                            <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">D</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STUDENT METADATA BAR -->
+            <div class="relative z-10 mt-6 pt-5 border-t border-white/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentName" class="text-[11px] font-bold uppercase tracking-wider text-gold-300 mb-1">Nom & Prénom de l'Explorateur</label>
+                    <input type="text" id="studentName" placeholder="Ex : Léo Martin" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentClass" class="text-[11px] font-bold uppercase tracking-wider text-gold-300 mb-1">Classe / Niveau</label>
+                    <input type="text" id="studentClass" placeholder="Ex : CM2 / Grade 5" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="assessmentDate" class="text-[11px] font-bold uppercase tracking-wider text-gold-300 mb-1">Date de l'expédition</label>
+                    <input type="text" id="assessmentDate" placeholder="JJ / MM / AAAA" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="teamName" class="text-[11px] font-bold uppercase tracking-wider text-gold-300 mb-1">Nom d'Équipe / Maison</label>
+                    <input type="text" id="teamName" placeholder="Ex : Les Cyber-Lions" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 font-medium py-0.5">
+                </div>
+            </div>
+        </header>
+
+        <!-- WORKSHEET BODY CONTENT -->
+        <div class="p-6 sm:p-8 space-y-8">
+
+            <!-- =================================================================
+                 MISSION 1 : L'ÉQUIPEMENT DE L'EXPLORATEUR (MATÉRIEL INFORMATIQUE)
+                 ================================================================= -->
+            <section class="mission-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <!-- Mission Header -->
+                <div class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-teal-700 font-display font-bold text-lg flex items-center justify-center shadow">1</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission 1 : La Liste du Matériel Informatique (Hardware)</h2>
+                            <p class="text-xs text-teal-100">Lis chaque indice du trésor, écris le nom de l'objet tech, choisis son rôle et coche la case !</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/30 text-xs font-bold border border-white/20">8 points</span>
+                </div>
+
+                <!-- Helpful Hint Pill -->
+                <div class="bg-teal-50/70 px-5 py-2.5 border-b border-teal-100 flex flex-wrap items-center gap-2 text-xs text-navy-800">
+                    <span class="font-bold text-teal-700">💡 Boîte à outils :</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Clavier</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Souris</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Écran</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Imprimante</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Clé USB</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Casque audio</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Webcam</span>
+                    <span class="px-2 py-0.5 bg-white rounded border border-teal-200 font-medium">Unité centrale</span>
+                </div>
+
+                <!-- Treasure Checklist Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-navy-900 text-xs uppercase tracking-wider border-b-2 border-slate-200">
+                                <th class="py-3 px-4 w-12 text-center">#</th>
+                                <th class="py-3 px-4">Indice découvert sur la carte</th>
+                                <th class="py-3 px-4 w-48">Objet Tech Trouvé</th>
+                                <th class="py-3 px-4 w-44">Type de périphérique</th>
+                                <th class="py-3 px-4 w-20 text-center">Trouvé !</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-sm">
+                            <!-- Item 1 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">01</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                                            <!-- Keyboard SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
+                                        </span>
+                                        <span>J'ai plein de touches avec des lettres et des chiffres pour écrire des messages.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="clavier|le clavier" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Clavier</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="entree" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Entrée</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 1">
+                                </td>
+                            </tr>
+
+                            <!-- Item 2 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">02</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                                            <!-- Monitor SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                                        </span>
+                                        <span>Je ressemble à une télévision et j'affiche la carte au trésor en images.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="ecran|écran|l'ecran|l'écran|moniteur|le moniteur" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Écran (Moniteur)</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="sortie" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Sortie</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 2">
+                                </td>
+                            </tr>
+
+                            <!-- Item 3 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">03</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                                            <!-- Mouse SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/></svg>
+                                        </span>
+                                        <span>Je tiens dans ta main et je permets de déplacer le curseur et de cliquer.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="souris|la souris" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Souris</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="entree" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Entrée</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 3">
+                                </td>
+                            </tr>
+
+                            <!-- Item 4 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">04</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                                            <!-- USB Drive SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3h8v4"/><rect x="6" y="7" width="12" height="14" rx="2"/></svg>
+                                        </span>
+                                        <span>Je suis petite, je me branche sur un port et je garde tes fichiers dans ta poche.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="cle usb|clé usb|une cle usb|une clé usb|la cle usb|la clé usb" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Clé USB</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="stockage" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Stockage</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 4">
+                                </td>
+                            </tr>
+
+                            <!-- Item 5 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">05</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                            <!-- Printer SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                        </span>
+                                        <span>Je transforme un document numérique en une vraie feuille de papier avec de l'encre.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="imprimante|l'imprimante|une imprimante" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Imprimante</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="sortie" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Sortie</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 5">
+                                </td>
+                            </tr>
+
+                            <!-- Item 6 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">06</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                                            <!-- Headphones SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
+                                        </span>
+                                        <span>Tu me poses sur tes oreilles pour écouter les indices sonores sans déranger la classe.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="casque|casque audio|le casque|le casque audio|ecouteurs|écouteurs" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Casque audio</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="sortie" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Sortie</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 6">
+                                </td>
+                            </tr>
+
+                            <!-- Item 7 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">07</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center shrink-0">
+                                            <!-- Webcam SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><circle cx="12" cy="10" r="2"/><path d="M7 20h10M12 16v4"/></svg>
+                                        </span>
+                                        <span>Je suis une petite caméra posée sur l'ordinateur pour filmer ton visage en visio.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="webcam|la webcam|une webcam|camera|caméra" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Webcam</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="entree" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Entrée</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 7">
+                                </td>
+                            </tr>
+
+                            <!-- Item 8 -->
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="py-3 px-4 text-center font-display font-bold text-teal-700">08</td>
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-lg bg-slate-200 text-navy-900 flex items-center justify-center shrink-0">
+                                            <!-- CPU Tower SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 6h6M9 10h6M12 17h.01"/></svg>
+                                        </span>
+                                        <span>Je suis le grand boîtier qui contient le cerveau (processeur) et la mémoire de l'ordinateur.</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <input type="text" data-answer="unite centrale|unité centrale|l'unite centrale|l'unité centrale|tour|boitier" placeholder="Écris le nom..." class="auto-grade-text worksheet-input w-full px-2 py-1.5 text-sm font-medium">
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Unité centrale</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="stockage" class="auto-grade-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-800 focus:border-teal-500 focus:outline-none">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="entree">Entrée (Envoie l'info)</option>
+                                        <option value="sortie">Sortie (Affiche/Produit)</option>
+                                        <option value="stockage">Stockage / Cerveau</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-teal-700 mt-1 block">Rép : Stockage / Cerveau</span>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" class="treasure-checkbox" aria-label="Cocher objet 8">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 MISSION 2 : DÉCHIFFRER LE JOURNAL DE BORD (VOCABULAIRE NUMÉRIQUE)
+                 ================================================================= -->
+            <section class="mission-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-navy-800 to-navy-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-gold-400 text-navy-950 font-display font-bold text-lg flex items-center justify-center shadow">2</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission 2 : Déchiffrer le Journal de Bord Numérique</h2>
+                            <p class="text-xs text-slate-300">Complète le récit secret de l'explorateur avec les bons mots de la banque de trésors.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-white/10 text-gold-300 text-xs font-bold border border-gold-400/30">6 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6">
+                    <!-- Word Bank -->
+                    <div class="rounded-xl bg-amber-50 border-2 border-dashed border-gold-400 p-4 mb-5">
+                        <p class="text-xs font-extrabold uppercase tracking-wider text-amber-800 mb-2.5 flex items-center gap-1.5">
+                            <span>🗝️</span> Banque de mots du Trésor (Chaque mot sert une seule fois) :
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">navigateur</span>
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">mot de passe</span>
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">Wi-Fi</span>
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">dossier</span>
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">icône</span>
+                            <span class="px-3 py-1 rounded-lg bg-white border border-amber-300 text-navy-900 font-bold text-xs shadow-xs">algorithme</span>
+                        </div>
+                    </div>
+
+                    <!-- Fill in the blanks story -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 text-navy-900 leading-loose text-sm sm:text-base space-y-3">
+                        <p>
+                            « Ce matin au laboratoire de <strong>Kiddy Planet</strong>, j'ai allumé ma tablette et j'ai vérifié qu'elle était bien connectée à Internet sans fil grâce au réseau
+                            <input type="text" data-answer="wi-fi|wifi" placeholder="1..." class="auto-grade-text worksheet-input w-32 px-2 py-0.5 text-center font-semibold text-teal-800">.
+                            Pour ouvrir ma session privée en toute sécurité, j'ai tapé mon
+                            <input type="text" data-answer="mot de passe" placeholder="2..." class="auto-grade-text worksheet-input w-40 px-2 py-0.5 text-center font-semibold text-teal-800"> secret.
+                        </p>
+                        <p>
+                            Sur le bureau de l'écran, j'ai repéré une petite image appelée une
+                            <input type="text" data-answer="icone|icône" placeholder="3..." class="auto-grade-text worksheet-input w-32 px-2 py-0.5 text-center font-semibold text-teal-800">
+                            et j'ai double-cliqué dessus pour ouvrir mon
+                            <input type="text" data-answer="navigateur" placeholder="4..." class="auto-grade-text worksheet-input w-36 px-2 py-0.5 text-center font-semibold text-teal-800">
+                            web afin d'explorer les sites éducatifs.
+                        </p>
+                        <p>
+                            Ensuite, j'ai rangé mes photos de mission dans un
+                            <input type="text" data-answer="dossier" placeholder="5..." class="auto-grade-text worksheet-input w-32 px-2 py-0.5 text-center font-semibold text-teal-800">
+                            jaune bien organisé. Enfin, j'ai écrit une suite d'instructions étape par étape, appelée un
+                            <input type="text" data-answer="algorithme" placeholder="6..." class="auto-grade-text worksheet-input w-36 px-2 py-0.5 text-center font-semibold text-teal-800">,
+                            pour programmer notre robot explorateur ! »
+                        </p>
+                    </div>
+
+                    <div class="answer-key hidden mt-3 p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 font-semibold">
+                        🔑 Corrigé Mission 2 : 1. Wi-Fi • 2. mot de passe • 3. icône • 4. navigateur • 5. dossier • 6. algorithme
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 MISSION 3 : RELIER LES INDICES AUX OUTILS NUMÉRIQUES (ASSOCIATION)
+                 ================================================================= -->
+            <section class="mission-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-amber-500 to-gold-600 text-navy-950 px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-navy-900 text-gold-400 font-display font-bold text-lg flex items-center justify-center shadow">3</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission 3 : Associer chaque Besoin au Bon Outil Tech</h2>
+                            <p class="text-xs text-navy-900/80 font-medium">Inscris la bonne lettre (A, B, C, D ou E) dans la case centrale pour associer chaque mission à son outil.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950 text-gold-400 text-xs font-bold">5 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <!-- Left Column: Scenarios -->
+                        <div class="md:col-span-6 space-y-2.5">
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <span class="text-sm font-medium text-navy-900"><strong>1.</strong> Rédiger et mettre en page un rapport de mission.</span>
+                                <input type="text" maxlength="1" data-answer="c" placeholder="?" class="auto-grade-text worksheet-input w-11 h-10 text-center font-display font-bold text-base uppercase shrink-0">
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <span class="text-sm font-medium text-navy-900"><strong>2.</strong> Envoyer un courrier électronique (e-mail) à son professeur.</span>
+                                <input type="text" maxlength="1" data-answer="e" placeholder="?" class="auto-grade-text worksheet-input w-11 h-10 text-center font-display font-bold text-base uppercase shrink-0">
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <span class="text-sm font-medium text-navy-900"><strong>3.</strong> Créer un diaporama animé pour présenter son trésor.</span>
+                                <input type="text" maxlength="1" data-answer="a" placeholder="?" class="auto-grade-text worksheet-input w-11 h-10 text-center font-display font-bold text-base uppercase shrink-0">
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <span class="text-sm font-medium text-navy-900"><strong>4.</strong> Protéger l'ordinateur contre les virus et logiciels malveillants.</span>
+                                <input type="text" maxlength="1" data-answer="d" placeholder="?" class="auto-grade-text worksheet-input w-11 h-10 text-center font-display font-bold text-base uppercase shrink-0">
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                                <span class="text-sm font-medium text-navy-900"><strong>5.</strong> Trouver rapidement la définition d'un mot sur Internet.</span>
+                                <input type="text" maxlength="1" data-answer="b" placeholder="?" class="auto-grade-text worksheet-input w-11 h-10 text-center font-display font-bold text-base uppercase shrink-0">
+                            </div>
+                        </div>
+
+                        <!-- Center visual connector -->
+                        <div class="hidden md:flex md:col-span-1 flex-col items-center justify-center text-slate-300">
+                            <svg class="w-8 h-8 text-gold-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                        </div>
+
+                        <!-- Right Column: Tools -->
+                        <div class="md:col-span-5 space-y-2.5">
+                            <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-teal-600 text-white font-display font-bold flex items-center justify-center shrink-0">A</span>
+                                <span class="text-sm font-semibold text-navy-900">Logiciel de Présentation (ex : PowerPoint / Slides)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-teal-600 text-white font-display font-bold flex items-center justify-center shrink-0">B</span>
+                                <span class="text-sm font-semibold text-navy-900">Moteur de recherche (ex : Qwant Junior / Google)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-teal-600 text-white font-display font-bold flex items-center justify-center shrink-0">C</span>
+                                <span class="text-sm font-semibold text-navy-900">Traitement de texte (ex : Word / Google Docs)</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-teal-600 text-white font-display font-bold flex items-center justify-center shrink-0">D</span>
+                                <span class="text-sm font-semibold text-navy-900">Logiciel Antivirus</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-teal-600 text-white font-display font-bold flex items-center justify-center shrink-0">E</span>
+                                <span class="text-sm font-semibold text-navy-900">Messagerie électronique</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="answer-key hidden mt-3 p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 font-semibold">
+                        🔑 Corrigé Mission 3 : 1 → C • 2 → E • 3 → A • 4 → D • 5 → B
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 MISSION 4 : LE CODE SECRET DU COFFRE (LOGIQUE & PROGRAMMATION)
+                 ================================================================= -->
+            <section class="mission-card page-break-before rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-indigo-700 font-display font-bold text-lg flex items-center justify-center shadow">4</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission 4 : Programmer KiddyBot jusqu'au Coffre au Trésor !</h2>
+                            <p class="text-xs text-indigo-100">Écris l'algorithme (la suite de déplacements) pour guider le robot jusqu'au trésor sans toucher les bugs !</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/30 text-xs font-bold border border-white/20">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- 5x5 Treasure Map Grid -->
+                    <div class="lg:col-span-6 flex flex-col items-center">
+                        <div class="bg-slate-900 p-4 rounded-2xl shadow-inner border-4 border-slate-700 w-full max-w-sm">
+                            <div class="flex items-center justify-between text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2 px-1">
+                                <span>Carte Radar 5×5</span>
+                                <span class="text-gold-400">Nord ↑</span>
+                            </div>
+                            <!-- Grid Cells -->
+                            <div class="grid grid-cols-5 gap-1.5 bg-slate-800 p-2 rounded-xl aspect-square">
+                                <!-- Row 1 -->
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">A1</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">B1</div>
+                                <div class="bg-rose-950/90 border border-rose-500/50 rounded-lg flex flex-col items-center justify-center" title="Bug informatique !">
+                                    <span class="text-xl">👾</span>
+                                    <span class="text-[9px] text-rose-300 font-bold">BUG</span>
+                                </div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">D1</div>
+                                <div class="bg-amber-400/20 border-2 border-gold-400 rounded-lg flex flex-col items-center justify-center shadow-inner" title="Trésor Tech !">
+                                    <span class="text-2xl">💎</span>
+                                    <span class="text-[9px] text-gold-300 font-extrabold">TRÉSOR</span>
+                                </div>
+
+                                <!-- Row 2 -->
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">A2</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">B2</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">C2</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">D2</div>
+                                <div class="bg-rose-950/90 border border-rose-500/50 rounded-lg flex flex-col items-center justify-center" title="Bug informatique !">
+                                    <span class="text-xl">👾</span>
+                                    <span class="text-[9px] text-rose-300 font-bold">BUG</span>
+                                </div>
+
+                                <!-- Row 3 -->
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">A3</div>
+                                <div class="bg-rose-950/90 border border-rose-500/50 rounded-lg flex flex-col items-center justify-center" title="Bug informatique !">
+                                    <span class="text-xl">👾</span>
+                                    <span class="text-[9px] text-rose-300 font-bold">BUG</span>
+                                </div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">C3</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">D3</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">E3</div>
+
+                                <!-- Row 4 -->
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">A4</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">B4</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">C4</div>
+                                <div class="bg-rose-950/90 border border-rose-500/50 rounded-lg flex flex-col items-center justify-center" title="Bug informatique !">
+                                    <span class="text-xl">👾</span>
+                                    <span class="text-[9px] text-rose-300 font-bold">BUG</span>
+                                </div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">E4</div>
+
+                                <!-- Row 5 -->
+                                <div class="bg-teal-500/20 border-2 border-teal-400 rounded-lg flex flex-col items-center justify-center" title="Départ KiddyBot">
+                                    <span class="text-2xl">🤖</span>
+                                    <span class="text-[9px] text-teal-300 font-extrabold">DÉPART</span>
+                                </div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">B5</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">C5</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">D5</div>
+                                <div class="bg-slate-700/70 rounded-lg flex items-center justify-center text-xs text-slate-400 font-mono">E5</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coding Instructions & Student Command Input -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-200">
+                            <h3 class="font-display font-bold text-indigo-900 text-sm mb-2">Blocs de commande disponibles :</h3>
+                            <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                                <div class="bg-white px-3 py-2 rounded-lg border border-indigo-200 flex items-center gap-2 text-navy-900">
+                                    <span class="text-indigo-600 text-base">⬆️</span> HAUT (1 case vers le haut)
+                                </div>
+                                <div class="bg-white px-3 py-2 rounded-lg border border-indigo-200 flex items-center gap-2 text-navy-900">
+                                    <span class="text-indigo-600 text-base">⬇️</span> BAS (1 case vers le bas)
+                                </div>
+                                <div class="bg-white px-3 py-2 rounded-lg border border-indigo-200 flex items-center gap-2 text-navy-900">
+                                    <span class="text-indigo-600 text-base">➡️</span> DROITE (1 case à droite)
+                                </div>
+                                <div class="bg-white px-3 py-2 rounded-lg border border-indigo-200 flex items-center gap-2 text-navy-900">
+                                    <span class="text-indigo-600 text-base">⬅️</span> GAUCHE (1 case à gauche)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="robotCodeInput" class="block text-sm font-bold text-navy-900 mb-1.5">
+                                Écris la séquence complète des 8 étapes pour aller de 🤖 (A5) jusqu'au 💎 (E1) :
+                            </label>
+                            <p class="text-xs text-slate-500 mb-2">Exemple de début : <em>DROITE, DROITE, HAUT, HAUT...</em></p>
+                            <textarea id="robotCodeInput" rows="4" placeholder="Étape 1 : ...&#10;Étape 2 : ...&#10;Étape 3 : ..." class="w-full rounded-xl border-2 border-slate-300 focus:border-indigo-500 focus:outline-none p-3 text-sm font-medium bg-slate-50/60 leading-relaxed"></textarea>
+                        </div>
+
+                        <!-- Quick visual step helper -->
+                        <div class="flex items-center justify-between text-xs text-slate-600 bg-slate-100 px-3.5 py-2 rounded-lg">
+                            <span>Cases traversées (hors départ) :</span>
+                            <span class="font-bold text-indigo-700">8 déplacements minimum</span>
+                        </div>
+
+                        <div class="answer-key hidden p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 font-semibold">
+                            🔑 Exemple de chemin valide (8 étapes) : DROITE → DROITE → HAUT → HAUT → HAUT → DROITE → HAUT → DROITE (ou HAUT → HAUT → HAUT → HAUT → DROITE → DROITE → GAUCHE/contournement, ou DROITE → DROITE → HAUT → HAUT → DROITE → HAUT → DROITE → HAUT).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 MISSION 5 : LE CODE D'HONNEUR DU CYBER-EXPLORATEUR (SÉCURITÉ)
+                 ================================================================= -->
+            <section class="mission-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-coral-500 to-coral-600 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-coral-600 font-display font-bold text-lg flex items-center justify-center shadow">5</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission 5 : Le Bouclier du Cyber-Explorateur (Sécurité)</h2>
+                            <p class="text-xs text-coral-100">Indique si chaque affirmation est <strong>Vraie</strong> ou <strong>Fausse</strong>, puis explique pourquoi en une courte phrase.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/30 text-xs font-bold border border-white/20">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-4">
+                    <!-- Question 5.1 -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>1.</strong> « Je peux donner mon mot de passe Kiddy Planet à mon meilleur ami pour qu'il termine mon jeu. »
+                            </p>
+                            <div class="flex items-center gap-3 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec1" value="vrai" class="accent-teal-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec1" value="faux" data-correct="true" class="accent-teal-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Pourquoi ?</span>
+                            <input type="text" placeholder="Écris ta justification ici..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-teal-700">🔑 Corrigé : FAUX — Un mot de passe est strictement personnel (comme une brosse à dents !).</p>
+                    </div>
+
+                    <!-- Question 5.2 -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>2.</strong> « Si une fenêtre clignotante me dit "Tu as gagné un iPad gratuit, clique vite !", je dois appeler un adulte. »
+                            </p>
+                            <div class="flex items-center gap-3 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec2" value="vrai" data-correct="true" class="accent-teal-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec2" value="faux" class="accent-teal-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Pourquoi ?</span>
+                            <input type="text" placeholder="Écris ta justification ici..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-teal-700">🔑 Corrigé : VRAI — C'est un piège (hameçonnage / publicité trompeuse) qui peut contenir un virus.</p>
+                    </div>
+
+                    <!-- Question 5.3 -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>3.</strong> « Sur un forum de jeu en ligne, je peux partager mon nom de famille, mon adresse et le nom de mon école. »
+                            </p>
+                            <div class="flex items-center gap-3 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec3" value="vrai" class="accent-teal-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="sec3" value="faux" data-correct="true" class="accent-teal-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Pourquoi ?</span>
+                            <input type="text" placeholder="Écris ta justification ici..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-teal-700">🔑 Corrigé : FAUX — Ce sont des informations personnelles privées qu'il ne faut jamais révéler à des inconnus.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 MISSION 6 : DÉFI CRÉATIF DE L'INVENTEUR (QUESTION OUVERTE)
+                 ================================================================= -->
+            <section class="mission-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-gold-400 text-navy-950 font-display font-bold text-lg flex items-center justify-center shadow">6</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Mission Bonus : L'Invention Tech de Kiddy Planet</h2>
+                            <p class="text-xs text-emerald-100">Imagine et dessine un objet technologique du futur pour aider les élèves de ton école !</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/30 text-xs font-bold border border-white/20">3 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5">
+                    <!-- Drawing Box -->
+                    <div class="md:col-span-5 flex flex-col">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Croquis de ton invention :</span>
+                        <div class="flex-1 min-h-[160px] rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/70 flex flex-col items-center justify-center p-4 text-center">
+                            <svg class="w-8 h-8 text-slate-300 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/></svg>
+                            <span class="text-xs text-slate-400">Zone de dessin (sur feuille imprimée)</span>
+                        </div>
+                    </div>
+
+                    <!-- Description Box -->
+                    <div class="md:col-span-7 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1">Nom de ton objet tech :</label>
+                            <input type="text" placeholder="Ex : Le Cartable Solaire Intelligent" class="worksheet-input w-full px-2.5 py-1.5 text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1">À quoi sert-il et quels capteurs/pièces utilise-t-il ?</label>
+                            <textarea rows="4" placeholder="Décris ton invention en 2 ou 3 phrases..." class="w-full rounded-xl border border-slate-300 focus:border-teal-500 focus:outline-none p-3 text-sm bg-slate-50/60"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 FOOTER RUBRIC: AUTO-ÉVALUATION DE L'ÉLÈVE & COMMENTAIRES DU PROF
+                 ================================================================= -->
+            <footer class="mission-card rounded-2xl bg-slate-100 border-2 border-slate-200 p-5 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Student Self-Reflection -->
+                    <div class="bg-white rounded-xl p-4 border border-slate-200">
+                        <h3 class="font-display font-bold text-navy-900 text-sm uppercase tracking-wide mb-3 flex items-center gap-2">
+                            <span>🧭</span> Auto-évaluation de l'Explorateur
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-3">Comment s'est passée ta chasse au trésor technologique aujourd'hui ?</p>
+                        <div class="space-y-2 text-xs font-semibold">
+                            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-emerald-50 cursor-pointer">
+                                <input type="radio" name="selfEval" class="accent-emerald-600">
+                                <span class="text-lg">🤩</span>
+                                <span>J'ai réussi presque toutes les missions facilement !</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-amber-50 cursor-pointer">
+                                <input type="radio" name="selfEval" class="accent-amber-500">
+                                <span class="text-lg">🙂</span>
+                                <span>J'ai bien avancé, mais j'ai dû réfléchir longtemps sur certains indices.</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-rose-50 cursor-pointer">
+                                <input type="radio" name="selfEval" class="accent-rose-500">
+                                <span class="text-lg">🤔</span>
+                                <span>J'ai encore besoin d'entraînement sur le vocabulaire informatique.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Observations & Signature -->
+                    <div class="bg-white rounded-xl p-4 border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-navy-900 text-sm uppercase tracking-wide mb-2 flex items-center gap-2">
+                                <span>✍️</span> Observations de l'Enseignant(e)
+                            </h3>
+                            <textarea rows="3" placeholder="Commentaires constructifs sur la maîtrise des outils numériques..." class="w-full rounded-lg border border-dashed border-slate-300 p-2.5 text-xs bg-slate-50/50 focus:outline-none focus:border-navy-800"></textarea>
+                        </div>
+                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                            <span>Kiddy Planet – Elite International School Group</span>
+                            <span>Signature des parents : ______________</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- Custom Modal / Toast Notification (No alert() used) -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-navy-900 text-white px-4 py-3 rounded-xl shadow-xl border border-gold-400 flex items-center gap-2.5 text-sm font-medium">
+            <span id="toastIcon">✨</span>
+            <span id="toastText">Action effectuée !</span>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Normalize user text input for flexible, kid-friendly grading
+         * (ignores case, extra spaces, and minor punctuation)
+         */
+        function normalizeText(str) {
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, ' ');
+        }
+
+        /**
+         * Display a non-intrusive toast message
+         */
+        function showToast(message, icon = '✨') {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastText').textContent = message;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+
+        /**
+         * Allow teachers to upload their school logo directly into the top-left corner frame
+         */
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('schoolLogoPreview');
+                const placeholder = document.getElementById('schoolLogoPlaceholder');
+                img.src = e.target.result;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                showToast('Logo de l\'école ajouté avec succès !', '🏫');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * Auto-check objective fields across Missions 1, 2, 3, and 5
+         */
+        function checkAllAnswers() {
+            let earnedPoints = 0;
+            let totalAutoPoints = 0;
+
+            // 1. Check all text inputs with data-answer
+            const textInputs = document.querySelectorAll('.auto-grade-text');
+            textInputs.forEach(input => {
+                totalAutoPoints++;
+                const acceptedAnswers = input.dataset.answer.split('|').map(a => normalizeText(a));
+                const userAnswer = normalizeText(input.value);
+
+                input.classList.remove('correct', 'incorrect');
+                if (userAnswer && acceptedAnswers.includes(userAnswer)) {
+                    input.classList.add('correct');
+                    earnedPoints++;
+                } else {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            // 2. Check all select dropdowns in Mission 1
+            const selectInputs = document.querySelectorAll('.auto-grade-select');
+            selectInputs.forEach(select => {
+                totalAutoPoints++;
+                const expected = select.dataset.answer;
+                select.classList.remove('border-green-600', 'bg-green-50', 'border-rose-500', 'bg-rose-50');
+
+                if (select.value === expected) {
+                    select.classList.add('border-green-600', 'bg-green-50');
+                    earnedPoints++;
+                } else {
+                    select.classList.add('border-rose-500', 'bg-rose-50');
+                }
+            });
+
+            // 3. Check radio buttons in Mission 5
+            const radioGroups = ['sec1', 'sec2', 'sec3'];
+            radioGroups.forEach(groupName => {
+                totalAutoPoints++;
+                const checked = document.querySelector(`input[name="${groupName}"]:checked`);
+                const allRadios = document.querySelectorAll(`input[name="${groupName}"]`);
+                allRadios.forEach(r => r.parentElement.classList.remove('ring-2', 'ring-green-500', 'ring-rose-500'));
+
+                if (checked) {
+                    if (checked.dataset.correct === 'true') {
+                        checked.parentElement.classList.add('ring-2', 'ring-green-500');
+                        earnedPoints++;
+                    } else {
+                        checked.parentElement.classList.add('ring-2', 'ring-rose-500');
+                    }
+                }
+            });
+
+            // Update Banner Feedback
+            const banner = document.getElementById('feedbackBanner');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackMessage = document.getElementById('feedbackMessage');
+            const feedbackBadge = document.getElementById('feedbackBadge');
+
+            scoreDisplay.textContent = `${earnedPoints} / ${totalAutoPoints}`;
+            const ratio = earnedPoints / totalAutoPoints;
+
+            if (ratio >= 0.85) {
+                feedbackBadge.textContent = '🏆';
+                feedbackTitle.textContent = 'Incroyable ! Trésor Tech Déverrouillé !';
+                feedbackMessage.textContent = 'Tu maîtrises parfaitement ton équipement et tes connaissances numériques.';
+            } else if (ratio >= 0.55) {
+                feedbackBadge.textContent = '🧭';
+                feedbackTitle.textContent = 'Très bon travail d\'exploration !';
+                feedbackMessage.textContent = 'Regarde les cases surlignées en rouge pour corriger les derniers indices.';
+            } else {
+                feedbackBadge.textContent = '🗺️';
+                feedbackTitle.textContent = 'Continue ton expédition, Explorateur !';
+                feedbackMessage.textContent = 'Relis bien la boîte à outils et la banque de mots pour compléter ta carte.';
+            }
+
+            banner.classList.remove('hidden');
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        /**
+         * Toggle teacher answer keys across all missions
+         */
+        let answerKeyVisible = false;
+        function toggleAnswerKey() {
+            answerKeyVisible = !answerKeyVisible;
+            const keys = document.querySelectorAll('.answer-key');
+            const btn = document.getElementById('btnAnswerKey');
+
+            keys.forEach(el => {
+                if (answerKeyVisible) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
+            if (answerKeyVisible) {
+                btn.classList.add('bg-gold-500', 'text-navy-950');
+                btn.classList.remove('bg-navy-800', 'text-gold-400');
+                showToast('Corrigé enseignant affiché', '🔑');
+            } else {
+                btn.classList.remove('bg-gold-500', 'text-navy-950');
+                btn.classList.add('bg-navy-800', 'text-gold-400');
+                showToast('Corrigé enseignant masqué', '🙈');
+            }
+        }
+
+        /**
+         * Reset all form inputs and feedback highlights
+         */
+        function resetAssessment() {
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                if (el.id !== 'studentName' && el.id !== 'studentClass' && el.id !== 'assessmentDate' && el.id !== 'teamName') {
+                    el.value = '';
+                }
+                el.classList.remove('correct', 'incorrect');
+            });
+
+            document.querySelectorAll('select').forEach(sel => {
+                sel.selectedIndex = 0;
+                sel.classList.remove('border-green-600', 'bg-green-50', 'border-rose-500', 'bg-rose-50');
+            });
+
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(box => {
+                box.checked = false;
+                if (box.parentElement) {
+                    box.parentElement.classList.remove('ring-2', 'ring-green-500', 'ring-rose-500');
+                }
+            });
+
+            document.getElementById('feedbackBanner').classList.add('hidden');
+            showToast('Toutes les réponses ont été effacées.', '🧹');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation Formative 1 : Squelette HTML5 (&lt;head&gt; et &lt;body&gt;) – Kiddy Planet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (friendly headers), Plus Jakarta Sans (academic clarity) & Fira Code (HTML tags) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        navy: {
+                            850: '#162044',
+                            900: '#0F172A',
+                            950: '#090D1F',
+                        },
+                        skybrand: {
+                            50: '#F0F9FF',
+                            100: '#E0F2FE',
+                            500: '#0EA5E9',
+                            600: '#0284C7',
+                            700: '#0369A1',
+                        },
+                        htmlorange: {
+                            50: '#FFF7ED',
+                            100: '#FFEDD5',
+                            500: '#F97316',
+                            600: '#EA580C',
+                        },
+                        mint: {
+                            50: '#ECFDF5',
+                            100: '#D1FAE5',
+                            500: '#10B981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        amberbrand: {
+                            50: '#FFFBEB',
+                            100: '#FEF3C7',
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #EEF2F6;
+            background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+            background-size: 22px 22px;
+            color: #0F172A;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Dotted worksheet inputs for easy writing on screen and paper */
+        .worksheet-input {
+            border: none;
+            border-bottom: 2px dashed #94A3B8;
+            background-color: rgba(248, 250, 252, 0.95);
+            transition: all 0.2s ease;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .worksheet-input:focus {
+            outline: none;
+            border-bottom: 2px solid #0284C7;
+            background-color: #F0F9FF;
+        }
+
+        .worksheet-input.correct {
+            border-bottom: 2px solid #059669;
+            background-color: #D1FAE5;
+            color: #065F46;
+            font-weight: 700;
+        }
+
+        .worksheet-input.incorrect {
+            border-bottom: 2px solid #E11D48;
+            background-color: #FFE4E6;
+            color: #9F1239;
+        }
+
+        /* Lined code notebook background for Part 4 */
+        .code-notebook {
+            background-color: #0F172A;
+            background-image: linear-gradient(to bottom, transparent 27px, rgba(148, 163, 184, 0.16) 28px);
+            background-size: 100% 28px;
+            line-height: 28px;
+        }
+
+        /* Custom checkbox styling */
+        .kiddy-check {
+            appearance: none;
+            width: 21px;
+            height: 21px;
+            border: 2.5px solid #1E293B;
+            border-radius: 6px;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .kiddy-check:checked {
+            background-color: #0284C7;
+            border-color: #0369A1;
+        }
+
+        .kiddy-check:checked::after {
+            content: '✓';
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        /* Clean A4 / Letter Print Rules */
+        @media print {
+            body {
+                background: #FFFFFF !important;
+                background-image: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .sheet-container {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+            .section-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1.5px solid #CBD5E1 !important;
+                margin-bottom: 14px !important;
+            }
+            .page-break-before {
+                page-break-before: always;
+                break-before: page;
+            }
+            .worksheet-input {
+                background-color: transparent !important;
+                border-bottom: 1.5px dashed #64748B !important;
+            }
+            .code-notebook {
+                background-color: #F8FAFC !important;
+                color: #0F172A !important;
+                border: 1.5px solid #94A3B8 !important;
+                background-image: linear-gradient(to bottom, transparent 27px, #CBD5E1 28px) !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-skybrand-100 selection:text-navy-950 pb-16">
+
+    <!-- =========================================================================
+         FLOATING TEACHER & STUDENT UTILITY TOOLBAR (HIDDEN ON PRINT)
+         ========================================================================= -->
+    <div class="no-print sticky top-0 z-50 bg-navy-950/95 backdrop-blur-md text-white border-b border-slate-800 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-htmlorange-500 text-white font-display font-bold text-base shadow">
+                    &lt;/&gt;
+                </span>
+                <div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-amberbrand-400">Atelier Code HTML5 • Kiddy Planet</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-300 hidden sm:block">Évaluation interactive & prête à imprimer</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="checkAllAnswers()" class="px-3.5 py-2 rounded-xl bg-mint-500 hover:bg-mint-600 active:scale-95 text-white font-semibold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Vérifier mes réponses</span>
+                </button>
+                <button type="button" onclick="toggleAnswerKey()" id="btnAnswerKey" class="px-3.5 py-2 rounded-xl bg-navy-850 hover:bg-slate-800 border border-slate-600 text-amberbrand-400 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
+                    <span>Afficher le Corrigé (Prof)</span>
+                </button>
+                <button type="button" onclick="resetAssessment()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                    <span class="hidden md:inline">Réinitialiser</span>
+                </button>
+                <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl bg-amberbrand-400 hover:bg-amberbrand-500 active:scale-95 text-navy-950 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
+                    <span>Imprimer / Enregistrer PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         INTERACTIVE FEEDBACK BANNER (SHOWN WHEN AUTO-CHECKING)
+         ========================================================================= -->
+    <div id="feedbackBanner" class="hidden no-print max-w-5xl mx-auto mt-4 px-4">
+        <div class="rounded-2xl bg-gradient-to-r from-navy-950 via-navy-850 to-skybrand-700 text-white p-5 shadow-xl border-2 border-amberbrand-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div id="feedbackBadge" class="w-14 h-14 rounded-2xl bg-amberbrand-400 text-navy-950 flex items-center justify-center text-3xl shadow-inner shrink-0">
+                    🛡️
+                </div>
+                <div>
+                    <h3 id="feedbackTitle" class="font-display text-xl font-bold text-amberbrand-400">Bravo, Inspecteur(trice) HTML5 !</h3>
+                    <p id="feedbackMessage" class="text-sm text-slate-200 mt-0.5">Voici le résultat de la vérification automatique de tes réponses.</p>
+                </div>
+            </div>
+            <div class="bg-navy-950/75 px-5 py-3 rounded-xl border border-slate-700 text-right shrink-0">
+                <span class="block text-[11px] uppercase tracking-wider text-skybrand-300 font-bold">Points Auto-Corrigés</span>
+                <span id="scoreDisplay" class="font-display text-2xl font-bold text-mint-400">0 / 21</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         MAIN WORKSHEET SHEET CONTAINER
+         ========================================================================= -->
+    <main class="sheet-container max-w-5xl mx-auto my-6 sm:my-8 bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+
+        <!-- =====================================================================
+             SCHOOL HEADER: KIDDY PLANET – ELITE INTERNATIONAL SCHOOL GROUP
+             ===================================================================== -->
+        <header class="relative bg-gradient-to-br from-navy-950 via-navy-850 to-slate-900 text-white p-6 sm:p-8 border-b-4 border-amberbrand-400 overflow-hidden">
+            <!-- Subtle decorative HTML5 & code bracket watermarks -->
+            <svg class="absolute -right-6 -bottom-8 w-64 h-64 text-skybrand-500/10 pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="5">
+                <polyline points="65,55 25,100 65,145" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="135,55 175,100 135,145" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="112" y1="42" x2="88" y2="158" stroke-linecap="round"/>
+            </svg>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+                
+                <!-- TOP-LEFT CORNER: DEDICATED PLACE FOR THE SCHOOL LOGO -->
+                <div class="shrink-0 flex flex-col items-center">
+                    <label for="logoUpload" title="Cliquez pour importer le logo de l'école" class="group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-dashed border-amberbrand-400 flex flex-col items-center justify-center p-2 cursor-pointer transition-all shadow-inner overflow-hidden">
+                        <img id="schoolLogoPreview" src="" alt="Logo Kiddy Planet" class="hidden w-full h-full object-contain rounded-xl bg-white p-1.5" />
+                        <div id="schoolLogoPlaceholder" class="flex flex-col items-center justify-center text-center">
+                            <!-- School Planet + Shield SVG Icon -->
+                            <svg class="w-9 h-9 text-amberbrand-400 mb-1 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="12" cy="12" r="7"/>
+                                <ellipse cx="12" cy="12" rx="11" ry="3.8" transform="rotate(-22 12 12)"/>
+                                <circle cx="19" cy="6" r="1.5" fill="currentColor"/>
+                            </svg>
+                            <span class="font-display font-bold text-xs tracking-wider text-amberbrand-400 uppercase">Espace Logo</span>
+                            <span class="no-print text-[10px] text-slate-300 mt-0.5 leading-tight px-1">Logo de l'école (Cliquer ici)</span>
+                        </div>
+                    </label>
+                    <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                </div>
+
+                <!-- CENTER: SCHOOL IDENTITY & FORMATIVE TITLE -->
+                <div class="flex-1 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amberbrand-400/20 border border-amberbrand-400/50 text-amberbrand-400 text-xs sm:text-sm font-bold tracking-wide uppercase mb-2">
+                        <span>★</span>
+                        <span>Kiddy Planet – Elite International School Group</span>
+                        <span>★</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-skybrand-300 mb-1.5">
+                        Département d'Informatique & Culture Numérique • Développement Web
+                    </p>
+
+                    <h1 class="font-display text-xl sm:text-2xl md:text-[26px] font-bold text-white leading-snug tracking-tight">
+                        Évaluation Formative 1 : Vérification de la validité du squelette HTML5 et présence des balises <code class="font-mono text-amberbrand-400 bg-white/10 px-1.5 py-0.5 rounded">&lt;head&gt;</code> et <code class="font-mono text-skybrand-300 bg-white/10 px-1.5 py-0.5 rounded">&lt;body&gt;</code>
+                    </h1>
+
+                    <div class="mt-2.5 inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-htmlorange-500/20 border border-htmlorange-500/50 text-orange-200 text-xs sm:text-sm font-bold">
+                        <span>🏗️</span>
+                        <span>Formatif : Structure du document</span>
+                    </div>
+                </div>
+
+                <!-- TOP-RIGHT: EVALUATION SCORE BADGE (/ 20 POINTS) -->
+                <div class="shrink-0 w-full md:w-44 rounded-2xl bg-white text-navy-950 p-3.5 border-2 border-amberbrand-400 shadow-lg flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-1.5">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-navy-900">Évaluation</span>
+                        <span class="text-base">🏅</span>
+                    </div>
+                    <div class="flex items-baseline justify-center my-1">
+                        <input type="text" id="teacherScoreBox" placeholder="   " class="w-14 text-center font-display text-2xl font-bold text-navy-950 border-b-2 border-slate-400 focus:outline-none focus:border-skybrand-600">
+                        <span class="font-display text-lg font-bold text-slate-500 ml-1">/ 20 pts</span>
+                    </div>
+                    <div class="mt-2 pt-1.5 border-t border-slate-100 text-center">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Niveau atteint</span>
+                        <div class="flex justify-center gap-1 text-[10px] font-extrabold">
+                            <span class="px-1.5 py-0.5 rounded bg-mint-100 text-mint-700">A+</span>
+                            <span class="px-1.5 py-0.5 rounded bg-skybrand-100 text-skybrand-700">A</span>
+                            <span class="px-1.5 py-0.5 rounded bg-amberbrand-100 text-amber-800">B</span>
+                            <span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STUDENT METADATA FIELDS -->
+            <div class="relative z-10 mt-6 pt-5 border-t border-white/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-sm">
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentName" class="text-[11px] font-bold uppercase tracking-wider text-amberbrand-400 mb-1">Nom & Prénom</label>
+                    <input type="text" id="studentName" placeholder="Ex : Léo Kamga" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amberbrand-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentClass" class="text-[11px] font-bold uppercase tracking-wider text-amberbrand-400 mb-1">Classe / Niveau</label>
+                    <input type="text" id="studentClass" placeholder="Ex : CM2 / 6ème B" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amberbrand-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="assessmentDate" class="text-[11px] font-bold uppercase tracking-wider text-amberbrand-400 mb-1">Date</label>
+                    <input type="text" id="assessmentDate" placeholder="JJ / MM / AAAA" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amberbrand-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="workstationId" class="text-[11px] font-bold uppercase tracking-wider text-amberbrand-400 mb-1">Groupe / Poste</label>
+                    <input type="text" id="workstationId" placeholder="Ex : Poste Web #04" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amberbrand-400 font-medium py-0.5">
+                </div>
+            </div>
+        </header>
+
+        <!-- =====================================================================
+             WORKSHEET BODY
+             ===================================================================== -->
+        <div class="p-6 sm:p-8 space-y-7">
+
+            <!-- =================================================================
+                 INTRODUCTION & MISSION BRIEFING
+                 ================================================================= -->
+            <div class="section-card rounded-2xl bg-gradient-to-r from-skybrand-50 via-white to-amberbrand-50 border-2 border-skybrand-200 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4">
+                <!-- Cute Custom SVG HTML5 Shield Mascot -->
+                <div class="shrink-0 w-16 h-16 rounded-2xl bg-htmlorange-500 text-white flex flex-col items-center justify-center shadow-md border-2 border-orange-300">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 3l1.45 16.2L12 21l6.55-1.8L20 3H4zm13.1 5.3H8.7l.2 2.3h8l-.6 6.7-4.3 1.2-4.3-1.2-.3-3.3h2.2l.15 1.7 2.25.6 2.25-.6.25-2.8H6.9L6.3 6h11l-.2 2.3z"/>
+                    </svg>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h2 class="font-display text-base sm:text-lg font-bold text-navy-900">
+                        🕵️‍♂️ Mission : Inspecteur(trice) du Code Web !
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mt-0.5">
+                        Bienvenue au laboratoire numérique de <strong>Kiddy Planet</strong> ! Avant de publier un site sur Internet, chaque page doit posséder un <strong>squelette HTML5</strong> solide et valide : une déclaration <code class="font-mono font-bold text-htmlorange-600">&lt;!DOCTYPE html&gt;</code>, une racine <code class="font-mono font-bold text-navy-900">&lt;html&gt;</code>, un cerveau <code class="font-mono font-bold text-skybrand-700">&lt;head&gt;</code> et un corps visible <code class="font-mono font-bold text-mint-700">&lt;body&gt;</code>. Relève les 5 défis ci-dessous pour valider ton diplôme d'architecte HTML5 !
+                    </p>
+                </div>
+            </div>
+
+            <!-- =================================================================
+                 PARTIE 1 : ANATOMIE DU SQUELETTE HTML5 (5 POINTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-navy-850 to-slate-800 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-amberbrand-400 text-navy-950 font-display font-bold text-lg flex items-center justify-center shadow">1</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 1 : Anatomie du Squelette HTML5</h2>
+                            <p class="text-xs text-slate-300">Associe chaque balise fondamentale à son rôle exact et indique son emplacement dans le document.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-white/10 text-amberbrand-400 text-xs font-bold border border-amberbrand-400/30">5 points</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-navy-900 text-xs uppercase tracking-wider border-b-2 border-slate-200">
+                                <th class="py-3 px-4 w-48">Balise / Déclaration</th>
+                                <th class="py-3 px-4">Rôle principal dans la page web</th>
+                                <th class="py-3 px-4 w-56">Emplacement exact</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-sm">
+                            <!-- 1. <!DOCTYPE html> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-htmlorange-50 text-htmlorange-600 border border-orange-200">&lt;!DOCTYPE html&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Indique au navigateur web que le document utilise la version moderne <strong>HTML5</strong>.
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="ligne1" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ Tout en haut (Ligne 1)</span>
+                                </td>
+                            </tr>
+
+                            <!-- 2. <html lang="fr"> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-slate-100 text-navy-900 border border-slate-300">&lt;html lang="fr"&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Balise racine qui contient tout le code de la page et précise que la langue est le français.
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="racine" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ Encadre tout le document</span>
+                                </td>
+                            </tr>
+
+                            <!-- 3. <head> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-skybrand-50 text-skybrand-700 border border-skybrand-200">&lt;head&gt; ... &lt;/head&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    « Cerveau » de la page : regroupe les réglages et métadonnées invisibles dans la page principale.
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="dans_html_1" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ 1ère grande section dans &lt;html&gt;</span>
+                                </td>
+                            </tr>
+
+                            <!-- 4. <meta charset="UTF-8"> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-skybrand-50 text-skybrand-700 border border-skybrand-200">&lt;meta charset="UTF-8"&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Permet d'afficher correctement les accents français (é, è, à, ç) et les émojis sans symboles bizarres.
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="dans_head" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ À l'intérieur de &lt;head&gt;</span>
+                                </td>
+                            </tr>
+
+                            <!-- 5. <title> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-skybrand-50 text-skybrand-700 border border-skybrand-200">&lt;title&gt; ... &lt;/title&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Définit le nom affiché dans l'<strong>onglet du navigateur</strong> (en haut de la fenêtre).
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="dans_head" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ À l'intérieur de &lt;head&gt;</span>
+                                </td>
+                            </tr>
+
+                            <!-- 6. <body> -->
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-3 px-4">
+                                    <code class="font-mono font-bold text-xs sm:text-sm px-2.5 py-1 rounded-lg bg-mint-50 text-mint-700 border border-mint-200">&lt;body&gt; ... &lt;/body&gt;</code>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    « Corps » de la page : contient tout ce que le visiteur voit à l'écran (titres, textes, images, boutons).
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="dans_html_2" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-navy-900 focus:border-skybrand-500 focus:outline-none">
+                                        <option value="">-- Choisir l'emplacement --</option>
+                                        <option value="ligne1">Tout en haut (Ligne 1, avant &lt;html&gt;)</option>
+                                        <option value="racine">Encadre tout le document</option>
+                                        <option value="dans_head">À l'intérieur de &lt;head&gt;</option>
+                                        <option value="dans_html_1">1ère grande section dans &lt;html&gt;</option>
+                                        <option value="dans_html_2">2ème grande section après &lt;/head&gt;</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-mint-700 mt-1 block">✓ 2ème grande section après &lt;/head&gt;</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 2 : LE CERVEAU (<head>) VS LE CORPS (<body>) (4 POINTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-skybrand-600 to-skybrand-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-skybrand-700 font-display font-bold text-lg flex items-center justify-center shadow">2</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 2 : Le Cerveau (<code class="font-mono">&lt;head&gt;</code>) vs Le Corps (<code class="font-mono">&lt;body&gt;</code>)</h2>
+                            <p class="text-xs text-skybrand-100">Classe chacune des 8 balises ci-dessous dans la bonne zone du squelette HTML5 et justifie brièvement.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/40 text-white text-xs font-bold border border-white/25">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <!-- Two-Column Visual Concept Banner (Brain vs Stage) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl bg-skybrand-50 border-2 border-skybrand-200 p-4 flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-skybrand-600 text-white flex items-center justify-center shrink-0 shadow">
+                                <!-- Brain / Gear Custom SVG -->
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 3A4.5 4.5 0 005 7.5c0 .7.16 1.36.45 1.95A4 4 0 004 12.5a4 4 0 003 3.87V18a3 3 0 003 3h1V3H9.5zM14.5 3A4.5 4.5 0 0119 7.5c0 .7-.16 1.36-.45 1.95A4 4 0 0120 12.5a4 4 0 01-3 3.87V18a3 3 0 01-3 3h-1V3h1.5z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-skybrand-900 text-base">Zone A : <code class="font-mono">&lt;head&gt;</code> (Le Cerveau)</h3>
+                                <p class="text-xs text-skybrand-800">Métadonnées, encodage des caractères, titre d'onglet, liens vers les feuilles de style CSS.</p>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl bg-mint-50 border-2 border-mint-200 p-4 flex items-center gap-3.5">
+                            <div class="w-12 h-12 rounded-xl bg-mint-600 text-white flex items-center justify-center shrink-0 shadow">
+                                <!-- Screen / Stage Custom SVG -->
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="4" width="18" height="12" rx="2"/>
+                                    <path stroke-linecap="round" d="M8 20h8M12 16v4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-mint-900 text-base">Zone B : <code class="font-mono">&lt;body&gt;</code> (La Scène Visible)</h3>
+                                <p class="text-xs text-mint-800">Contenu affiché à l'utilisateur : gros titres, paragraphes, images, liens et boutons.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8 Web Elements Sorting Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Item 1 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                1. &lt;h1&gt;Bienvenue à Kiddy Planet&lt;/h1&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="body" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ? (Ex : Titre visible sur la page)" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;body&gt; — Grand titre affiché directement sur la page.</span>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                2. &lt;title&gt;Ma Page Web&lt;/title&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="head" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ? (Ex : Nom dans l'onglet)" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;head&gt; — S'affiche uniquement dans l'onglet du navigateur.</span>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                3. &lt;meta charset="UTF-8"&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="head" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;head&gt; — Réglage technique d'encodage des accents.</span>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                4. &lt;p&gt;Voici mon premier paragraphe.&lt;/p&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="body" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;body&gt; — Texte lu par le visiteur sur la page.</span>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                5. &lt;link rel="stylesheet" href="style.css"&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="head" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;head&gt; — Charge la feuille de style CSS avant l'affichage.</span>
+                        </div>
+
+                        <!-- Item 6 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                6. &lt;img src="robot.png" alt="Robot"&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="body" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;body&gt; — Image visible dans le contenu de la page.</span>
+                        </div>
+
+                        <!-- Item 7 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                7. &lt;meta name="viewport" content="width=device-width"&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="head" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;head&gt; — Métadonnée d'adaptation mobile/tablette.</span>
+                        </div>
+
+                        <!-- Item 8 -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                            <code class="font-mono text-xs font-bold text-navy-900 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 block overflow-x-auto">
+                                8. &lt;button&gt;Cliquer ici&lt;/button&gt;
+                            </code>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <select data-answer="body" class="auto-grade-select rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-navy-900 shrink-0">
+                                    <option value="">-- Zone --</option>
+                                    <option value="head">&lt;head&gt;</option>
+                                    <option value="body">&lt;body&gt;</option>
+                                </select>
+                                <input type="text" placeholder="Pourquoi ?" class="worksheet-input w-full px-2 py-1 text-xs">
+                            </div>
+                            <span class="answer-key hidden text-[11px] font-bold text-mint-700">✓ &lt;body&gt; — Bouton interactif visible par l'utilisateur.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 3 : CHASSE AUX BUGS — VALIDATION D'UN SQUELETTE HTML5 (5 POINTS)
+                 ================================================================= -->
+            <section class="section-card page-break-before rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-htmlorange-500 to-htmlorange-600 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-navy-950 text-amberbrand-400 font-display font-bold text-lg flex items-center justify-center shadow">3</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 3 : Chasse aux Bugs — Validation d'un Squelette HTML5</h2>
+                            <p class="text-xs text-orange-100">Inspecte ces 3 fichiers HTML5 défectueux. Trouve les erreurs de structure et écris les corrections demandées.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950 text-amberbrand-400 text-xs font-bold">5 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+
+                    <!-- SNIPPET A -->
+                    <div class="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                        <!-- Numbered Code Block (6 cols) -->
+                        <div class="lg:col-span-6 rounded-xl bg-navy-900 text-slate-100 p-3.5 font-mono text-xs leading-relaxed shadow-inner overflow-x-auto">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-2">
+                                <span class="text-[11px] font-bold text-amberbrand-400">📄 Fichier A : page_accueil.html</span>
+                                <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">2 erreurs</span>
+                            </div>
+                            <pre class="font-mono text-xs"><code><span class="text-slate-500 select-none">1 | </span><span class="text-rose-400 italic">&lt;!-- Il manque la 1ère ligne ! --&gt;</span>
+<span class="text-slate-500 select-none">2 | </span><span class="text-sky-400">&lt;html lang="fr"&gt;</span>
+<span class="text-slate-500 select-none">3 | </span>  <span class="text-sky-400">&lt;head&gt;</span>
+<span class="text-slate-500 select-none">4 | </span>    <span class="text-sky-400">&lt;meta charset="UTF-8"&gt;</span>
+<span class="text-slate-500 select-none">5 | </span>    <span class="text-sky-400">&lt;title&gt;</span><span class="text-white">Club Robotique</span><span class="text-sky-400">&lt;/title&gt;</span>
+<span class="text-slate-500 select-none">6 | </span>  <span class="text-sky-400">&lt;body&gt;</span>
+<span class="text-slate-500 select-none">7 | </span>    <span class="text-emerald-400">&lt;h1&gt;</span><span class="text-white">Bonjour !</span><span class="text-emerald-400">&lt;/h1&gt;</span>
+<span class="text-slate-500 select-none">8 | </span>  <span class="text-sky-400">&lt;/body&gt;</span>
+<span class="text-slate-500 select-none">9 | </span><span class="text-sky-400">&lt;/html&gt;</span></code></pre>
+                        </div>
+
+                        <!-- Student Diagnosis Inputs (6 cols) -->
+                        <div class="lg:col-span-6 space-y-3">
+                            <p class="font-display font-bold text-navy-900 text-sm">🔍 Diagnostic du Fichier A :</p>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">1. Quelle déclaration manque tout en haut (Ligne 1) ?</label>
+                                <input type="text" data-answer="<!doctype html>" placeholder="Écris la balise manquante..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">2. Quelle balise fermante a été oubliée juste avant <code class="font-mono">&lt;body&gt;</code> (Ligne 6) ?</label>
+                                <input type="text" data-answer="</head>" placeholder="Écris la balise fermante..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 Corrigé A : Il manque &lt;!DOCTYPE html&gt; en ligne 1 et &lt;/head&gt; avant &lt;body&gt;.</p>
+                        </div>
+                    </div>
+
+                    <!-- SNIPPET B -->
+                    <div class="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                        <!-- Numbered Code Block (6 cols) -->
+                        <div class="lg:col-span-6 rounded-xl bg-navy-900 text-slate-100 p-3.5 font-mono text-xs leading-relaxed shadow-inner overflow-x-auto">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-2">
+                                <span class="text-[11px] font-bold text-amberbrand-400">📄 Fichier B : profil_eleve.html</span>
+                                <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">Balises inversées</span>
+                            </div>
+                            <pre class="font-mono text-xs"><code><span class="text-slate-500 select-none">1 | </span><span class="text-amber-400">&lt;!DOCTYPE html&gt;</span>
+<span class="text-slate-500 select-none">2 | </span><span class="text-sky-400">&lt;html lang="fr"&gt;</span>
+<span class="text-slate-500 select-none">3 | </span>  <span class="text-sky-400">&lt;head&gt;</span>
+<span class="text-slate-500 select-none">4 | </span>    <span class="text-emerald-400">&lt;h1&gt;</span><span class="text-white">Mon Profil</span><span class="text-emerald-400">&lt;/h1&gt;</span>
+<span class="text-slate-500 select-none">5 | </span>    <span class="text-emerald-400">&lt;p&gt;</span><span class="text-white">J'adore coder !</span><span class="text-emerald-400">&lt;/p&gt;</span>
+<span class="text-slate-500 select-none">6 | </span>  <span class="text-sky-400">&lt;/head&gt;</span>
+<span class="text-slate-500 select-none">7 | </span>  <span class="text-sky-400">&lt;body&gt;</span>
+<span class="text-slate-500 select-none">8 | </span>    <span class="text-sky-400">&lt;title&gt;</span><span class="text-white">Page de Maya</span><span class="text-sky-400">&lt;/title&gt;</span>
+<span class="text-slate-500 select-none">9 | </span>  <span class="text-sky-400">&lt;/body&gt;</span>
+<span class="text-slate-500 select-none">10| </span><span class="text-sky-400">&lt;/html&gt;</span></code></pre>
+                        </div>
+
+                        <!-- Student Diagnosis Inputs (6 cols) -->
+                        <div class="lg:col-span-6 space-y-3">
+                            <p class="font-display font-bold text-navy-900 text-sm">🔍 Diagnostic du Fichier B :</p>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">1. Quelles balises visibles ont été placées par erreur dans <code class="font-mono">&lt;head&gt;</code> ?</label>
+                                <input type="text" data-answer="<h1> et <p>|h1 et p|<h1>, <p>" placeholder="Ex : <...> et <...>" class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">2. Où doit-on déplacer la balise <code class="font-mono">&lt;title&gt;Page de Maya&lt;/title&gt;</code> ?</label>
+                                <input type="text" data-answer="dans <head>|dans head|<head>" placeholder="Écris la balise parente..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 Corrigé B : &lt;h1&gt; et &lt;p&gt; doivent aller dans &lt;body&gt;, et &lt;title&gt; doit remonter dans &lt;head&gt;.</p>
+                        </div>
+                    </div>
+
+                    <!-- SNIPPET C -->
+                    <div class="rounded-2xl border-2 border-slate-200 bg-slate-50/70 p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                        <!-- Numbered Code Block (6 cols) -->
+                        <div class="lg:col-span-6 rounded-xl bg-navy-900 text-slate-100 p-3.5 font-mono text-xs leading-relaxed shadow-inner overflow-x-auto">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-2">
+                                <span class="text-[11px] font-bold text-amberbrand-400">📄 Fichier C : finale_code.html</span>
+                                <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">Fermeture invalide</span>
+                            </div>
+                            <pre class="font-mono text-xs"><code><span class="text-slate-500 select-none">1 | </span><span class="text-amber-400">&lt;!DOCTYPE html&gt;</span>
+<span class="text-slate-500 select-none">2 | </span><span class="text-sky-400">&lt;html&gt;</span>
+<span class="text-slate-500 select-none">3 | </span>  <span class="text-sky-400">&lt;head&gt;&lt;title&gt;</span><span class="text-white">Test</span><span class="text-sky-400">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="text-slate-500 select-none">4 | </span>  <span class="text-rose-400 italic">&lt;!-- Balise ouvrante oubliée ! --&gt;</span>
+<span class="text-slate-500 select-none">5 | </span>    <span class="text-emerald-400">&lt;p&gt;</span><span class="text-white">Fin de la page</span><span class="text-emerald-400">&lt;/p&gt;</span>
+<span class="text-slate-500 select-none">6 | </span><span class="text-sky-400">&lt;/html&gt;</span>
+<span class="text-slate-500 select-none">7 | </span>  <span class="text-rose-400">&lt;/body&gt;</span></code></pre>
+                        </div>
+
+                        <!-- Student Diagnosis Inputs (6 cols) -->
+                        <div class="lg:col-span-6 space-y-3">
+                            <p class="font-display font-bold text-navy-900 text-sm">🔍 Diagnostic du Fichier C :</p>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">1. Quelle balise ouvrante manque à la ligne 4 ?</label>
+                                <input type="text" data-answer="<body>" placeholder="Écris la balise manquante..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">2. Quelle est la toute dernière balise qui doit fermer le document (Ligne 7) ?</label>
+                                <input type="text" data-answer="</html>" placeholder="Écris la dernière balise..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-xs sm:text-sm font-bold text-navy-950">
+                            </div>
+                            <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 Corrigé C : Ajouter &lt;body&gt; en ligne 4, et inverser les lignes 6 et 7 pour fermer &lt;/body&gt; avant &lt;/html&gt;.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 4 : CONSTRUCTION COMPLÈTE DU SQUELETTE HTML5 (4 POINTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-mint-600 to-mint-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-amberbrand-400 text-navy-950 font-display font-bold text-lg flex items-center justify-center shadow">4</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 4 : Construction Complète du Squelette HTML5</h2>
+                            <p class="text-xs text-mint-100">Rédige de mémoire un squelette HTML5 complet et valide en respectant les 5 critères du cahier des charges.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/40 text-white text-xs font-bold border border-white/25">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-4">
+                    <!-- Specification Checklist -->
+                    <div class="rounded-xl bg-mint-50 border border-mint-200 p-4">
+                        <h3 class="font-display font-bold text-mint-900 text-xs sm:text-sm uppercase tracking-wide mb-2.5 flex items-center gap-2">
+                            <span>📋</span> Cahier des charges de ta page HTML5 (Coche au fur et à mesure) :
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs font-semibold text-navy-900">
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>1. Déclarer <code class="font-mono text-htmlorange-600">&lt;!DOCTYPE html&gt;</code></span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>2. Ouvrir <code class="font-mono text-skybrand-700">&lt;html lang="fr"&gt;</code></span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>3. <code class="font-mono text-skybrand-700">&lt;head&gt;</code> avec <code class="font-mono">&lt;meta charset="UTF-8"&gt;</code></span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>4. <code class="font-mono text-skybrand-700">&lt;title&gt;Mon École Kiddy Planet&lt;/title&gt;</code></span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>5. <code class="font-mono text-mint-700">&lt;body&gt;</code> avec un titre <code class="font-mono">&lt;h1&gt;</code> et un <code class="font-mono">&lt;p&gt;</code></span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-mint-200 cursor-pointer">
+                                <input type="checkbox" class="kiddy-check">
+                                <span>6. Fermer toutes les balises dans l'ordre !</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Code Editor Area -->
+                    <div class="rounded-2xl border-2 border-slate-300 overflow-hidden shadow-inner">
+                        <div class="bg-slate-800 text-slate-200 px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <span class="font-mono font-bold text-slate-300 ml-1">index.html — Éditeur de Code</span>
+                            </div>
+                            <button type="button" onclick="validateStudentHtml()" class="no-print px-3 py-1 rounded-lg bg-skybrand-500 hover:bg-skybrand-600 text-white font-bold text-xs shadow transition flex items-center gap-1.5 cursor-pointer">
+                                <span>⚡</span>
+                                <span>Tester la validité de mon code</span>
+                            </button>
+                        </div>
+                        <textarea id="htmlCodeEditor" rows="13" spellcheck="false" placeholder="Écris ton code HTML5 complet ici (12 à 14 lignes)..." class="code-notebook w-full p-4 font-mono text-xs sm:text-sm text-emerald-300 placeholder-slate-500 focus:outline-none resize-y"></textarea>
+                    </div>
+
+                    <!-- Live Validator Diagnostic Box -->
+                    <div id="validatorResult" class="hidden no-print rounded-xl p-4 border-2 text-xs sm:text-sm"></div>
+
+                    <!-- Model Solution (Hidden unless Teacher Key toggled) -->
+                    <div class="answer-key hidden rounded-xl bg-navy-900 text-slate-100 p-4 border-2 border-mint-500 font-mono text-xs">
+                        <p class="text-mint-400 font-bold mb-2 font-sans">🔑 Modèle de Squelette HTML5 Valide (Corrigé Prof) :</p>
+                        <pre class="overflow-x-auto leading-relaxed"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Mon École Kiddy Planet&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Bienvenue à Kiddy Planet&lt;/h1&gt;
+    &lt;p&gt;J'apprends à construire des pages web valides en HTML5.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 5 : VRAI OU FAUX & RÉFLEXION TECHNIQUE (2 POINTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-indigo-700 to-purple-800 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-indigo-800 font-display font-bold text-lg flex items-center justify-center shadow">5</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 5 : Vrai ou Faux & Réflexion Technique</h2>
+                            <p class="text-xs text-indigo-100">Coche <strong>Vrai</strong> ou <strong>Faux</strong> pour chaque affirmation et justifie ta réponse.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-navy-950/40 text-white text-xs font-bold border border-white/25">2 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-3.5">
+                    <!-- Statement 1 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>1.</strong> « Le contenu de la balise <code class="font-mono text-skybrand-700">&lt;title&gt;</code> s'affiche en gros titre au milieu de la page web. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf1" value="vrai" class="accent-skybrand-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf1" value="faux" data-correct="true" class="accent-skybrand-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique où s'affiche <title> et quelle balise affiche un gros titre..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 FAUX — &lt;title&gt; s'affiche dans l'onglet du navigateur ; c'est &lt;h1&gt; dans &lt;body&gt; qui affiche un gros titre sur la page.</p>
+                    </div>
+
+                    <!-- Statement 2 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>2.</strong> « La déclaration <code class="font-mono text-htmlorange-600">&lt;!DOCTYPE html&gt;</code> indique au navigateur qu'il s'agit d'un document HTML5. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf2" value="vrai" data-correct="true" class="accent-skybrand-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf2" value="faux" class="accent-skybrand-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 VRAI — Elle active le mode standard HTML5 du navigateur dès la première ligne.</p>
+                    </div>
+
+                    <!-- Statement 3 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>3.</strong> « Un document HTML5 valide peut contenir trois balises <code class="font-mono text-mint-700">&lt;body&gt;</code> différentes. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf3" value="vrai" class="accent-skybrand-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf3" value="faux" data-correct="true" class="accent-skybrand-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique combien de balises <body> sont autorisées..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 FAUX — Une page HTML valide ne possède qu'une seule balise &lt;head&gt; et une seule balise &lt;body&gt;.</p>
+                    </div>
+
+                    <!-- Statement 4 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-navy-900">
+                                <strong>4.</strong> « La balise <code class="font-mono text-skybrand-700">&lt;head&gt;</code> contient des métadonnées invisibles directement dans la zone principale de la page. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf4" value="vrai" data-correct="true" class="accent-skybrand-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf4" value="faux" class="accent-skybrand-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-mint-700">🔑 VRAI — Les informations de &lt;head&gt; servent au navigateur et aux moteurs de recherche, pas à l'affichage principal.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 SECTION FINALE : AUTO-ÉVALUATION & GRILLE DE COMPÉTENCES ENSEIGNANT
+                 ================================================================= -->
+            <footer class="section-card rounded-2xl bg-slate-100 border-2 border-slate-200 p-5 sm:p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Student Self-Assessment (5 cols) -->
+                    <div class="lg:col-span-5 bg-white rounded-xl p-4 border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-navy-900 text-sm uppercase tracking-wide mb-2 flex items-center gap-2">
+                                <span>🌟</span> Auto-évaluation de l'Architecte Web
+                            </h3>
+                            <p class="text-xs text-slate-500 mb-3">Coche les compétences que tu penses maîtriser :</p>
+                            <div class="space-y-2 text-xs font-semibold text-navy-900">
+                                <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-skybrand-50 cursor-pointer">
+                                    <input type="checkbox" class="kiddy-check">
+                                    <span>Je sais écrire la déclaration <code class="font-mono font-bold text-htmlorange-600">&lt;!DOCTYPE html&gt;</code>.</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-skybrand-50 cursor-pointer">
+                                    <input type="checkbox" class="kiddy-check">
+                                    <span>Je distingue clairement le rôle de <code class="font-mono font-bold text-skybrand-700">&lt;head&gt;</code> et <code class="font-mono font-bold text-mint-700">&lt;body&gt;</code>.</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 hover:bg-skybrand-50 cursor-pointer">
+                                    <input type="checkbox" class="kiddy-check">
+                                    <span>Je sais fermer toutes les balises dans le bon ordre.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
+                            <span>Mon humeur codeur :</span>
+                            <div class="flex gap-2 text-lg">
+                                <label class="cursor-pointer"><input type="radio" name="mood" class="hidden peer"><span class="opacity-50 peer-checked:opacity-100">🤩</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="mood" class="hidden peer"><span class="opacity-50 peer-checked:opacity-100">🙂</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="mood" class="hidden peer"><span class="opacity-50 peer-checked:opacity-100">🤔</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formal Teacher Competency Rubric (7 cols) -->
+                    <div class="lg:col-span-7 bg-white rounded-xl p-4 border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-navy-900 text-sm uppercase tracking-wide mb-2.5 flex items-center gap-2">
+                                <span>📊</span> Grille de Compétences — Kiddy Planet
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-[11px] border border-slate-200 rounded-lg overflow-hidden">
+                                    <thead>
+                                        <tr class="bg-navy-950 text-white">
+                                            <th class="py-1.5 px-2.5 text-left">Compétence évaluée</th>
+                                            <th class="py-1.5 px-1.5 text-center w-16">Acquis</th>
+                                            <th class="py-1.5 px-1.5 text-center w-24">En cours d'acquisition</th>
+                                            <th class="py-1.5 px-1.5 text-center w-20">À renforcer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200 font-medium text-slate-700">
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Identifier la déclaration <code class="font-mono">&lt;!DOCTYPE html&gt;</code> et <code class="font-mono">&lt;html&gt;</code></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-mint-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Distinguer les métadonnées (<code class="font-mono">&lt;head&gt;</code>) du contenu (<code class="font-mono">&lt;body&gt;</code>)</td>
+                                            <td class="text-center"><input type="checkbox" class="accent-mint-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Produire et corriger un squelette HTML5 valide et bien imbriqué</td>
+                                            <td class="text-center"><input type="checkbox" class="accent-mint-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-2.5">
+                                <textarea rows="2" placeholder="Observations et conseils de l'enseignant(e)..." class="w-full rounded-lg border border-dashed border-slate-300 p-2 text-xs bg-slate-50/70 focus:outline-none focus:border-skybrand-600"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                            <span>Kiddy Planet – Elite International School Group</span>
+                            <span>Signature des Parents : _________________</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- Non-intrusive Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-navy-950 text-white px-4 py-3 rounded-xl shadow-xl border border-amberbrand-400 flex items-center gap-2.5 text-sm font-medium">
+            <span id="toastIcon">✨</span>
+            <span id="toastText">Action effectuée !</span>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Normalize text strings for forgiving HTML tag & keyword matching
+         */
+        function normalizeText(str) {
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, ' ');
+        }
+
+        /**
+         * Display a non-blocking toast notification
+         */
+        function showToast(message, icon = '✨') {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastText').textContent = message;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+
+        /**
+         * Handle teacher school logo upload into the top-left corner placeholder box
+         */
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('schoolLogoPreview');
+                const placeholder = document.getElementById('schoolLogoPlaceholder');
+                img.src = e.target.result;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                showToast('Logo de l\'école ajouté avec succès !', '🏫');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * Live HTML5 Skeleton Validator for Part 4
+         */
+        function validateStudentHtml(silent = false) {
+            const rawCode = document.getElementById('htmlCodeEditor').value;
+            const code = rawCode.toLowerCase();
+            const resultBox = document.getElementById('validatorResult');
+
+            if (!rawCode.trim()) {
+                if (!silent) {
+                    resultBox.className = 'no-print rounded-xl p-4 border-2 border-amber-300 bg-amber-50 text-amber-900 text-xs sm:text-sm';
+                    resultBox.innerHTML = '<strong>⚠️ Éditeur vide :</strong> Écris d\'abord ton squelette HTML5 dans la zone noire ci-dessus avant de lancer le test !';
+                    resultBox.classList.remove('hidden');
+                }
+                return 0;
+            }
+
+            const checks = [
+                { label: 'Déclaration <!DOCTYPE html>', test: /<!doctype\s+html>/i.test(rawCode) },
+                { label: 'Balise ouvrante <html>', test: /<html(\s+[^>]*)?>/i.test(rawCode) },
+                { label: 'Balise <head> et fermeture </head>', test: /<head>[\s\S]*<\/head>/i.test(rawCode) },
+                { label: 'Balise <meta charset="UTF-8">', test: /<meta\s+charset=["']?utf-8["']?\s*\/?>/i.test(rawCode) },
+                { label: 'Balise <title>...</title> dans <head>', test: /<head>[\s\S]*<title>[\s\S]+<\/title>[\s\S]*<\/head>/i.test(rawCode) },
+                { label: 'Balise <body> et fermeture </body> après </head>', test: /<\/head>[\s\S]*<body>[\s\S]*<\/body>/i.test(rawCode) },
+                { label: 'Titre <h1> et paragraphe <p> dans <body>', test: /<body>[\s\S]*<h1>[\s\S]+<\/h1>[\s\S]*<p>[\s\S]+<\/p>[\s\S]*<\/body>/i.test(rawCode) },
+                { label: 'Fermeture finale </html> après </body>', test: /<\/body>[\s\S]*<\/html>/i.test(rawCode) }
+            ];
+
+            const passedCount = checks.filter(c => c.test).length;
+
+            if (!silent) {
+                const allGood = passedCount === checks.length;
+                resultBox.className = allGood
+                    ? 'no-print rounded-xl p-4 border-2 border-mint-500 bg-mint-50 text-mint-950 text-xs sm:text-sm'
+                    : 'no-print rounded-xl p-4 border-2 border-amber-400 bg-amber-50 text-navy-900 text-xs sm:text-sm';
+
+                let html = `<p class="font-display font-bold text-sm mb-2">${allGood ? '🎉 Squelette HTML5 100 % Valide !' : `🔎 Diagnostic du code (${passedCount}/${checks.length} critères validés) :`}</p><ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">`;
+                checks.forEach(item => {
+                    html += `<li class="flex items-center gap-1.5 font-semibold ${item.test ? 'text-mint-700' : 'text-rose-700'}">
+                        <span>${item.test ? '✅' : '❌'}</span>
+                        <span>${item.label}</span>
+                    </li>`;
+                });
+                html += '</ul>';
+                resultBox.innerHTML = html;
+                resultBox.classList.remove('hidden');
+            }
+
+            // Return proportional score out of 4 points for auto-grading
+            return Math.round((passedCount / checks.length) * 4);
+        }
+
+        /**
+         * Auto-grade all objective questions across Parts 1, 2, 3, 4, and 5
+         */
+        function checkAllAnswers() {
+            let earned = 0;
+            let total = 0;
+
+            // 1. Select dropdowns (Parts 1 & 2)
+            document.querySelectorAll('.auto-grade-select').forEach(select => {
+                total++;
+                select.classList.remove('border-emerald-600', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50');
+                if (select.value === select.dataset.answer) {
+                    select.classList.add('border-emerald-600', 'bg-emerald-50');
+                    earned++;
+                } else {
+                    select.classList.add('border-rose-500', 'bg-rose-50');
+                }
+            });
+
+            // 2. Text inputs with data-answer (Part 3)
+            document.querySelectorAll('.auto-grade-text').forEach(input => {
+                total++;
+                const accepted = input.dataset.answer.split('|').map(a => normalizeText(a));
+                const val = normalizeText(input.value);
+                input.classList.remove('correct', 'incorrect');
+
+                if (val && accepted.includes(val)) {
+                    input.classList.add('correct');
+                    earned++;
+                } else {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            // 3. Part 4 HTML5 Code Editor (4 points max)
+            total += 4;
+            earned += validateStudentHtml(false);
+
+            // 4. Radio buttons (Part 5)
+            ['tf1', 'tf2', 'tf3', 'tf4'].forEach(name => {
+                total++;
+                const checked = document.querySelector(`input[name="${name}"]:checked`);
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.parentElement.classList.remove('ring-2', 'ring-emerald-500', 'ring-rose-500');
+                });
+
+                if (checked) {
+                    if (checked.dataset.correct === 'true') {
+                        checked.parentElement.classList.add('ring-2', 'ring-emerald-500');
+                        earned++;
+                    } else {
+                        checked.parentElement.classList.add('ring-2', 'ring-rose-500');
+                    }
+                }
+            });
+
+            // Display summary banner
+            const banner = document.getElementById('feedbackBanner');
+            document.getElementById('scoreDisplay').textContent = `${earned} / ${total}`;
+            const ratio = earned / total;
+
+            if (ratio >= 0.85) {
+                document.getElementById('feedbackBadge').textContent = '🏆';
+                document.getElementById('feedbackTitle').textContent = 'Félicitations, Architecte HTML5 !';
+                document.getElementById('feedbackMessage').textContent = 'Ton squelette HTML5 est solide, bien structuré et parfaitement valide.';
+            } else if (ratio >= 0.5) {
+                document.getElementById('feedbackBadge').textContent = '🛠️';
+                document.getElementById('feedbackTitle').textContent = 'Bon travail ! Quelques balises à ajuster.';
+                document.getElementById('feedbackMessage').textContent = 'Vérifie les cases surlignées en rouge et assure-toi que <head> et <body> sont bien séparés.';
+            } else {
+                document.getElementById('feedbackBadge').textContent = '🧱';
+                document.getElementById('feedbackTitle').textContent = 'Continue ton entraînement !';
+                document.getElementById('feedbackMessage').textContent = 'Relis bien la différence entre le cerveau (<head>) et le corps (<body>) du document.';
+            }
+
+            banner.classList.remove('hidden');
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        /**
+         * Toggle Teacher Answer Key visibility
+         */
+        let keyShown = false;
+        function toggleAnswerKey() {
+            keyShown = !keyShown;
+            document.querySelectorAll('.answer-key').forEach(el => {
+                el.classList.toggle('hidden', !keyShown);
+            });
+            const btn = document.getElementById('btnAnswerKey');
+            if (keyShown) {
+                btn.classList.add('bg-amberbrand-400', 'text-navy-950');
+                btn.classList.remove('bg-navy-850', 'text-amberbrand-400');
+                showToast('Corrigé enseignant affiché', '🔑');
+            } else {
+                btn.classList.remove('bg-amberbrand-400', 'text-navy-950');
+                btn.classList.add('bg-navy-850', 'text-amberbrand-400');
+                showToast('Corrigé enseignant masqué', '🙈');
+            }
+        }
+
+        /**
+         * Reset all assessment answers
+         */
+        function resetAssessment() {
+            const keepIds = ['studentName', 'studentClass', 'assessmentDate', 'workstationId'];
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                if (!keepIds.includes(el.id)) {
+                    el.value = '';
+                }
+                el.classList.remove('correct', 'incorrect');
+            });
+
+            document.querySelectorAll('select').forEach(sel => {
+                sel.selectedIndex = 0;
+                sel.classList.remove('border-emerald-600', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50');
+            });
+
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(box => {
+                box.checked = false;
+                if (box.parentElement) {
+                    box.parentElement.classList.remove('ring-2', 'ring-emerald-500', 'ring-rose-500');
+                }
+            });
+
+            document.getElementById('feedbackBanner').classList.add('hidden');
+            document.getElementById('validatorResult').classList.add('hidden');
+            showToast('La fiche d\'évaluation a été réinitialisée.', '🧹');
+        }
+    </script>
+</body>
+</html>

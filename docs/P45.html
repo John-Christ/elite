@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation Formative 1 : Modélisation d'un réseau physique (Paquet IP) – Kiddy Planet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka (friendly headers) & Plus Jakarta Sans (clean academic text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        indigo: {
+                            850: '#1E1B4B',
+                            950: '#0F0D2E',
+                        },
+                        cyber: {
+                            50: '#ECFEFF',
+                            100: '#CFFAFE',
+                            500: '#06B6D4',
+                            600: '#0891B2',
+                            700: '#0E7490',
+                        },
+                        coral: {
+                            50: '#FFF1F2',
+                            100: '#FFE4E6',
+                            500: '#F43F5E',
+                            600: '#E11D48',
+                        },
+                        emerald: {
+                            50: '#ECFDF5',
+                            100: '#D1FAE5',
+                            500: '#10B981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        amber: {
+                            50: '#FFFBEB',
+                            100: '#FEF3C7',
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F1F5F9;
+            background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+            background-size: 22px 22px;
+            color: #0F172A;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Dotted worksheet lines for writing on screen or paper */
+        .worksheet-input {
+            border: none;
+            border-bottom: 2px dashed #94A3B8;
+            background-color: rgba(248, 250, 252, 0.9);
+            transition: all 0.2s ease;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .worksheet-input:focus {
+            outline: none;
+            border-bottom: 2px solid #0891B2;
+            background-color: #ECFEFF;
+        }
+
+        .worksheet-input.correct {
+            border-bottom: 2px solid #059669;
+            background-color: #D1FAE5;
+            color: #065F46;
+            font-weight: 700;
+        }
+
+        .worksheet-input.incorrect {
+            border-bottom: 2px solid #E11D48;
+            background-color: #FFE4E6;
+            color: #9F1239;
+        }
+
+        /* Custom lab checklist checkboxes */
+        .lab-checkbox {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid #312E81;
+            border-radius: 6px;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            shrink: 0;
+        }
+
+        .lab-checkbox:checked {
+            background-color: #0891B2;
+            border-color: #0E7490;
+        }
+
+        .lab-checkbox:checked::after {
+            content: '✓';
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        /* Interactive SVG Pulse Animation for active packet simulation */
+        @keyframes dashFlow {
+            to {
+                stroke-dashoffset: -24;
+            }
+        }
+        .cable-animated {
+            stroke-dasharray: 8 4;
+            animation: dashFlow 1.2s linear infinite;
+        }
+
+        /* Clean A4 / Letter Print Rules */
+        @media print {
+            body {
+                background: #FFFFFF !important;
+                background-image: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .sheet-container {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+            .section-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1.5px solid #CBD5E1 !important;
+                margin-bottom: 14px !important;
+            }
+            .page-break-before {
+                page-break-before: always;
+                break-before: page;
+            }
+            .worksheet-input {
+                background-color: transparent !important;
+                border-bottom: 1.5px dashed #64748B !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyber-100 selection:text-indigo-950 pb-16">
+
+    <!-- =========================================================================
+         FLOATING TEACHER & STUDENT INTERACTIVE TOOLBAR (HIDDEN ON PRINT)
+         ========================================================================= -->
+    <div class="no-print sticky top-0 z-50 bg-indigo-950/95 backdrop-blur-md text-white border-b border-indigo-800 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-cyber-500 text-indigo-950 font-display font-bold text-lg shadow">
+                    🌐
+                </span>
+                <div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Laboratoire Réseau • Kiddy Planet</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-200 hidden sm:block">Fiche interactive & prête à imprimer pour la classe</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="checkAllAnswers()" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-semibold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Vérifier mes réponses</span>
+                </button>
+                <button onclick="toggleAnswerKey()" id="btnAnswerKey" class="px-3.5 py-2 rounded-xl bg-indigo-900 hover:bg-indigo-800 border border-indigo-600 text-amber-300 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
+                    <span>Afficher / Masquer le Corrigé</span>
+                </button>
+                <button onclick="resetAssessment()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer" title="Effacer les réponses">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                    <span class="hidden md:inline">Réinitialiser</span>
+                </button>
+                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-indigo-950 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
+                    <span>Imprimer / Exporter PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         INTERACTIVE SCORE BANNER (APPEARS ON AUTO-CHECK)
+         ========================================================================= -->
+    <div id="feedbackBanner" class="hidden no-print max-w-5xl mx-auto mt-4 px-4">
+        <div class="rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-cyber-700 text-white p-5 shadow-xl border-2 border-amber-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div id="feedbackBadge" class="w-14 h-14 rounded-2xl bg-amber-400 text-indigo-950 flex items-center justify-center text-3xl shadow-inner shrink-0">
+                    🚀
+                </div>
+                <div>
+                    <h3 id="feedbackTitle" class="font-display text-xl font-bold text-amber-300">Bravo, Ingénieur(e) Réseau !</h3>
+                    <p id="feedbackMessage" class="text-sm text-slate-200 mt-0.5">Voici le bilan de tes réponses auto-corrigées.</p>
+                </div>
+            </div>
+            <div class="bg-indigo-950/70 px-5 py-3 rounded-xl border border-indigo-700 text-right shrink-0">
+                <span class="block text-[11px] uppercase tracking-wider text-cyber-300 font-bold">Score Auto-Corrigé</span>
+                <span id="scoreDisplay" class="font-display text-2xl font-bold text-emerald-400">0 / 16</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         MAIN WORKSHEET CONTAINER
+         ========================================================================= -->
+    <main class="sheet-container max-w-5xl mx-auto my-6 sm:my-8 bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+
+        <!-- =====================================================================
+             SCHOOL HEADER: KIDDY PLANET – ELITE INTERNATIONAL SCHOOL GROUP
+             ===================================================================== -->
+        <header class="relative bg-gradient-to-br from-indigo-950 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 border-b-4 border-amber-400 overflow-hidden">
+            <!-- Subtle decorative network nodes in background -->
+            <svg class="absolute -right-8 -bottom-8 w-72 h-72 text-cyber-500/10 pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="40" cy="50" r="10"/>
+                <circle cx="150" cy="40" r="12"/>
+                <circle cx="100" cy="110" r="16"/>
+                <circle cx="45" cy="160" r="10"/>
+                <circle cx="165" cy="155" r="11"/>
+                <line x1="48" y1="56" x2="88" y2="100" stroke-dasharray="4 4"/>
+                <line x1="142" y1="49" x2="110" y2="98" stroke-dasharray="4 4"/>
+                <line x1="53" y1="152" x2="90" y2="120" stroke-dasharray="4 4"/>
+                <line x1="156" y1="147" x2="112" y2="120" stroke-dasharray="4 4"/>
+            </svg>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+                
+                <!-- TOP-LEFT CORNER: DEDICATED LOGO PLACEHOLDER BOX -->
+                <div class="shrink-0 flex flex-col items-center">
+                    <label for="logoUpload" title="Cliquez pour importer le logo de l'école" class="group relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-dashed border-amber-400 flex flex-col items-center justify-center p-2 cursor-pointer transition-all shadow-inner overflow-hidden">
+                        <img id="schoolLogoPreview" src="" alt="Logo Kiddy Planet" class="hidden w-full h-full object-contain rounded-xl bg-white p-1.5" />
+                        <div id="schoolLogoPlaceholder" class="flex flex-col items-center justify-center text-center">
+                            <!-- Cute Planet + Network Emblem SVG -->
+                            <svg class="w-9 h-9 text-amber-400 mb-1 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="12" cy="12" r="7"/>
+                                <ellipse cx="12" cy="12" rx="11" ry="3.8" transform="rotate(-22 12 12)"/>
+                                <circle cx="19" cy="6" r="1.5" fill="currentColor"/>
+                            </svg>
+                            <span class="font-display font-bold text-xs tracking-wider text-amber-300 uppercase">Espace Logo</span>
+                            <span class="no-print text-[10px] text-slate-300 mt-0.5 leading-tight px-1">Coller ou Cliquer pour importer</span>
+                        </div>
+                    </label>
+                    <input type="file" id="logoUpload" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                </div>
+
+                <!-- CENTER: SCHOOL BRANDING & ASSESSMENT TITLE -->
+                <div class="flex-1 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs sm:text-sm font-bold tracking-wide uppercase mb-2">
+                        <span>★</span>
+                        <span>Kiddy Planet – Elite International School Group</span>
+                        <span>★</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-cyber-300 mb-1.5">
+                        Département d'Informatique & Culture Numérique • Cycle Primaire / Collège
+                    </p>
+
+                    <h1 class="font-display text-xl sm:text-2xl md:text-3xl font-bold text-white leading-snug tracking-tight">
+                        Évaluation Formative 1 : Modélisation pratique d'un réseau physique à l'aide de fils pour simuler le trajet d'un paquet IP
+                    </h1>
+
+                    <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-cyber-500/20 border border-cyber-400/40 text-cyber-200 text-xs sm:text-sm font-bold">
+                        <span>📡</span>
+                        <span>Formatif : Compréhension du réseau</span>
+                    </div>
+                </div>
+
+                <!-- TOP-RIGHT: SCORE & NOTE BOX (/ 20 PTS) -->
+                <div class="shrink-0 w-full md:w-44 rounded-2xl bg-white text-indigo-950 p-3.5 border-2 border-amber-400 shadow-lg flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-1.5">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-900">Score & Note</span>
+                        <span class="text-base">🏆</span>
+                    </div>
+                    <div class="flex items-baseline justify-center my-1">
+                        <input type="text" id="teacherScoreBox" placeholder="   " class="w-14 text-center font-display text-2xl font-bold text-indigo-950 border-b-2 border-slate-400 focus:outline-none focus:border-cyber-600">
+                        <span class="font-display text-xl font-bold text-slate-500 ml-1">/ 20 pts</span>
+                    </div>
+                    <div class="mt-2 pt-1.5 border-t border-slate-100 text-center">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Appréciation</span>
+                        <div class="flex justify-center gap-1 text-[10px] font-extrabold">
+                            <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">A+</span>
+                            <span class="px-1.5 py-0.5 rounded bg-cyber-100 text-cyber-800">A</span>
+                            <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">B</span>
+                            <span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STUDENT METADATA BAR -->
+            <div class="relative z-10 mt-6 pt-5 border-t border-white/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-sm">
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentName" class="text-[11px] font-bold uppercase tracking-wider text-amber-300 mb-1">Nom & Prénom</label>
+                    <input type="text" id="studentName" placeholder="Ex : Maya Ndiaye" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="studentClass" class="text-[11px] font-bold uppercase tracking-wider text-amber-300 mb-1">Classe / Groupe</label>
+                    <input type="text" id="studentClass" placeholder="Ex : CM2 / 6ème A" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="assessmentDate" class="text-[11px] font-bold uppercase tracking-wider text-amber-300 mb-1">Date</label>
+                    <input type="text" id="assessmentDate" placeholder="JJ / MM / AAAA" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 font-medium py-0.5">
+                </div>
+                <div class="bg-white/10 rounded-xl px-3.5 py-2.5 border border-white/15 flex flex-col">
+                    <label for="networkTeam" class="text-[11px] font-bold uppercase tracking-wider text-amber-300 mb-1">Équipe Réseau</label>
+                    <input type="text" id="networkTeam" placeholder="Ex : Équipe Routeur Alpha" class="bg-transparent border-b border-dashed border-slate-400 text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 font-medium py-0.5">
+                </div>
+            </div>
+        </header>
+
+        <!-- =====================================================================
+             WORKSHEET BODY (6 COMPREHENSIVE SECTIONS)
+             ===================================================================== -->
+        <div class="p-6 sm:p-8 space-y-7">
+
+            <!-- =================================================================
+                 PARTIE 1 : LA BOÎTE À OUTILS DU RÉSEAU (4 PTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-indigo-700 to-indigo-800 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-amber-400 text-indigo-950 font-display font-bold text-lg flex items-center justify-center shadow">1</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 1 : La Boîte à Outils du Réseau (Matériel & Métaphore des Fils)</h2>
+                            <p class="text-xs text-indigo-100">Associe chaque objet de notre atelier en classe (fils de laine, enveloppes, élèves) au vrai composant réseau et à son rôle.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950/60 text-amber-300 text-xs font-bold border border-amber-400/30">4 points</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-indigo-950 text-xs uppercase tracking-wider border-b-2 border-slate-200">
+                                <th class="py-3 px-4">Élément en classe (Modèle physique)</th>
+                                <th class="py-3 px-4 w-56">Vrai composant réseau</th>
+                                <th class="py-3 px-4">Rôle principal dans le réseau</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-sm">
+                            <!-- Row 1 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-xl bg-cyber-100 text-cyber-700 flex items-center justify-center shrink-0">
+                                            <!-- Yarn / String SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 17c4-8 14-8 18 0M4 12c5-6 11-6 16 0"/></svg>
+                                        </span>
+                                        <div>
+                                            <span class="font-bold text-indigo-950 block">Le fil de laine tendu</span>
+                                            <span class="text-xs text-slate-500">Relie deux participants entre eux</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="cable" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-indigo-950 focus:border-cyber-500 focus:outline-none">
+                                        <option value="">-- Choisir le composant --</option>
+                                        <option value="noeud">Ordinateur / Nœud (Hôte)</option>
+                                        <option value="switch">Switch (Commutateur)</option>
+                                        <option value="routeur">Routeur</option>
+                                        <option value="cable">Câble Ethernet / Fibre optique</option>
+                                        <option value="paquet">Paquet IP</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-emerald-700 mt-1 block">✓ Câble Ethernet / Fibre</span>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Support physique qui transporte les signaux d'un point à un autre.
+                                </td>
+                            </tr>
+
+                            <!-- Row 2 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                                            <!-- Envelope / Packet SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                                        </span>
+                                        <div>
+                                            <span class="font-bold text-indigo-950 block">L'enveloppe avec étiquette d'adresse</span>
+                                            <span class="text-xs text-slate-500">Glisse le long du fil avec un message</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="paquet" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-indigo-950 focus:border-cyber-500 focus:outline-none">
+                                        <option value="">-- Choisir le composant --</option>
+                                        <option value="noeud">Ordinateur / Nœud (Hôte)</option>
+                                        <option value="switch">Switch (Commutateur)</option>
+                                        <option value="routeur">Routeur</option>
+                                        <option value="cable">Câble Ethernet / Fibre optique</option>
+                                        <option value="paquet">Paquet IP</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-emerald-700 mt-1 block">✓ Paquet IP</span>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Petit morceau de donnée contenant l'expéditeur, le destinataire et le message.
+                                </td>
+                            </tr>
+
+                            <!-- Row 3 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                            <!-- Switch Hub SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="2"/><circle cx="6" cy="12" r="1" fill="currentColor"/><circle cx="10" cy="12" r="1" fill="currentColor"/><circle cx="14" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="12" r="1" fill="currentColor"/></svg>
+                                        </span>
+                                        <div>
+                                            <span class="font-bold text-indigo-950 block">L'élève au centre qui tient 4 fils</span>
+                                            <span class="text-xs text-slate-500">Distribue les enveloppes dans la même salle</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="switch" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-indigo-950 focus:border-cyber-500 focus:outline-none">
+                                        <option value="">-- Choisir le composant --</option>
+                                        <option value="noeud">Ordinateur / Nœud (Hôte)</option>
+                                        <option value="switch">Switch (Commutateur)</option>
+                                        <option value="routeur">Routeur</option>
+                                        <option value="cable">Câble Ethernet / Fibre optique</option>
+                                        <option value="paquet">Paquet IP</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-emerald-700 mt-1 block">✓ Switch (Commutateur)</span>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Relie plusieurs ordinateurs d'un même réseau local (LAN) entre eux.
+                                </td>
+                            </tr>
+
+                            <!-- Row 4 -->
+                            <tr class="hover:bg-slate-50/80">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-xl bg-coral-100 text-coral-600 flex items-center justify-center shrink-0">
+                                            <!-- Router SVG -->
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 13V7M17 13V7M12 13V5"/></svg>
+                                        </span>
+                                        <div>
+                                            <span class="font-bold text-indigo-950 block">Le « Chef de Gare » vers l'extérieur</span>
+                                            <span class="text-xs text-slate-500">Choisit la route vers Internet / une autre salle</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <select data-answer="routeur" class="auto-grade-select w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-indigo-950 focus:border-cyber-500 focus:outline-none">
+                                        <option value="">-- Choisir le composant --</option>
+                                        <option value="noeud">Ordinateur / Nœud (Hôte)</option>
+                                        <option value="switch">Switch (Commutateur)</option>
+                                        <option value="routeur">Routeur</option>
+                                        <option value="cable">Câble Ethernet / Fibre optique</option>
+                                        <option value="paquet">Paquet IP</option>
+                                    </select>
+                                    <span class="answer-key hidden text-xs font-bold text-emerald-700 mt-1 block">✓ Routeur</span>
+                                </td>
+                                <td class="py-3 px-4 text-xs sm:text-sm text-slate-700">
+                                    Connecte différents réseaux ensemble et oriente les paquets IP vers leur destination.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 2 : CARTE D'IDENTITÉ D'UN PAQUET IP (4 PTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-cyber-600 to-cyber-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-cyber-700 font-display font-bold text-lg flex items-center justify-center shadow">2</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 2 : Carte d'Identité d'un Paquet IP (L'Enveloppe Numérique)</h2>
+                            <p class="text-xs text-cyber-100">Complète l'étiquette du paquet IP ci-dessous à partir de la consigne de mission, puis réponds aux questions.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950/40 text-white text-xs font-bold border border-white/25">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <!-- Scenario Prompt -->
+                    <div class="rounded-xl bg-amber-50 border border-amber-300 p-3.5 text-xs sm:text-sm text-indigo-950">
+                        <span class="font-extrabold text-amber-700 uppercase tracking-wide">📋 Mission d'envoi :</span>
+                        L'ordinateur <strong>PC-A</strong> (Adresse IP : <code class="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-200">192.168.1.10</code>) envoie le message <strong>« BONJOUR »</strong> découpé en <strong>3 morceaux</strong> vers l'ordinateur <strong>PC-C</strong> (Adresse IP : <code class="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-amber-200">192.168.1.25</code>). Tu prépares le <strong>premier paquet</strong> (avec un compteur TTL de <strong>64</strong>).
+                    </div>
+
+                    <!-- Visual IP Packet Envelope Card -->
+                    <div class="rounded-2xl border-2 border-dashed border-cyber-500 bg-gradient-to-br from-cyber-50/80 via-white to-indigo-50/60 p-5 shadow-inner relative">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-cyber-200 pb-3 mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-10 h-10 rounded-xl bg-cyber-600 text-white flex items-center justify-center text-xl shadow">✉️</span>
+                                <div>
+                                    <span class="font-display font-bold text-indigo-950 text-base block">PAQUET IPv4 — ENVELOPPE NUMÉRIQUE</span>
+                                    <span class="text-[11px] font-semibold text-cyber-700 uppercase tracking-wider">Protocole Internet • Kiddy Planet Lab</span>
+                                </div>
+                            </div>
+                            <!-- Stamp Badge -->
+                            <div class="px-3 py-1.5 rounded-lg bg-white border-2 border-indigo-900 font-mono text-xs font-bold text-indigo-950 flex items-center gap-2">
+                                <span>TIMBRE TTL :</span>
+                                <input type="text" data-answer="64" placeholder="?" class="auto-grade-text worksheet-input w-12 text-center font-mono font-bold text-coral-600">
+                                <span class="text-[10px] text-slate-400">sauts</span>
+                            </div>
+                        </div>
+
+                        <!-- Header vs Payload Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- En-tête (Header) -->
+                            <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-3">
+                                <p class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 border-b border-slate-100 pb-1">
+                                    1. En-tête du Paquet (Adresses)
+                                </p>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Adresse IP Source (Expéditeur) :</label>
+                                    <input type="text" data-answer="192.168.1.10" placeholder="Ex : 192.168.x.xx" class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-sm font-bold text-indigo-950">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Adresse IP Destination (Destinataire) :</label>
+                                    <input type="text" data-answer="192.168.1.25" placeholder="Ex : 192.168.x.xx" class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-sm font-bold text-indigo-950">
+                                </div>
+                            </div>
+
+                            <!-- Charge utile (Payload & Sequence) -->
+                            <div class="bg-white rounded-xl p-4 border border-slate-200 space-y-3">
+                                <p class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 border-b border-slate-100 pb-1">
+                                    2. Ordre & Donnée Transportée
+                                </p>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Numéro de séquence du paquet :</label>
+                                    <input type="text" data-answer="1/3|paquet 1/3|1 sur 3" placeholder="Ex : Paquet ? / ?" class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-sm font-bold text-emerald-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1">Donnée / Morceau du message :</label>
+                                    <input type="text" data-answer="bon|bonjour" placeholder="Écris le morceau de texte..." class="auto-grade-text worksheet-input w-full px-2.5 py-1 font-mono text-sm font-bold text-emerald-800">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="answer-key hidden mt-3 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-semibold">
+                            🔑 Corrigé Enveloppe : IP Source = 192.168.1.10 • IP Destination = 192.168.1.25 • Séquence = 1/3 • Donnée = BON (ou BONJOUR) • TTL = 64.
+                        </div>
+                    </div>
+
+                    <!-- Short Comprehension Questions -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                            <label class="block text-xs sm:text-sm font-bold text-indigo-950 mb-1.5">
+                                a) Pourquoi découpe-t-on un gros fichier (image ou vidéo) en plusieurs petits paquets IP avant de l'envoyer sur les fils ?
+                            </label>
+                            <textarea rows="2" placeholder="Ta réponse..." class="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs sm:text-sm focus:border-cyber-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700 mt-1">🔑 Pour éviter de bloquer le fil (embouteillage) et renvoyer uniquement un petit paquet s'il est perdu.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                            <label class="block text-xs sm:text-sm font-bold text-indigo-950 mb-1.5">
+                                b) À quoi sert le numéro d'ordre (ex : 1/3, 2/3, 3/3) écrit sur chaque enveloppe à l'arrivée ?
+                            </label>
+                            <textarea rows="2" placeholder="Ta réponse..." class="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs sm:text-sm focus:border-cyber-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700 mt-1">🔑 Il permet à l'ordinateur destinataire de remettre les morceaux dans le bon ordre pour reconstituer le message.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 3 : SIMULATION PRATIQUE AVEC LES FILS (TRAJET & TOPOLOGIE) (5 PTS)
+                 ================================================================= -->
+            <section class="section-card page-break-before rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-indigo-950 px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-indigo-950 text-amber-400 font-display font-bold text-lg flex items-center justify-center shadow">3</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 3 : Simulation Pratique avec les Fils (Trajet & Topologie)</h2>
+                            <p class="text-xs text-indigo-950/85 font-semibold">Observe attentivement la maquette réseau ci-dessous et trace le parcours des paquets IP sur les fils colorés.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950 text-amber-300 text-xs font-bold">5 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <!-- Interactive Simulation Controls (Hidden on Print) -->
+                    <div class="no-print flex flex-wrap items-center justify-between gap-2 bg-slate-100 px-4 py-2.5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                            <span>🎮</span> Simulateur visuel de fils (clique pour tester un trajet) :
+                        </span>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="highlightRoute('local')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer">
+                                Trajet 1 : PC-A ➔ PC-C
+                            </button>
+                            <button type="button" onclick="highlightRoute('web')" class="px-3 py-1 rounded-lg bg-cyber-600 hover:bg-cyber-700 text-white text-xs font-bold transition cursor-pointer">
+                                Trajet 2 : PC-B ➔ Serveur Web
+                            </button>
+                            <button type="button" onclick="highlightRoute('cut')" class="px-3 py-1 rounded-lg bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold transition cursor-pointer">
+                                Simuler Coupure Fil Vert
+                            </button>
+                            <button type="button" onclick="highlightRoute('reset')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition cursor-pointer">
+                                Normal
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CUSTOM SVG PHYSICAL STRING NETWORK TOPOLOGY DIAGRAM -->
+                    <div class="rounded-2xl border-2 border-slate-200 bg-slate-900 p-4 sm:p-5 shadow-inner overflow-x-auto">
+                        <svg id="networkSvg" viewBox="0 0 820 340" class="w-full min-w-[640px] h-auto select-none">
+                            <!-- Background Grid Lines -->
+                            <defs>
+                                <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E293B" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="820" height="340" rx="12" fill="#0F172A"/>
+                            <rect width="820" height="340" rx="12" fill="url(#smallGrid)"/>
+
+                            <!-- Zone Labels -->
+                            <rect x="16" y="14" width="490" height="312" rx="14" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="6 4"/>
+                            <text x="32" y="36" fill="#94A3B8" font-size="11" font-weight="700" font-family="Plus Jakarta Sans">SALLE DE CLASSE — RÉSEAU LOCAL (LAN : 192.168.1.x)</text>
+
+                            <rect x="524" y="14" width="280" height="312" rx="14" fill="none" stroke="#0891B2" stroke-width="1.5" stroke-dasharray="6 4"/>
+                            <text x="540" y="36" fill="#38BDF8" font-size="11" font-weight="700" font-family="Plus Jakarta Sans">RÉSEAU EXTERNE / INTERNET</text>
+
+                            <!-- ==================== COLORED STRING CABLES ==================== -->
+                            <!-- Fil Bleu: PC-A (110,95) to Switch (350,175) -->
+                            <line id="cable-blue" x1="125" y1="95" x2="345" y2="175" stroke="#3B82F6" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="180" y="106" width="68" height="20" rx="6" fill="#1D4ED8"/>
+                            <text x="214" y="120" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Bleu</text>
+
+                            <!-- Fil Rouge: PC-B (110,255) to Switch (350,175) -->
+                            <line id="cable-red" x1="125" y1="255" x2="345" y2="175" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="180" y="226" width="74" height="20" rx="6" fill="#B91C1C"/>
+                            <text x="217" y="240" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Rouge</text>
+
+                            <!-- Fil Jaune: PC-C (430,80) to Switch (375,165) -->
+                            <line id="cable-yellow" x1="435" y1="90" x2="375" y2="165" stroke="#FACC15" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="415" y="114" width="72" height="20" rx="6" fill="#CA8A04"/>
+                            <text x="451" y="128" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Jaune</text>
+
+                            <!-- Fil Vert: PC-D (435,265) to Switch (375,185) -->
+                            <line id="cable-green" x1="435" y1="265" x2="375" y2="185" stroke="#10B981" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="418" y="212" width="66" height="20" rx="6" fill="#047857"/>
+                            <text x="451" y="226" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Vert</text>
+
+                            <!-- Cut X marker (hidden unless simulated) -->
+                            <g id="cutMarker" class="hidden">
+                                <circle cx="405" cy="225" r="14" fill="#E11D48" stroke="#FFFFFF" stroke-width="2"/>
+                                <text x="405" y="230" fill="#FFFFFF" font-size="14" font-weight="900" text-anchor="middle">✂</text>
+                            </g>
+
+                            <!-- Fil Violet: Switch (395,175) to Router (575,175) -->
+                            <line id="cable-purple" x1="395" y1="175" x2="570" y2="175" stroke="#A855F7" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="448" y="152" width="74" height="20" rx="6" fill="#7E22CE"/>
+                            <text x="485" y="166" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Violet</text>
+
+                            <!-- Fil Orange (Fibre): Router (615,175) to Web Server (735,175) -->
+                            <line id="cable-orange" x1="615" y1="175" x2="730" y2="175" stroke="#F97316" stroke-width="5" stroke-linecap="round"/>
+                            <rect x="634" y="152" width="78" height="20" rx="6" fill="#C2410C"/>
+                            <text x="673" y="166" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">Fil Orange</text>
+
+                            <!-- ==================== NETWORK NODES ==================== -->
+                            <!-- PC-A -->
+                            <g transform="translate(45, 58)">
+                                <rect width="84" height="72" rx="12" fill="#1E293B" stroke="#3B82F6" stroke-width="2.5"/>
+                                <text x="42" y="26" font-size="20" text-anchor="middle">💻</text>
+                                <text x="42" y="45" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">PC-A</text>
+                                <text x="42" y="60" fill="#93C5FD" font-size="9.5" font-family="JetBrains Mono" text-anchor="middle">192.168.1.10</text>
+                            </g>
+
+                            <!-- PC-B -->
+                            <g transform="translate(45, 218)">
+                                <rect width="84" height="72" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="2.5"/>
+                                <text x="42" y="26" font-size="20" text-anchor="middle">💻</text>
+                                <text x="42" y="45" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">PC-B</text>
+                                <text x="42" y="60" fill="#FCA5A5" font-size="9.5" font-family="JetBrains Mono" text-anchor="middle">192.168.1.15</text>
+                            </g>
+
+                            <!-- CENTRAL SWITCH -->
+                            <g transform="translate(318, 140)">
+                                <rect width="92" height="70" rx="14" fill="#312E81" stroke="#38BDF8" stroke-width="3"/>
+                                <text x="46" y="26" font-size="18" text-anchor="middle">🔀</text>
+                                <text x="46" y="45" fill="#FFFFFF" font-size="12" font-weight="800" text-anchor="middle">SWITCH</text>
+                                <text x="46" y="59" fill="#BAE6FD" font-size="9" text-anchor="middle">Commutateur</text>
+                            </g>
+
+                            <!-- PC-C -->
+                            <g transform="translate(405, 44)">
+                                <rect width="86" height="66" rx="12" fill="#1E293B" stroke="#FACC15" stroke-width="2.5"/>
+                                <text x="43" y="23" font-size="18" text-anchor="middle">🖥️</text>
+                                <text x="43" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">PC-C</text>
+                                <text x="43" y="55" fill="#FEF08A" font-size="9.5" font-family="JetBrains Mono" text-anchor="middle">192.168.1.25</text>
+                            </g>
+
+                            <!-- PC-D -->
+                            <g transform="translate(405, 242)">
+                                <rect width="86" height="66" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="2.5"/>
+                                <text x="43" y="23" font-size="18" text-anchor="middle">🖥️</text>
+                                <text x="43" y="40" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">PC-D</text>
+                                <text x="43" y="55" fill="#6EE7B7" font-size="9.5" font-family="JetBrains Mono" text-anchor="middle">192.168.1.30</text>
+                            </g>
+
+                            <!-- ROUTER -->
+                            <g transform="translate(545, 138)">
+                                <rect width="90" height="74" rx="14" fill="#4C1D95" stroke="#C084FC" stroke-width="3"/>
+                                <text x="45" y="26" font-size="18" text-anchor="middle">📡</text>
+                                <text x="45" y="45" fill="#FFFFFF" font-size="12" font-weight="800" text-anchor="middle">ROUTEUR</text>
+                                <text x="45" y="60" fill="#E9D5FF" font-size="9" font-family="JetBrains Mono" text-anchor="middle">Passerelle IP</text>
+                            </g>
+
+                            <!-- EXTERNAL WEB SERVER -->
+                            <g transform="translate(705, 134)">
+                                <rect width="88" height="82" rx="14" fill="#064E3B" stroke="#34D399" stroke-width="2.5"/>
+                                <text x="44" y="26" font-size="20" text-anchor="middle">🌍</text>
+                                <text x="44" y="44" fill="#FFFFFF" font-size="11" font-weight="800" text-anchor="middle">SERVEUR</text>
+                                <text x="44" y="57" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">KIDDY WEB</text>
+                                <text x="44" y="71" fill="#A7F3D0" font-size="9" font-family="JetBrains Mono" text-anchor="middle">203.0.113.5</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Step-by-step Tracing Questions -->
+                    <div class="space-y-3.5">
+                        <!-- Q3.a -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <p class="text-sm font-bold text-indigo-950">
+                                a) Trajet local : <span class="font-medium">PC-A envoie un paquet IP à PC-C. Complète le chemin exact suivi par l'enveloppe :</span>
+                            </p>
+                            <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 pt-1">
+                                <span class="px-2.5 py-1 rounded bg-blue-100 text-blue-900 font-bold">PC-A</span>
+                                <span>➔</span>
+                                <input type="text" data-answer="fil bleu|bleu" placeholder="Couleur du 1er fil" class="auto-grade-text worksheet-input w-28 px-2 py-1 text-center font-bold text-indigo-950">
+                                <span>➔</span>
+                                <input type="text" data-answer="switch|le switch|commutateur" placeholder="Appareil central" class="auto-grade-text worksheet-input w-32 px-2 py-1 text-center font-bold text-indigo-950">
+                                <span>➔</span>
+                                <input type="text" data-answer="fil jaune|jaune" placeholder="Couleur du 2e fil" class="auto-grade-text worksheet-input w-28 px-2 py-1 text-center font-bold text-indigo-950">
+                                <span>➔</span>
+                                <span class="px-2.5 py-1 rounded bg-amber-100 text-amber-900 font-bold">PC-C</span>
+                            </div>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 Corrigé : PC-A ➔ Fil Bleu ➔ Switch ➔ Fil Jaune ➔ PC-C (Le Switch lit l'adresse IP de destination et l'envoie uniquement vers PC-C).</p>
+                        </div>
+
+                        <!-- Q3.b -->
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <p class="text-sm font-bold text-indigo-950">
+                                b) Trajet vers Internet : <span class="font-medium">PC-B (192.168.1.15) veut consulter le Serveur Kiddy Web (203.0.113.5). Quels sont les 2 appareils intermédiaires traversés et pourquoi le Routeur est-il indispensable ?</span>
+                            </p>
+                            <textarea rows="2" placeholder="Écris les appareils traversés (dans l'ordre) et le rôle du Routeur..." class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-xs sm:text-sm focus:border-amber-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 Corrigé : Il traverse le Switch puis le Routeur. Le Routeur est indispensable car le Serveur Web se trouve sur un réseau externe différent (203.0.113.5).</p>
+                        </div>
+
+                        <!-- Q3.c -->
+                        <div class="p-4 rounded-xl bg-coral-50/60 border border-coral-200 space-y-2">
+                            <p class="text-sm font-bold text-coral-900">
+                                c) ✂️ Panne de Câble ! <span class="font-medium text-indigo-950">Pendant l'activité, quelqu'un coupe le <strong>Fil Vert</strong> entre le Switch et PC-D. Que se passe-t-il pour un paquet envoyé vers PC-D ? Comment pourrait-on rendre le réseau plus résistant (topologie maillée) ?</span>
+                            </p>
+                            <textarea rows="2" placeholder="Explique ce qui arrive au paquet et comment résoudre la panne avec des fils..." class="w-full rounded-lg border border-coral-300 bg-white p-2.5 text-xs sm:text-sm focus:border-coral-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 Corrigé : Le paquet est perdu (PC-D est isolé du réseau). En ajoutant un second fil de secours (ex : entre PC-C et PC-D), le paquet peut contourner la panne !</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 4 : DÉCODAGE & LOGIQUE D'ACHEMINEMENT (VRAI OU FAUX) (3 PTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-coral-500 to-coral-600 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-white text-coral-600 font-display font-bold text-lg flex items-center justify-center shadow">4</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 4 : Décodage & Logique d'Acheminement (Vrai ou Faux)</h2>
+                            <p class="text-xs text-coral-100">Coche <strong>Vrai</strong> ou <strong>Faux</strong> pour chaque affirmation, puis justifie brièvement ta réponse.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950/40 text-white text-xs font-bold border border-white/25">3 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-3.5">
+                    <!-- Statement 1 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-indigo-950">
+                                <strong>1.</strong> « Deux ordinateurs connectés sur le même réseau peuvent avoir exactement la même adresse IP. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf1" value="vrai" class="accent-cyber-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf1" value="faux" data-correct="true" class="accent-cyber-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 FAUX — Chaque appareil doit avoir une adresse IP unique (comme une adresse postale) pour éviter les conflits.</p>
+                    </div>
+
+                    <!-- Statement 2 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-indigo-950">
+                                <strong>2.</strong> « Sans l'adresse IP de destination écrite sur l'enveloppe, le Switch et le Routeur ne savent pas où envoyer le paquet. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf2" value="vrai" data-correct="true" class="accent-cyber-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf2" value="faux" class="accent-cyber-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 VRAI — L'adresse IP de destination est indispensable pour aiguiller le paquet sur le bon fil.</p>
+                    </div>
+
+                    <!-- Statement 3 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-indigo-950">
+                                <strong>3.</strong> « Un Switch sert uniquement à connecter notre classe à des serveurs situés dans un autre pays. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf3" value="vrai" class="accent-cyber-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf3" value="faux" data-correct="true" class="accent-cyber-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 FAUX — C'est le Routeur qui relie différents réseaux distants ; le Switch connecte les appareils d'un même réseau local.</p>
+                    </div>
+
+                    <!-- Statement 4 -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <p class="text-sm font-semibold text-indigo-950">
+                                <strong>4.</strong> « Si plusieurs paquets d'un même message prennent des chemins différents, ils peuvent arriver dans le désordre. »
+                            </p>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf4" value="vrai" data-correct="true" class="accent-cyber-600"> VRAI
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 bg-white">
+                                    <input type="radio" name="tf4" value="faux" class="accent-cyber-600"> FAUX
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 shrink-0">Justification :</span>
+                            <input type="text" placeholder="Explique pourquoi..." class="worksheet-input w-full px-2 py-1 text-xs sm:text-sm">
+                        </div>
+                        <p class="answer-key hidden text-xs font-bold text-emerald-700">🔑 VRAI — Certains trajets sont plus longs ou encombrés ; le destinataire utilise les numéros (1/3, 2/3, 3/3) pour les trier.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 5 : ATELIER PRATIQUE — JOURNAL DE BORD DE LA MANIPULATION (4 PTS)
+                 ================================================================= -->
+            <section class="section-card rounded-2xl border-2 border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-amber-400 text-indigo-950 font-display font-bold text-lg flex items-center justify-center shadow">5</span>
+                        <div>
+                            <h2 class="font-display text-lg sm:text-xl font-bold leading-tight">Partie 5 : Atelier Pratique — Journal de Bord de la Manipulation</h2>
+                            <p class="text-xs text-emerald-100">Valide les étapes de ton expérience réelle avec les fils en classe et note tes observations scientifiques.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-indigo-950/40 text-white text-xs font-bold border border-white/25">4 points</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <!-- Physical Lab Checklist -->
+                    <div class="bg-emerald-50/70 rounded-xl p-4 border border-emerald-200">
+                        <h3 class="font-display font-bold text-emerald-950 text-sm uppercase tracking-wide mb-3 flex items-center gap-2">
+                            <span>🧶</span> Protocole de Manipulation en Équipe (Coche chaque étape réalisée) :
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm font-medium text-indigo-950">
+                            <label class="flex items-center gap-3 bg-white p-2.5 rounded-lg border border-emerald-200 cursor-pointer hover:bg-emerald-50/50">
+                                <input type="checkbox" class="lab-checkbox">
+                                <span><strong>1.</strong> Attacher fermement les fils aux nœuds (élèves-machines).</span>
+                            </label>
+                            <label class="flex items-center gap-3 bg-white p-2.5 rounded-lg border border-emerald-200 cursor-pointer hover:bg-emerald-50/50">
+                                <input type="checkbox" class="lab-checkbox">
+                                <span><strong>2.</strong> Étiqueter chaque poste avec son adresse IP unique.</span>
+                            </label>
+                            <label class="flex items-center gap-3 bg-white p-2.5 rounded-lg border border-emerald-200 cursor-pointer hover:bg-emerald-50/50">
+                                <input type="checkbox" class="lab-checkbox">
+                                <span><strong>3.</strong> Préparer les enveloppes-paquets avec Source & Destination.</span>
+                            </label>
+                            <label class="flex items-center gap-3 bg-white p-2.5 rounded-lg border border-emerald-200 cursor-pointer hover:bg-emerald-50/50">
+                                <input type="checkbox" class="lab-checkbox">
+                                <span><strong>4.</strong> Simuler un envoi réussi via le Switch et le Routeur.</span>
+                            </label>
+                            <label class="flex items-center gap-3 bg-white p-2.5 rounded-lg border border-emerald-200 cursor-pointer hover:bg-emerald-50/50 sm:col-span-2">
+                                <input type="checkbox" class="lab-checkbox">
+                                <span><strong>5.</strong> Simuler une coupure de fil (panne) et tester un chemin alternatif.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Lab Reflection Questions -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <label class="block text-xs sm:text-sm font-bold text-indigo-950 mb-1.5">
+                                1. Que représentait concrètement le fil de laine tendu entre deux élèves dans un vrai réseau informatique ?
+                            </label>
+                            <textarea rows="3" placeholder="Note ton observation..." class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700 mt-1">🔑 Il représentait la liaison physique (câble Ethernet / fibre optique) par laquelle circulent les données.</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <label class="block text-xs sm:text-sm font-bold text-indigo-950 mb-1.5">
+                                2. Que s'est-il passé lorsque deux équipes ont envoyé plusieurs enveloppes en même temps sur le même fil (congestion / collision) ?
+                            </label>
+                            <textarea rows="3" placeholder="Décris ce que tu as observé..." class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none"></textarea>
+                            <p class="answer-key hidden text-xs font-bold text-emerald-700 mt-1">🔑 Un embouteillage (congestion) : les paquets ont ralenti ou dû attendre leur tour au niveau du Switch.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================================
+                 PARTIE 6 : AUTO-ÉVALUATION EXPLORATEUR & GRILLE DE COMPÉTENCES
+                 ================================================================= -->
+            <footer class="section-card rounded-2xl bg-slate-100 border-2 border-slate-200 p-5 sm:p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Student Self-Assessment (5 cols) -->
+                    <div class="lg:col-span-5 bg-white rounded-xl p-4 border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-indigo-950 text-sm uppercase tracking-wide mb-2 flex items-center gap-2">
+                                <span>🌟</span> Auto-évaluation de l'Explorateur Réseau
+                            </h3>
+                            <p class="text-xs text-slate-500 mb-3">Évalue ton niveau de compréhension après cette manipulation :</p>
+                            <div class="space-y-2 text-xs font-bold">
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 hover:bg-emerald-50 cursor-pointer">
+                                    <input type="radio" name="selfRating" class="accent-emerald-600">
+                                    <span class="text-base">⭐⭐⭐</span>
+                                    <span class="text-emerald-900">Maîtrisé : Je sais expliquer le trajet d'un paquet IP !</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 hover:bg-amber-50 cursor-pointer">
+                                    <input type="radio" name="selfRating" class="accent-amber-500">
+                                    <span class="text-base">⭐⭐</span>
+                                    <span class="text-amber-900">En cours d'acquisition : J'ai compris l'essentiel avec aide.</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 hover:bg-rose-50 cursor-pointer">
+                                    <input type="radio" name="selfRating" class="accent-rose-500">
+                                    <span class="text-base">⭐</span>
+                                    <span class="text-rose-900">À renforcer : Je dois revoir le rôle du Switch et du Routeur.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Competency Rubric & Comments (7 cols) -->
+                    <div class="lg:col-span-7 bg-white rounded-xl p-4 border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-indigo-950 text-sm uppercase tracking-wide mb-2.5 flex items-center gap-2">
+                                <span>📊</span> Grille de Compétences Enseignant(e)
+                            </h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-[11px] border border-slate-200 rounded-lg overflow-hidden">
+                                    <thead>
+                                        <tr class="bg-indigo-950 text-white">
+                                            <th class="py-1.5 px-2.5 text-left">Critère évalué</th>
+                                            <th class="py-1.5 px-2 text-center w-16">Acquis</th>
+                                            <th class="py-1.5 px-2 text-center w-20">En cours</th>
+                                            <th class="py-1.5 px-2 text-center w-20">À revoir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200 font-medium text-slate-700">
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Identifier les composants physiques (Câble, Switch, Routeur)</td>
+                                            <td class="text-center"><input type="checkbox" class="accent-emerald-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Structurer un paquet IP (Adresses Source/Destination & Ordre)</td>
+                                            <td class="text-center"><input type="checkbox" class="accent-emerald-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 px-2.5">Tracer l'acheminement local/externe et analyser une panne</td>
+                                            <td class="text-center"><input type="checkbox" class="accent-emerald-600"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-amber-500"></td>
+                                            <td class="text-center"><input type="checkbox" class="accent-rose-500"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-2.5">
+                                <textarea rows="2" placeholder="Commentaires de l'enseignant(e)..." class="w-full rounded-lg border border-dashed border-slate-300 p-2 text-xs bg-slate-50/60 focus:outline-none focus:border-indigo-700"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                            <span>Kiddy Planet – Elite International School Group</span>
+                            <span>Signature Parents : _________________</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- Non-intrusive Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-indigo-950 text-white px-4 py-3 rounded-xl shadow-xl border border-amber-400 flex items-center gap-2.5 text-sm font-medium">
+            <span id="toastIcon">✨</span>
+            <span id="toastText">Action effectuée !</span>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Normalize user text for forgiving, kid-friendly comparison
+         */
+        function normalizeText(str) {
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, ' ');
+        }
+
+        /**
+         * Show a clean toast notification (never uses alert())
+         */
+        function showToast(message, icon = '✨') {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastText').textContent = message;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        /**
+         * Handle teacher school logo upload into the top-left corner frame
+         */
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('schoolLogoPreview');
+                const placeholder = document.getElementById('schoolLogoPlaceholder');
+                img.src = e.target.result;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                showToast('Logo de l\'école importé avec succès !', '🏫');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * Interactive SVG String Simulator in Part 3
+         */
+        function highlightRoute(mode) {
+            const cables = ['cable-blue', 'cable-red', 'cable-yellow', 'cable-green', 'cable-purple', 'cable-orange'];
+            const cutMarker = document.getElementById('cutMarker');
+
+            // Reset all cables first
+            cables.forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('cable-animated');
+                el.setAttribute('opacity', '1');
+                el.setAttribute('stroke-width', '5');
+            });
+            document.getElementById('cable-green').setAttribute('stroke', '#10B981');
+            cutMarker.classList.add('hidden');
+
+            if (mode === 'local') {
+                // PC-A -> Fil Bleu -> Switch -> Fil Jaune -> PC-C
+                cables.forEach(id => {
+                    if (id !== 'cable-blue' && id !== 'cable-yellow') {
+                        document.getElementById(id).setAttribute('opacity', '0.25');
+                    }
+                });
+                ['cable-blue', 'cable-yellow'].forEach(id => {
+                    const el = document.getElementById(id);
+                    el.classList.add('cable-animated');
+                    el.setAttribute('stroke-width', '7');
+                });
+                showToast('Simulation : PC-A ➔ Fil Bleu ➔ Switch ➔ Fil Jaune ➔ PC-C', '🔵');
+            } else if (mode === 'web') {
+                // PC-B -> Fil Rouge -> Switch -> Fil Violet -> Router -> Fil Orange -> Server
+                cables.forEach(id => {
+                    if (id === 'cable-blue' || id === 'cable-yellow' || id === 'cable-green') {
+                        document.getElementById(id).setAttribute('opacity', '0.25');
+                    }
+                });
+                ['cable-red', 'cable-purple', 'cable-orange'].forEach(id => {
+                    const el = document.getElementById(id);
+                    el.classList.add('cable-animated');
+                    el.setAttribute('stroke-width', '7');
+                });
+                showToast('Simulation : PC-B ➔ Switch ➔ Routeur ➔ Serveur Web', '🌍');
+            } else if (mode === 'cut') {
+                const green = document.getElementById('cable-green');
+                green.setAttribute('stroke', '#E11D48');
+                green.setAttribute('stroke-dasharray', '6 6');
+                cutMarker.classList.remove('hidden');
+                showToast('Alerte : Le Fil Vert vers PC-D est coupé !', '✂️');
+            } else {
+                showToast('Schéma réseau réinitialisé', '🌐');
+            }
+        }
+
+        /**
+         * Auto-grade objective fields across Parts 1, 2, 3, and 4
+         */
+        function checkAllAnswers() {
+            let earned = 0;
+            let total = 0;
+
+            // 1. Select dropdowns (Part 1)
+            document.querySelectorAll('.auto-grade-select').forEach(select => {
+                total++;
+                select.classList.remove('border-emerald-600', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50');
+                if (select.value === select.dataset.answer) {
+                    select.classList.add('border-emerald-600', 'bg-emerald-50');
+                    earned++;
+                } else {
+                    select.classList.add('border-rose-500', 'bg-rose-50');
+                }
+            });
+
+            // 2. Text inputs with data-answer (Parts 2 & 3)
+            document.querySelectorAll('.auto-grade-text').forEach(input => {
+                total++;
+                const accepted = input.dataset.answer.split('|').map(a => normalizeText(a));
+                const val = normalizeText(input.value);
+                input.classList.remove('correct', 'incorrect');
+
+                if (val && accepted.includes(val)) {
+                    input.classList.add('correct');
+                    earned++;
+                } else {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            // 3. Radio buttons (Part 4)
+            ['tf1', 'tf2', 'tf3', 'tf4'].forEach(name => {
+                total++;
+                const checked = document.querySelector(`input[name="${name}"]:checked`);
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.parentElement.classList.remove('ring-2', 'ring-emerald-500', 'ring-rose-500');
+                });
+
+                if (checked) {
+                    if (checked.dataset.correct === 'true') {
+                        checked.parentElement.classList.add('ring-2', 'ring-emerald-500');
+                        earned++;
+                    } else {
+                        checked.parentElement.classList.add('ring-2', 'ring-rose-500');
+                    }
+                }
+            });
+
+            // Show feedback banner
+            const banner = document.getElementById('feedbackBanner');
+            document.getElementById('scoreDisplay').textContent = `${earned} / ${total}`;
+            const ratio = earned / total;
+
+            if (ratio >= 0.85) {
+                document.getElementById('feedbackBadge').textContent = '🏆';
+                document.getElementById('feedbackTitle').textContent = 'Excellent travail, Expert(e) Réseau !';
+                document.getElementById('feedbackMessage').textContent = 'Tu maîtrises le trajet des paquets IP et le rôle des câbles, du Switch et du Routeur.';
+            } else if (ratio >= 0.5) {
+                document.getElementById('feedbackBadge').textContent = '📡';
+                document.getElementById('feedbackTitle').textContent = 'Bon parcours ! Continue ton exploration !';
+                document.getElementById('feedbackMessage').textContent = 'Vérifie les cases en rouge et observe bien les couleurs des fils sur le schéma.';
+            } else {
+                document.getElementById('feedbackBadge').textContent = '🧶';
+                document.getElementById('feedbackTitle').textContent = 'Courage, Explorateur Réseau !';
+                document.getElementById('feedbackMessage').textContent = 'Relis attentivement les rôles du Switch, du Routeur et les adresses IP.';
+            }
+
+            banner.classList.remove('hidden');
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        /**
+         * Toggle Teacher Answer Key visibility
+         */
+        let keyShown = false;
+        function toggleAnswerKey() {
+            keyShown = !keyShown;
+            document.querySelectorAll('.answer-key').forEach(el => {
+                el.classList.toggle('hidden', !keyShown);
+            });
+            const btn = document.getElementById('btnAnswerKey');
+            if (keyShown) {
+                btn.classList.add('bg-amber-400', 'text-indigo-950');
+                btn.classList.remove('bg-indigo-900', 'text-amber-300');
+                showToast('Corrigé enseignant affiché', '🔑');
+            } else {
+                btn.classList.remove('bg-amber-400', 'text-indigo-950');
+                btn.classList.add('bg-indigo-900', 'text-amber-300');
+                showToast('Corrigé enseignant masqué', '🙈');
+            }
+        }
+
+        /**
+         * Reset all assessment answers
+         */
+        function resetAssessment() {
+            const keepIds = ['studentName', 'studentClass', 'assessmentDate', 'networkTeam'];
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                if (!keepIds.includes(el.id)) {
+                    el.value = '';
+                }
+                el.classList.remove('correct', 'incorrect');
+            });
+
+            document.querySelectorAll('select').forEach(sel => {
+                sel.selectedIndex = 0;
+                sel.classList.remove('border-emerald-600', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50');
+            });
+
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(box => {
+                box.checked = false;
+                if (box.parentElement) {
+                    box.parentElement.classList.remove('ring-2', 'ring-emerald-500', 'ring-rose-500');
+                }
+            });
+
+            highlightRoute('reset');
+            document.getElementById('feedbackBanner').classList.add('hidden');
+            showToast('La fiche a été réinitialisée.', '🧹');
+        }
+    </script>
+</body>
+</html>

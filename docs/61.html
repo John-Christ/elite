@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Évaluation Sommative PEI 1 — Chronologie HTML/CSS Coder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --navy: #0f2c59;
+      --navy-light: #1e427a;
+      --gold: #d99b26;
+      --gold-light: #fef3c7;
+      --slate: #334155;
+      --bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: #1e293b;
+    }
+
+    /* Barres de défilement personnalisées */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Éditeur de code monospace */
+    .code-editor {
+      font-family: "Fira Code", "Consolas", "Monaco", "Courier New", monospace;
+      tab-size: 2;
+      -moz-tab-size: 2;
+      line-height: 1.55;
+      resize: vertical;
+    }
+
+    /* Transition douce des onglets */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.22s ease-out;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Impression propre pour remise PDF */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .tab-panel {
+        display: block !important;
+        page-break-inside: avoid;
+        margin-bottom: 2rem;
+      }
+      .shadow-sm, .shadow-md, .shadow-lg {
+        box-shadow: none !important;
+      }
+      textarea, input, select {
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- BARRE SUPÉRIEURE COLLANTE : CHRONOMÈTRE, SAUVEGARDE & ACTIONS -->
+  <div class="sticky top-0 z-50 bg-[#0f2c59] text-white shadow-md border-b-2 border-[#d99b26] no-print">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 bg-[#d99b26] text-[#0f2c59] font-extrabold text-xs px-2.5 py-1 rounded-full uppercase tracking-wider">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/></svg>
+          PEI 1 • Design IB
+        </span>
+        <span id="save-status" class="text-xs text-slate-200 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+          Sauvegarde automatique active
+        </span>
+      </div>
+
+      <!-- Minuteur 2 heures (120 min) -->
+      <div class="flex items-center gap-2 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-slate-700">
+        <span class="text-xs text-slate-300 hidden sm:inline">Temps restant :</span>
+        <span id="timer-display" class="font-mono text-lg font-bold tracking-wider text-amber-300">02:00:00</span>
+        <button id="timer-toggle-btn" onclick="toggleTimer()" class="ml-1 px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition cursor-pointer">
+          Démarrer
+        </button>
+        <button onclick="resetTimer()" title="Réinitialiser le chronomètre" class="p-1.5 text-xs rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 transition cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+
+      <!-- Bouton d'exportation rapide -->
+      <div class="flex items-center gap-2">
+        <button onclick="exportSubmission()" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#d99b26] hover:bg-amber-500 text-[#0f2c59] transition flex items-center gap-1.5 shadow cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Télécharger ma copie
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EN-TÊTE OFFICIEL DE L'ÉTABLISSEMENT -->
+  <header class="bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-5 border-b border-slate-200">
+        
+        <!-- ZONE DU LOGO (Vous pouvez coller directement l'URL/chemin de votre image dans src="" ci-dessous) -->
+        <div class="flex items-center gap-4">
+          <div class="relative group shrink-0">
+            <!-- =========================================================================
+                 EMPLACEMENT DU LOGO : Collez le chemin ou l'URL de votre logo dans src=""
+                 Exemple : src="logo-kiddy-planet.png"
+                 ========================================================================= -->
+            <img
+              id="school-logo-img"
+              src="https://lh3.googleusercontent.com/p/AF1QipNdKgqzz8DHPcwA_R7k3bO1Ps-1rCjqMkdiDVYk=s680-w680-h510-rw"
+              alt="Logo Groupe scolaire Kiddy Planet - Elite International School"
+              class="w-20 h-20 object-contain rounded-2xl border-2 border-[#0f2c59] bg-white p-1 hidden"
+              onload="this.classList.remove('hidden'); document.getElementById('logo-placeholder').classList.add('hidden');"
+              onerror="this.classList.add('hidden'); document.getElementById('logo-placeholder').classList.remove('hidden');"
+            />
+
+            <!-- Espace réservé visuel tant que src="" est vide (permet aussi de charger un fichier directement) -->
+            <label id="logo-placeholder" for="logo-file-input" title="Cliquez pour charger le logo de l'école ou renseignez src='' dans le code HTML" class="w-20 h-20 rounded-2xl border-2 border-dashed border-[#d99b26] bg-amber-50/70 hover:bg-amber-100/80 flex flex-col items-center justify-center text-center p-1.5 cursor-pointer transition">
+              <svg class="w-6 h-6 text-[#0f2c59] mb-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span class="text-[10px] font-bold text-[#0f2c59] leading-tight">Logo École</span>
+              <span class="text-[8.5px] text-slate-500 leading-tight">(src / cliquer)</span>
+            </label>
+            <input id="logo-file-input" type="file" accept="image/*" class="hidden" onchange="handleLogoUpload(event)" />
+          </div>
+
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[#0f2c59] tracking-tight">
+              Groupe scolaire Kiddy Planet - Elite International School
+            </h1>
+            <p class="text-sm font-semibold text-[#d99b26] mt-0.5">
+              Programme d'Éducation Intermédiaire (PEI 1 / MYP Year 1) — Design & Technologie Numérique
+            </p>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5 text-xs sm:text-sm text-slate-600">
+              <span class="font-semibold text-slate-800 flex items-center gap-1">
+                <svg class="w-4 h-4 text-[#0f2c59]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                Teacher: John Christ Bouma
+              </span>
+              <span>•</span>
+              <span>Durée de l'évaluation : <strong>2 heures (120 min)</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges des Critères -->
+        <div class="flex flex-row md:flex-col gap-2 shrink-0">
+          <div class="bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0f2c59]">
+            Critère A : Recherche et analyse (0–8)
+          </div>
+          <div class="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-900">
+            Critère C : Création de la solution (0–8)
+          </div>
+        </div>
+      </div>
+
+      <!-- TITRE DE L'ÉVALUATION SOMMATIVE -->
+      <div class="mt-4 bg-gradient-to-r from-[#0f2c59] to-[#1e427a] text-white p-4 sm:p-5 rounded-2xl shadow-sm">
+        <div class="text-xs uppercase tracking-widest text-amber-300 font-bold mb-1">Évaluation Sommative • Projet Web</div>
+        <h2 class="text-lg sm:text-xl font-bold leading-snug">
+          Chronologie HTML/CSS Coder : Développement d'une page Web présentant 5 jalons historiques clés de l'informatique avec structure sémantique et mise en page stylisée.
+        </h2>
+      </div>
+
+      <!-- FICHE D'IDENTIFICATION DE L'ÉLÈVE -->
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nom de l'élève *</label>
+          <input type="text" data-save="student_lastname" placeholder="Ex : MBOUMBA" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Prénom(s) *</label>
+          <input type="text" data-save="student_firstname" placeholder="Ex : Sarah" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Classe / Groupe</label>
+          <input type="text" data-save="student_class" value="PEI 1" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Date de passation</label>
+          <input type="date" id="exam-date" data-save="exam_date" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION PAR ONGLETS -->
+  <nav class="bg-white border-b border-slate-200 sticky top-[50px] z-40 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex overflow-x-auto gap-1 py-2">
+      <button onclick="switchTab('tab-context')" id="btn-tab-context" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition flex items-center gap-2 bg-[#0f2c59] text-white cursor-pointer">
+        <span>1. Contexte & Consignes</span>
+      </button>
+      <button onclick="switchTab('tab-crit-a')" id="btn-tab-crit-a" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+        <span>2. Critère A : Recherche & Analyse (0–8)</span>
+      </button>
+      <button onclick="switchTab('tab-crit-c')" id="btn-tab-crit-c" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+        <span>3. Critère C : Studio Code HTML/CSS (0–8)</span>
+      </button>
+      <button onclick="switchTab('tab-rubric')" id="btn-tab-rubric" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition flex items-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+        <span>4. Grilles IB & Remise de copie</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 1 : CONTEXTE GRASPS & CONSIGNES                                -->
+    <!-- ===================================================================== -->
+    <section id="tab-context" class="tab-panel active space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-[#d99b26] flex items-center justify-center font-extrabold">IB</div>
+          <div>
+            <h3 class="text-lg font-bold text-[#0f2c59]">Situation authentique (Modèle GRASPS)</h3>
+            <p class="text-xs text-slate-500">Lis attentivement ta mission avant de démarrer le chronomètre.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-1">🎯 Objectif (Goal)</div>
+            <p class="text-sm text-slate-700">Concevoir, planifier et coder une page Web éducative présentant une <strong>frise chronologique de 5 jalons historiques clés de l'informatique</strong>, structurée en HTML5 sémantique et stylisée en CSS3.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-1">🧑‍💻 Rôle (Role)</div>
+            <p class="text-sm text-slate-700">Tu es un(e) jeune <strong>développeur(se) Web junior</strong> sélectionné(e) par le club numérique du Groupe scolaire Kiddy Planet - Elite International School.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-1">👥 Public cible (Audience)</div>
+            <p class="text-sm text-slate-700">Les élèves de CM2 et de PEI 1 (10 à 12 ans) ainsi que les visiteurs de l'exposition numérique de l'école qui souhaitent comprendre d'où viennent les ordinateurs d'aujourd'hui.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-1">🌍 Situation (Contexte mondial)</div>
+            <p class="text-sm text-slate-700"><strong>Orientation dans l'espace et dans le temps :</strong> Explorer comment les découvertes et inventions majeures ont transformé notre façon de calculer, communiquer et créer.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-1">💻 Produit attendu (Product)</div>
+            <p class="text-sm text-slate-700">Un dossier d'analyse complet (Critère A) et une page Web fonctionnelle (Critère C) composée de code HTML5 sémantique et de règles CSS soignées.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-amber-50 border border-amber-200">
+            <div class="text-xs font-extrabold uppercase text-amber-900 mb-1">⏱️ Gestion du temps (2h00)</div>
+            <ul class="text-sm text-amber-950 space-y-1 list-disc list-inside">
+              <li><strong>45 min :</strong> Partie 1 — Critère A</li>
+              <li><strong>75 min :</strong> Partie 2 — Critère C (Plan + Code)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rappel des exigences techniques -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <h3 class="text-base font-bold text-[#0f2c59] mb-3">📋 Rappel des règles d'or pour réussir ton évaluation</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-[#0f2c59] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+            <p><strong>Structure sémantique obligatoire :</strong> Utilise les vraies balises HTML5 (<code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;header&gt;</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;main&gt;</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;section&gt;</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;article&gt;</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;time&gt;</code>, <code class="bg-slate-100 px-1.5 py-0.5 rounded text-pink-700">&lt;footer&gt;</code>) plutôt que d'empiler uniquement des <code class="bg-slate-100 px-1.5 py-0.5 rounded">&lt;div&gt;</code>.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-[#0f2c59] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+            <p><strong>Exactement 5 jalons historiques :</strong> Chaque jalon doit comporter une <strong>année précise</strong>, un <strong>titre clair</strong>, le nom de l'<strong>inventeur/pionnier</strong> et une <strong>explication courte</strong> de son importance.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-[#0f2c59] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+            <p><strong>Mise en page CSS stylisée :</strong> Ta page doit ressembler à une vraie chronologie (bordure verticale colorée ou cartes espacées, couleurs harmonieuses, polices lisibles, marges internes et externes équilibrées).</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-[#0f2c59] font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+            <p><strong>Sauvegarde & Remise :</strong> Tes réponses sont sauvegardées automatiquement dans ce navigateur. À la fin des 2 heures, clique sur <strong>« Télécharger ma copie »</strong> pour remettre ton travail à <strong>Teacher John Christ Bouma</strong>.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button onclick="switchTab('tab-crit-a')" class="px-5 py-2.5 bg-[#0f2c59] hover:bg-[#1e427a] text-white font-bold text-sm rounded-xl transition flex items-center gap-2 cursor-pointer">
+            <span>Commencer la Partie 1 (Critère A)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 2 : PARTIE 1 — CRITÈRE A : RECHERCHE ET ANALYSE (0–8)          -->
+    <!-- ===================================================================== -->
+    <section id="tab-crit-a" class="tab-panel space-y-6">
+      <div class="bg-blue-50 border-l-4 border-[#0f2c59] p-4 rounded-r-2xl flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 class="font-extrabold text-[#0f2c59] text-base">Partie 1 — Critère A : Recherche et analyse (0–8 points)</h3>
+          <p class="text-xs text-slate-700">Temps conseillé : <strong>45 minutes</strong>. Rédige des réponses complètes avec des phrases claires et un vocabulaire précis.</p>
+        </div>
+        <span class="text-xs font-bold bg-white text-[#0f2c59] px-3 py-1 rounded-full border border-blue-200">4 tâches (Aspects i à iv)</span>
+      </div>
+
+      <!-- TÂCHE A.1 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche A.1 — Expliquer et justifier le besoin (Aspect i)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect i</span>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">
+              1. Quel problème rencontrent souvent les élèves de PEI 1 lorsqu'ils lisent un long texte historique sur l'informatique dans un livre ou une encyclopédie sans mise en page ?
+            </label>
+            <textarea data-save="a1_q1" rows="3" placeholder="Explique le problème de compréhension, de repérage des dates ou de motivation..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">
+              2. Justifie pourquoi la création d'une <strong>page Web sous forme de chronologie stylisée</strong> est une excellente solution pour ce public cible :
+            </label>
+            <textarea data-save="a1_q2" rows="3" placeholder="Explique les avantages visuels, l'ordre chronologique, l'accessibilité sur ordinateur/tablette..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- TÂCHE A.2 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche A.2 — Établir et hiérarchiser un plan de recherche (Aspect ii)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect ii</span>
+        </div>
+        <p class="text-sm text-slate-600">
+          Classe les 4 domaines de recherche ci-dessous par ordre de priorité (<strong>1 = le plus urgent</strong> à <strong>4 = le moins urgent</strong>), indique le type de source (primaire ou secondaire) et justifie ton choix.
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse border border-slate-200 rounded-xl overflow-hidden">
+            <thead>
+              <tr class="bg-[#0f2c59] text-white text-left">
+                <th class="p-3 w-28">Priorité</th>
+                <th class="p-3 w-1/3">Domaine de recherche</th>
+                <th class="p-3 w-44">Type de source</th>
+                <th class="p-3">Justification de cette priorité</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-2.5">
+                  <select data-save="a2_p1" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Choisir...</option>
+                    <option value="1">1 (Urgent)</option>
+                    <option value="2">2 (Haute)</option>
+                    <option value="3">3 (Moyenne)</option>
+                    <option value="4">4 (Basse)</option>
+                  </select>
+                </td>
+                <td class="p-2.5 font-medium text-slate-800">Vérifier les 5 dates exactes, inventions et noms des pionniers de l'informatique</td>
+                <td class="p-2.5">
+                  <select data-save="a2_s1" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Source...</option>
+                    <option value="Secondaire (Encyclopédie / Cours)">Secondaire (Encyclopédie)</option>
+                    <option value="Primaire (Archive / Brevet)">Primaire (Archive / Brevet)</option>
+                  </select>
+                </td>
+                <td class="p-2.5">
+                  <input type="text" data-save="a2_j1" placeholder="Pourquoi cette priorité ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" />
+                </td>
+              </tr>
+              <tr>
+                <td class="p-2.5">
+                  <select data-save="a2_p2" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Choisir...</option>
+                    <option value="1">1 (Urgent)</option>
+                    <option value="2">2 (Haute)</option>
+                    <option value="3">3 (Moyenne)</option>
+                    <option value="4">4 (Basse)</option>
+                  </select>
+                </td>
+                <td class="p-2.5 font-medium text-slate-800">Réviser la syntaxe des balises sémantiques HTML5 (<code class="text-pink-700">&lt;header&gt;</code>, <code class="text-pink-700">&lt;article&gt;</code>, <code class="text-pink-700">&lt;time&gt;</code>)</td>
+                <td class="p-2.5">
+                  <select data-save="a2_s2" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Source...</option>
+                    <option value="Secondaire (Documentation MDN / Cahier)">Secondaire (Doc / Cours)</option>
+                    <option value="Primaire (Test dans le navigateur)">Primaire (Expérimentation)</option>
+                  </select>
+                </td>
+                <td class="p-2.5">
+                  <input type="text" data-save="a2_j2" placeholder="Pourquoi cette priorité ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" />
+                </td>
+              </tr>
+              <tr>
+                <td class="p-2.5">
+                  <select data-save="a2_p3" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Choisir...</option>
+                    <option value="1">1 (Urgent)</option>
+                    <option value="2">2 (Haute)</option>
+                    <option value="3">3 (Moyenne)</option>
+                    <option value="4">4 (Basse)</option>
+                  </select>
+                </td>
+                <td class="p-2.5 font-medium text-slate-800">Rechercher les propriétés CSS de mise en page (<code class="text-pink-700">border-left</code>, <code class="text-pink-700">padding</code>, <code class="text-pink-700">margin</code>)</td>
+                <td class="p-2.5">
+                  <select data-save="a2_s3" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Source...</option>
+                    <option value="Secondaire (Guide CSS)">Secondaire (Guide CSS)</option>
+                    <option value="Primaire (Essais de code)">Primaire (Essais de code)</option>
+                  </select>
+                </td>
+                <td class="p-2.5">
+                  <input type="text" data-save="a2_j3" placeholder="Pourquoi cette priorité ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" />
+                </td>
+              </tr>
+              <tr>
+                <td class="p-2.5">
+                  <select data-save="a2_p4" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Choisir...</option>
+                    <option value="1">1 (Urgent)</option>
+                    <option value="2">2 (Haute)</option>
+                    <option value="3">3 (Moyenne)</option>
+                    <option value="4">4 (Basse)</option>
+                  </select>
+                </td>
+                <td class="p-2.5 font-medium text-slate-800">Choisir une palette de couleurs contrastée et des polices agréables pour des élèves de 11 ans</td>
+                <td class="p-2.5">
+                  <select data-save="a2_s4" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm">
+                    <option value="">Source...</option>
+                    <option value="Primaire (Sondage camarades)">Primaire (Sondage pairs)</option>
+                    <option value="Secondaire (Exemples de sites)">Secondaire (Sites existants)</option>
+                  </select>
+                </td>
+                <td class="p-2.5">
+                  <input type="text" data-save="a2_j4" placeholder="Pourquoi cette priorité ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TÂCHE A.3 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche A.3 — Analyser des produits existants (Aspect iii)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect iii</span>
+        </div>
+        <p class="text-sm text-slate-600">
+          Compare attentivement ces deux extraits de code HTML conçus pour afficher un jalon historique de l'informatique, puis réponds aux questions d'analyse.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border border-rose-200 rounded-xl overflow-hidden">
+            <div class="bg-rose-50 px-4 py-2 text-xs font-bold text-rose-800 border-b border-rose-200 flex justify-between">
+              <span>Code A : Structure non sémantique (« Soupe de div »)</span>
+              <span>❌ À éviter</span>
+            </div>
+            <pre class="p-3.5 text-xs bg-slate-900 text-slate-100 overflow-x-auto font-mono leading-relaxed">&lt;div class="entete"&gt;
+  &lt;div class="titre-principal"&gt;Histoire du PC&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="contenu"&gt;
+  &lt;div class="carte"&gt;
+    &lt;div class="annee"&gt;1971&lt;/div&gt;
+    &lt;div class="nom"&gt;Microprocesseur Intel 4004&lt;/div&gt;
+    &lt;div&gt;Premier processeur sur une seule puce.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+          </div>
+
+          <div class="border border-emerald-200 rounded-xl overflow-hidden">
+            <div class="bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-800 border-b border-emerald-200 flex justify-between">
+              <span>Code B : Structure sémantique HTML5</span>
+              <span>✅ Recommandé</span>
+            </div>
+            <pre class="p-3.5 text-xs bg-slate-900 text-slate-100 overflow-x-auto font-mono leading-relaxed">&lt;header&gt;
+  &lt;h1&gt;Histoire de l'informatique&lt;/h1&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;article class="jalon"&gt;
+    &lt;time datetime="1971"&gt;1971&lt;/time&gt;
+    &lt;h2&gt;Microprocesseur Intel 4004&lt;/h2&gt;
+    &lt;p&gt;Premier processeur sur une seule puce.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;</pre>
+          </div>
+        </div>
+
+        <div class="space-y-4 pt-2">
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">
+              1. Analyse <strong>deux avantages précis</strong> du Code B par rapport au Code A (pense à la lecture par les navigateurs, aux personnes malvoyantes utilisant un lecteur d'écran, ou à la clarté pour le programmeur) :
+            </label>
+            <textarea data-save="a3_q1" rows="3" placeholder="Avantage 1 : ... &#10;Avantage 2 : ..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">
+              2. Quel problème rencontre-t-on dans le Code A au niveau de la hiérarchie des titres (<code class="text-pink-700">&lt;h1&gt;</code>, <code class="text-pink-700">&lt;h2&gt;</code>) et de la date (<code class="text-pink-700">&lt;time&gt;</code>) ?
+            </label>
+            <textarea data-save="a3_q2" rows="2" placeholder="Explique ce qui manque dans le Code A..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- TÂCHE A.4 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche A.4 — Élaborer un cahier des charges de conception (Aspect iv)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect iv</span>
+        </div>
+        <p class="text-sm text-slate-600">
+          Définis <strong>4 critères de réussite précis et vérifiables</strong> que ta page Web devra respecter pour satisfaire le public cible.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="block text-xs font-extrabold uppercase text-[#0f2c59] mb-1">1. Contenu historique (Exactitude)</label>
+            <input type="text" data-save="a4_c1" placeholder="Ex : Présenter exactement 5 jalons dans l'ordre chronologique avec date..." class="w-full p-2.5 text-sm bg-white border border-slate-300 rounded-lg" />
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="block text-xs font-extrabold uppercase text-[#0f2c59] mb-1">2. Structure HTML5 Sémantique</label>
+            <input type="text" data-save="a4_c2" placeholder="Ex : Utiliser header, main, section, 5 balises article, time et footer..." class="w-full p-2.5 text-sm bg-white border border-slate-300 rounded-lg" />
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="block text-xs font-extrabold uppercase text-[#0f2c59] mb-1">3. Esthétique & Mise en page CSS</label>
+            <input type="text" data-save="a4_c3" placeholder="Ex : Créer une ligne verticale (border-left), des cartes espacées..." class="w-full p-2.5 text-sm bg-white border border-slate-300 rounded-lg" />
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="block text-xs font-extrabold uppercase text-[#0f2c59] mb-1">4. Lisibilité & Accessibilité</label>
+            <input type="text" data-save="a4_c4" placeholder="Ex : Contraste élevé entre texte et fond, police sans-serif lisible..." class="w-full p-2.5 text-sm bg-white border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-between items-center">
+          <button onclick="switchTab('tab-context')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer">← Retour au contexte</button>
+          <button onclick="switchTab('tab-crit-c')" class="px-5 py-2.5 bg-[#0f2c59] hover:bg-[#1e427a] text-white font-bold text-sm rounded-xl transition flex items-center gap-2 cursor-pointer">
+            <span>Passer à la Partie 2 (Critère C)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 3 : PARTIE 2 — CRITÈRE C : CRÉATION DE LA SOLUTION (0–8)       -->
+    <!-- ===================================================================== -->
+    <section id="tab-crit-c" class="tab-panel space-y-6">
+      <div class="bg-amber-50 border-l-4 border-[#d99b26] p-4 rounded-r-2xl flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 class="font-extrabold text-amber-950 text-base">Partie 2 — Critère C : Création de la solution (0–8 points)</h3>
+          <p class="text-xs text-amber-900">Temps conseillé : <strong>75 minutes</strong>. Planifie tes 5 jalons, code ta page dans le studio intégré, puis justifie tes améliorations.</p>
+        </div>
+        <span class="text-xs font-bold bg-white text-amber-900 px-3 py-1 rounded-full border border-amber-300">Plan + Studio Code Live</span>
+      </div>
+
+      <!-- TÂCHE C.1 : PLAN LOGIQUE DES 5 JALONS -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche C.1 — Construire un plan logique des 5 jalons historiques (Aspect i)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect i</span>
+        </div>
+        <p class="text-sm text-slate-600">
+          Organise tes <strong>5 jalons clés de l'histoire de l'informatique</strong> dans l'ordre chronologique avant de commencer à coder (exemples possibles : 1843 Machine analytique / Ada Lovelace, 1945 ENIAC, 1971 Microprocesseur Intel 4004, 1989 World Wide Web / Tim Berners-Lee, 2007 Smartphone / IA moderne).
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse border border-slate-200">
+            <thead>
+              <tr class="bg-[#0f2c59] text-white text-left">
+                <th class="p-2.5 w-14 text-center">Jalon</th>
+                <th class="p-2.5 w-28">Année</th>
+                <th class="p-2.5 w-1/4">Titre de l'invention / événement</th>
+                <th class="p-2.5 w-1/4">Inventeur(s) / Pionnier(s)</th>
+                <th class="p-2.5">Description courte & Impact</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-2 text-center font-bold text-[#0f2c59]">#1</td>
+                <td class="p-2"><input type="text" data-save="c1_y1" placeholder="Ex: 1843" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_t1" placeholder="Titre du jalon 1" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_p1" placeholder="Nom du pionnier" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_d1" placeholder="Pourquoi est-ce important ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+              </tr>
+              <tr>
+                <td class="p-2 text-center font-bold text-[#0f2c59]">#2</td>
+                <td class="p-2"><input type="text" data-save="c1_y2" placeholder="Ex: 1945" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_t2" placeholder="Titre du jalon 2" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_p2" placeholder="Nom du pionnier" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_d2" placeholder="Pourquoi est-ce important ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+              </tr>
+              <tr>
+                <td class="p-2 text-center font-bold text-[#0f2c59]">#3</td>
+                <td class="p-2"><input type="text" data-save="c1_y3" placeholder="Ex: 1971" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_t3" placeholder="Titre du jalon 3" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_p3" placeholder="Nom du pionnier" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_d3" placeholder="Pourquoi est-ce important ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+              </tr>
+              <tr>
+                <td class="p-2 text-center font-bold text-[#0f2c59]">#4</td>
+                <td class="p-2"><input type="text" data-save="c1_y4" placeholder="Ex: 1989" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_t4" placeholder="Titre du jalon 4" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_p4" placeholder="Nom du pionnier" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_d4" placeholder="Pourquoi est-ce important ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+              </tr>
+              <tr>
+                <td class="p-2 text-center font-bold text-[#0f2c59]">#5</td>
+                <td class="p-2"><input type="text" data-save="c1_y5" placeholder="Ex: 2007" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_t5" placeholder="Titre du jalon 5" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_p5" placeholder="Nom du pionnier" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+                <td class="p-2"><input type="text" data-save="c1_d5" placeholder="Pourquoi est-ce important ?" class="w-full p-2 border border-slate-300 rounded-lg text-sm" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Choix de la charte graphique -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-slate-700">Couleur principale (Titres / Ligne)</div>
+              <div id="hex-primary" class="text-xs font-mono text-slate-500">#0f2c59</div>
+            </div>
+            <input type="color" data-save="c1_color1" value="#0f2c59" oninput="document.getElementById('hex-primary').textContent=this.value" class="w-10 h-10 rounded-lg cursor-pointer border-0" />
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-slate-700">Couleur d'accent (Dates / Badges)</div>
+              <div id="hex-accent" class="text-xs font-mono text-slate-500">#d99b26</div>
+            </div>
+            <input type="color" data-save="c1_color2" value="#d99b26" oninput="document.getElementById('hex-accent').textContent=this.value" class="w-10 h-10 rounded-lg cursor-pointer border-0" />
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-slate-700">Couleur d'arrière-plan</div>
+              <div id="hex-bg" class="text-xs font-mono text-slate-500">#f1f5f9</div>
+            </div>
+            <input type="color" data-save="c1_color3" value="#f1f5f9" oninput="document.getElementById('hex-bg').textContent=this.value" class="w-10 h-10 rounded-lg cursor-pointer border-0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- TÂCHE C.2 & C.3 : STUDIO DE CODE HTML/CSS EN DIRECT -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h4 class="font-bold text-[#0f2c59] text-base">Tâche C.2 & C.3 — Studio de développement HTML5 & CSS3 en direct (Aspects ii & iii)</h4>
+            <p class="text-xs text-slate-600">Complète le code <code class="text-pink-700">index.html</code> et <code class="text-pink-700">style.css</code> ci-dessous. L'aperçu à droite se met à jour automatiquement !</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="runCodePreview()" class="px-3.5 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+              Actualiser l'aperçu
+            </button>
+            <button onclick="resetStarterCode()" class="px-3 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition cursor-pointer">
+              Réinitialiser le modèle
+            </button>
+          </div>
+        </div>
+
+        <!-- Checklist technique interactive -->
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="text-xs font-extrabold uppercase text-[#0f2c59] mb-2">✅ Auto-vérification technique (Clique pour valider chaque exigence) :</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_1" class="rounded text-[#0f2c59]" />
+              <span>Balises <code class="text-pink-700">&lt;header&gt;</code>, <code class="text-pink-700">&lt;main&gt;</code>, <code class="text-pink-700">&lt;footer&gt;</code></span>
+            </label>
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_2" class="rounded text-[#0f2c59]" />
+              <span>5 balises <code class="text-pink-700">&lt;article&gt;</code> (1 par jalon)</span>
+            </label>
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_3" class="rounded text-[#0f2c59]" />
+              <span>Balises <code class="text-pink-700">&lt;time&gt;</code> et <code class="text-pink-700">&lt;h2&gt;</code> dans chaque jalon</span>
+            </label>
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_4" class="rounded text-[#0f2c59]" />
+              <span>Ligne chronologique CSS (<code class="text-pink-700">border-left</code>)</span>
+            </label>
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_5" class="rounded text-[#0f2c59]" />
+              <span>Marges (<code class="text-pink-700">padding</code> / <code class="text-pink-700">margin</code>) soignées</span>
+            </label>
+            <label class="flex items-center gap-2 bg-white p-2 rounded-lg border border-slate-200 cursor-pointer">
+              <input type="checkbox" data-save="chk_6" class="rounded text-[#0f2c59]" />
+              <span>Nom, prénom et classe dans le <code class="text-pink-700">&lt;footer&gt;</code></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Espace Éditeurs + Aperçu en direct -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Colonne gauche : Éditeurs HTML et CSS -->
+          <div class="space-y-3">
+            <!-- Éditeur HTML -->
+            <div class="border border-slate-300 rounded-xl overflow-hidden">
+              <div class="bg-slate-800 text-slate-200 px-3.5 py-2 text-xs font-mono flex items-center justify-between">
+                <span class="flex items-center gap-2 font-bold text-amber-300">
+                  <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                  index.html (Structure sémantique)
+                </span>
+                <span class="text-[11px] text-slate-400">Touche Tab = indentation</span>
+              </div>
+              <textarea id="html-editor" data-save="student_html_code" rows="15" spellcheck="false" class="code-editor w-full p-3.5 text-xs bg-slate-900 text-slate-100 focus:outline-none"></textarea>
+            </div>
+
+            <!-- Éditeur CSS -->
+            <div class="border border-slate-300 rounded-xl overflow-hidden">
+              <div class="bg-slate-800 text-slate-200 px-3.5 py-2 text-xs font-mono flex items-center justify-between">
+                <span class="flex items-center gap-2 font-bold text-sky-300">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+                  style.css (Mise en page stylisée)
+                </span>
+                <span class="text-[11px] text-slate-400">CSS3</span>
+              </div>
+              <textarea id="css-editor" data-save="student_css_code" rows="13" spellcheck="false" class="code-editor w-full p-3.5 text-xs bg-slate-900 text-slate-100 focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <!-- Colonne droite : Aperçu en direct (Browser Preview) -->
+          <div class="border-2 border-[#0f2c59] rounded-xl overflow-hidden flex flex-col bg-white min-h-[560px]">
+            <div class="bg-[#0f2c59] text-white px-3.5 py-2 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-2 font-semibold">Aperçu du navigateur en temps réel</span>
+              </div>
+              <button onclick="openFullPreviewModal()" class="text-[11px] bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded text-white font-semibold cursor-pointer">
+                Plein écran ↗
+              </button>
+            </div>
+            <iframe id="live-preview-frame" title="Aperçu de la page Web de l'élève" class="w-full flex-1 bg-white border-0"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- TÂCHE C.4 : JUSTIFIER LES MODIFICATIONS -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h4 class="font-bold text-[#0f2c59] text-base">Tâche C.4 — Justifier les modifications apportées au plan (Aspect iv)</h4>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">Aspect iv</span>
+        </div>
+        <p class="text-sm text-slate-600">
+          Pendant le codage et les tests dans l'aperçu, explique <strong>deux améliorations ou corrections</strong> que tu as apportées par rapport à ton plan initial (par exemple : changement de couleur pour améliorer le contraste, ajout d'espacement <code class="text-pink-700">padding</code>, correction d'une balise fermante, etc.).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">Modification / Correction n°1 et justification :</label>
+            <textarea data-save="c4_m1" rows="3" placeholder="Ce que j'ai modifié : ... &#10;Pourquoi cela améliore ma page : ..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-800 mb-1.5">Modification / Correction n°2 et justification :</label>
+            <textarea data-save="c4_m2" rows="3" placeholder="Ce que j'ai modifié : ... &#10;Pourquoi cela améliore ma page : ..." class="w-full p-3 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0f2c59]"></textarea>
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-between items-center">
+          <button onclick="switchTab('tab-crit-a')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition cursor-pointer">← Retour au Critère A</button>
+          <button onclick="switchTab('tab-rubric')" class="px-5 py-2.5 bg-[#0f2c59] hover:bg-[#1e427a] text-white font-bold text-sm rounded-xl transition flex items-center gap-2 cursor-pointer">
+            <span>Voir les grilles IB & Remettre ma copie</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 4 : GRILLES D'ÉVALUATION IB PEI 1 & REMISE DE COPIE            -->
+    <!-- ===================================================================== -->
+    <section id="tab-rubric" class="tab-panel space-y-6">
+      <!-- Panneau de finalisation et téléchargement -->
+      <div class="bg-gradient-to-br from-[#0f2c59] to-[#1e427a] text-white rounded-2xl p-6 shadow-md">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-extrabold">Finalisation et remise de ton évaluation</h3>
+            <p class="text-sm text-slate-200 mt-1">
+              Vérifie que ton <strong>Nom</strong>, ton <strong>Prénom</strong>, tes réponses au <strong>Critère A</strong> et tes <strong>5 jalons codés en HTML/CSS</strong> sont complets avant de télécharger ta copie pour <strong>Teacher John Christ Bouma</strong>.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3 shrink-0">
+            <button onclick="exportSubmission()" class="px-5 py-3 bg-[#d99b26] hover:bg-amber-500 text-[#0f2c59] font-extrabold text-sm rounded-xl shadow transition flex items-center gap-2 cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Télécharger ma copie (.html)
+            </button>
+            <button onclick="downloadStudentWebPageOnly()" class="px-4 py-3 bg-white/15 hover:bg-white/25 text-white font-bold text-sm rounded-xl border border-white/30 transition flex items-center gap-2 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              Exporter ma page Web seule
+            </button>
+            <button onclick="window.print()" class="px-4 py-3 bg-white text-[#0f2c59] hover:bg-slate-100 font-bold text-sm rounded-xl transition flex items-center gap-2 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+              Imprimer / PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille Critère A -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 class="text-base font-extrabold text-[#0f2c59]">Grille d'évaluation IB PEI 1 — Critère A : Recherche et analyse (0–8)</h4>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="font-semibold text-slate-600">Auto-évaluation élève :</span>
+            <select data-save="self_eval_a" class="p-1.5 border border-slate-300 rounded-lg font-bold text-[#0f2c59]">
+              <option value="">Niveau...</option>
+              <option value="1-2">1–2</option>
+              <option value="3-4">3–4</option>
+              <option value="5-6">5–6</option>
+              <option value="7-8">7–8</option>
+            </select>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm border-collapse border border-slate-200">
+            <thead>
+              <tr class="bg-[#0f2c59] text-white">
+                <th class="p-3 w-20 text-center">Niveau</th>
+                <th class="p-3 text-left">Descripteurs officiels IB PEI Année 1</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">0</td>
+                <td class="p-3 text-slate-600">L'élève n'atteint aucun des niveaux décrits ci-dessous.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">1–2</td>
+                <td class="p-3">L'élève : <strong>i.</strong> énonce la nécessité d'une solution à un problème ; <strong>ii.</strong> énonce certains des principaux éléments de recherche nécessaires pour élaborer une solution au problème, avec des conseils ; <strong>iii.</strong> présente un produit existant qui inspire une solution au problème ; <strong>iv.</strong> élabore un cahier des charges de conception de base qui présente les résultats de la recherche.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">3–4</td>
+                <td class="p-3">L'élève : <strong>i.</strong> décrit la nécessité d'une solution à un problème ; <strong>ii.</strong> décrit les principaux éléments de recherche nécessaires pour élaborer une solution au problème, avec certains conseils ; <strong>iii.</strong> décrit un produit existant qui inspire une solution au problème ; <strong>iv.</strong> élabore un cahier des charges de conception qui présente les résultats de la recherche.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">5–6</td>
+                <td class="p-3">L'élève : <strong>i.</strong> explique la nécessité d'une solution à un problème ; <strong>ii.</strong> construit un plan de recherche qui indique et classe par ordre de priorité les recherches primaires et secondaires nécessaires pour élaborer une solution au problème, avec certains conseils ; <strong>iii.</strong> décrit les principales caractéristiques d'un produit existant qui inspire une solution au problème ; <strong>iv.</strong> élabore un cahier des charges de conception qui expose dans les grandes lignes les critères de réussite en se fondant sur les données recueillies.</td>
+              </tr>
+              <tr class="bg-blue-50/40">
+                <td class="p-3 text-center font-extrabold text-[#0f2c59] bg-blue-100/60">7–8</td>
+                <td class="p-3">L'élève : <strong>i.</strong> explique et justifie la nécessité d'une solution à un problème ; <strong>ii.</strong> construit un plan de recherche qui indique et classe par ordre de priorité les recherches primaires et secondaires nécessaires de manière autonome ; <strong>iii.</strong> analyse les principales caractéristiques d'un produit existant qui inspire une solution au problème ; <strong>iv.</strong> élabore un cahier des charges de conception qui présente les critères de réussite de la conception d'une solution.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Grille Critère C -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 class="text-base font-extrabold text-[#0f2c59]">Grille d'évaluation IB PEI 1 — Critère C : Création de la solution (0–8)</h4>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="font-semibold text-slate-600">Auto-évaluation élève :</span>
+            <select data-save="self_eval_c" class="p-1.5 border border-slate-300 rounded-lg font-bold text-[#0f2c59]">
+              <option value="">Niveau...</option>
+              <option value="1-2">1–2</option>
+              <option value="3-4">3–4</option>
+              <option value="5-6">5–6</option>
+              <option value="7-8">7–8</option>
+            </select>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm border-collapse border border-slate-200">
+            <thead>
+              <tr class="bg-[#0f2c59] text-white">
+                <th class="p-3 w-20 text-center">Niveau</th>
+                <th class="p-3 text-left">Descripteurs officiels IB PEI Année 1</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">0</td>
+                <td class="p-3 text-slate-600">L'élève n'atteint aucun des niveaux décrits ci-dessous.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">1–2</td>
+                <td class="p-3">L'élève : <strong>i.</strong> démontre des compétences techniques minimales lors de la réalisation de la solution ; <strong>ii.</strong> crée la solution, qui fonctionne médiocrement et est présentée sous une forme incomplète.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">3–4</td>
+                <td class="p-3">L'élève : <strong>i.</strong> établit un plan qui énumère les principales étapes de la création de la solution ; <strong>ii.</strong> démontre des compétences techniques satisfaisantes lors de la réalisation de la solution ; <strong>iii.</strong> crée la solution, qui fonctionne partiellement et est présentée de manière adéquate ; <strong>iv.</strong> énonce un changement apporté au plan choisi lors de la réalisation de la solution.</td>
+              </tr>
+              <tr>
+                <td class="p-3 text-center font-extrabold bg-slate-50">5–6</td>
+                <td class="p-3">L'élève : <strong>i.</strong> établit un plan qui envisage l'utilisation efficace du temps et des ressources, suffisant pour que ses pairs puissent le suivre ; <strong>ii.</strong> démontre des compétences techniques compétentes lors de la réalisation de la solution ; <strong>iii.</strong> crée la solution, qui fonctionne comme prévu et est présentée de manière appropriée ; <strong>iv.</strong> énonce les changements apportés au plan choisi lors de la réalisation de la solution.</td>
+              </tr>
+              <tr class="bg-amber-50/40">
+                <td class="p-3 text-center font-extrabold text-amber-900 bg-amber-100/70">7–8</td>
+                <td class="p-3">L'élève : <strong>i.</strong> établit un plan logique qui décrit l'utilisation efficace du temps et des ressources, suffisant pour que ses pairs puissent le suivre ; <strong>ii.</strong> démontre d'excellentes compétences techniques lors de la réalisation de la solution ; <strong>iii.</strong> suit le plan pour créer la solution, qui fonctionne comme prévu et est présentée de manière appropriée ; <strong>iv.</strong> explique les changements apportés au plan choisi lors de la réalisation de la solution, le cas échéant.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Espace réservé à l'enseignant (Teacher John Christ Bouma) -->
+      <div class="bg-white rounded-2xl border-2 border-slate-300 p-6 shadow-sm">
+        <h4 class="text-sm font-extrabold uppercase tracking-wider text-[#0f2c59] mb-3">Espace réservé à l'enseignant — Teacher: John Christ Bouma</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-bold text-slate-600">Note Critère A (0–8)</div>
+            <div class="mt-2 text-lg font-extrabold text-[#0f2c59]">______ / 8</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="text-xs font-bold text-slate-600">Note Critère C (0–8)</div>
+            <div class="mt-2 text-lg font-extrabold text-[#0f2c59]">______ / 8</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
+            <div class="text-xs font-bold text-amber-900">Total des critères évalués</div>
+            <div class="mt-2 text-lg font-extrabold text-amber-950">______ / 16</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Commentaires et rétroaction de l'enseignant :</label>
+          <textarea data-save="teacher_feedback" rows="2" placeholder="Commentaires de Teacher John Christ Bouma..." class="w-full p-2.5 text-sm border border-slate-300 rounded-xl bg-slate-50"></textarea>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIED DE PAGE -->
+  <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500 no-print">
+    Groupe scolaire Kiddy Planet - Elite International School • PEI 1 Design • Teacher: John Christ Bouma
+  </footer>
+
+  <!-- BOÎTE DE MESSAGE MODALE (Remplace alert/confirm) -->
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+      <h5 id="modal-title" class="text-lg font-extrabold text-[#0f2c59] mb-2">Information</h5>
+      <p id="modal-body" class="text-sm text-slate-700 mb-5"></p>
+      <div id="modal-actions" class="flex justify-end gap-2"></div>
+    </div>
+  </div>
+
+  <!-- MODALE APERÇU PLEIN ÉCRAN -->
+  <div id="fullscreen-preview-modal" class="fixed inset-0 z-50 hidden flex-col bg-slate-900">
+    <div class="bg-[#0f2c59] text-white px-4 py-2.5 flex items-center justify-between">
+      <span class="text-sm font-bold">Aperçu plein écran — Chronologie HTML/CSS</span>
+      <button onclick="closeFullPreviewModal()" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 rounded-lg text-xs font-bold cursor-pointer">Fermer ✕</button>
+    </div>
+    <iframe id="fullscreen-preview-frame" class="w-full flex-1 bg-white border-0"></iframe>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'kiddy_planet_pei1_html_css_exam_v1';
+
+    // Modèle de départ HTML & CSS pour aider les élèves de PEI 1 à démarrer
+    const STARTER_HTML = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Les 5 jalons clés de l'informatique</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Les 5 jalons clés de l'histoire de l'informatique</h1>
+    <p>Découvrez les inventions qui ont façonné notre monde numérique.</p>
+  </header>
+
+  <main>
+    <section class="timeline">
+
+      <!-- JALON 1 -->
+      <article class="jalon">
+        <time datetime="1843">1843</time>
+        <h2>Le premier algorithme informatique</h2>
+        <p><strong>Pionnière :</strong> Ada Lovelace</p>
+        <p>Elle écrit le tout premier programme destiné à la machine analytique de Charles Babbage.</p>
+      </article>
+
+      <!-- JALON 2 -->
+      <article class="jalon">
+        <time datetime="1945">1945</time>
+        <h2>L'ordinateur électronique ENIAC</h2>
+        <p><strong>Inventeurs :</strong> John Mauchly et J. Presper Eckert</p>
+        <p>Premier grand ordinateur entièrement électronique capable d'effectuer des milliers de calculs par seconde.</p>
+      </article>
+
+      <!-- À TOI DE COMPLÉTER LES JALONS 3, 4 ET 5 CI-DESSOUS ! -->
+      <article class="jalon">
+        <time datetime="1971">1971</time>
+        <h2>Titre du jalon 3...</h2>
+        <p><strong>Inventeur(s) :</strong> ...</p>
+        <p>Description de l'invention et de son impact...</p>
+      </article>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>Réalisé par : [Ton Prénom et Nom] — Classe : PEI 1 | Kiddy Planet - Elite International School</p>
+  </footer>
+
+</body>
+</html>`;
+
+    const STARTER_CSS = `/* Mise en page générale de la page */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #0f2c59;
+  color: #ffffff;
+  text-align: center;
+  padding: 28px 16px;
+  border-bottom: 4px solid #d99b26;
+}
+
+header h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+main {
+  max-width: 780px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+/* Ligne du temps verticale */
+.timeline {
+  border-left: 4px solid #0f2c59;
+  padding-left: 20px;
+}
+
+/* Cartes des jalons historiques */
+.jalon {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.jalon time {
+  display: inline-block;
+  background-color: #d99b26;
+  color: #0f2c59;
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.jalon h2 {
+  color: #0f2c59;
+  margin: 8px 0;
+  font-size: 18px;
+}
+
+footer {
+  text-align: center;
+  padding: 18px;
+  background-color: #0f2c59;
+  color: #e2e8f0;
+  font-size: 13px;
+  margin-top: 32px;
+}`;
+
+    // Gestion des onglets
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#0f2c59]', 'text-white');
+        btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+      });
+
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        activeBtn.classList.add('bg-[#0f2c59]', 'text-white');
+      }
+
+      if (tabId === 'tab-crit-c') {
+        runCodePreview();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Boîte modale personnalisée (sans alert/confirm)
+    function showModal(title, message, buttons) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').textContent = message;
+      const actions = document.getElementById('modal-actions');
+      actions.innerHTML = '';
+      buttons.forEach(btn => {
+        const b = document.createElement('button');
+        b.textContent = btn.label;
+        b.className = btn.className || 'px-4 py-2 rounded-xl text-sm font-bold bg-[#0f2c59] text-white cursor-pointer';
+        b.onclick = () => {
+          closeModal();
+          if (btn.onClick) btn.onClick();
+        };
+        actions.appendChild(b);
+      });
+      const modal = document.getElementById('custom-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('custom-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Chargement d'une image de logo via le sélecteur de fichier (optionnel si src="" est vide)
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.getElementById('school-logo-img');
+        img.src = e.target.result;
+        img.classList.remove('hidden');
+        document.getElementById('logo-placeholder').classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Chronomètre de 2 heures (7200 secondes)
+    let remainingSeconds = 120 * 60;
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+      const hrs = Math.floor(remainingSeconds / 3600);
+      const mins = Math.floor((remainingSeconds % 3600) / 60);
+      const secs = remainingSeconds % 60;
+      const formatted =
+        String(hrs).padStart(2, '0') + ':' +
+        String(mins).padStart(2, '0') + ':' +
+        String(secs).padStart(2, '0');
+      const el = document.getElementById('timer-display');
+      el.textContent = formatted;
+      if (remainingSeconds <= 900) {
+        el.classList.remove('text-amber-300');
+        el.classList.add('text-rose-400');
+      } else {
+        el.classList.add('text-amber-300');
+        el.classList.remove('text-rose-400');
+      }
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timer-toggle-btn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = 'Reprendre';
+        btn.classList.remove('bg-amber-600');
+        btn.classList.add('bg-emerald-600');
+      } else {
+        timerInterval = setInterval(() => {
+          if (remainingSeconds > 0) {
+            remainingSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            showModal('Temps écoulé !', 'Les 2 heures d’évaluation sont terminées. Pense à cliquer sur « Télécharger ma copie » pour remettre ton travail à Teacher John Christ Bouma.', [
+              { label: 'Compris' }
+            ]);
+          }
+        }, 1000);
+        btn.textContent = 'Pause';
+        btn.classList.remove('bg-emerald-600');
+        btn.classList.add('bg-amber-600');
+      }
+    }
+
+    function resetTimer() {
+      showModal(
+        'Réinitialiser le chronomètre ?',
+        'Veux-tu remettre le chronomètre à 02:00:00 ?',
+        [
+          { label: 'Annuler', className: 'px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 cursor-pointer' },
+          {
+            label: 'Réinitialiser',
+            className: 'px-4 py-2 rounded-xl text-sm font-bold bg-rose-600 text-white cursor-pointer',
+            onClick: () => {
+              clearInterval(timerInterval);
+              timerInterval = null;
+              remainingSeconds = 120 * 60;
+              updateTimerDisplay();
+              const btn = document.getElementById('timer-toggle-btn');
+              btn.textContent = 'Démarrer';
+              btn.classList.remove('bg-amber-600');
+              btn.classList.add('bg-emerald-600');
+            }
+          }
+        ]
+      );
+    }
+
+    // Aperçu en temps réel du code HTML + CSS de l'élève
+    function buildStudentDocument() {
+      const htmlCode = document.getElementById('html-editor').value || '';
+      const cssCode = document.getElementById('css-editor').value || '';
+      // Injecte le CSS directement dans le document pour l'aperçu en direct
+      if (htmlCode.includes('</head>')) {
+        return htmlCode.replace('</head>', `<style>\n${cssCode}\n</style>\n</head>`);
+      }
+      return `<!DOCTYPE html><html><head><style>${cssCode}</style></head><body>${htmlCode}</body></html>`;
+    }
+
+    function runCodePreview() {
+      const combined = buildStudentDocument();
+      const frame = document.getElementById('live-preview-frame');
+      if (frame) frame.srcdoc = combined;
+      const fullFrame = document.getElementById('fullscreen-preview-frame');
+      if (fullFrame && !document.getElementById('fullscreen-preview-modal').classList.contains('hidden')) {
+        fullFrame.srcdoc = combined;
+      }
+    }
+
+    function openFullPreviewModal() {
+      const modal = document.getElementById('fullscreen-preview-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('fullscreen-preview-frame').srcdoc = buildStudentDocument();
+    }
+
+    function closeFullPreviewModal() {
+      const modal = document.getElementById('fullscreen-preview-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function resetStarterCode() {
+      showModal(
+        'Réinitialiser le code de départ ?',
+        'Attention : cela remplacera ton code actuel dans index.html et style.css par le modèle de départ.',
+        [
+          { label: 'Annuler', className: 'px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 cursor-pointer' },
+          {
+            label: 'Oui, réinitialiser',
+            className: 'px-4 py-2 rounded-xl text-sm font-bold bg-rose-600 text-white cursor-pointer',
+            onClick: () => {
+              document.getElementById('html-editor').value = STARTER_HTML;
+              document.getElementById('css-editor').value = STARTER_CSS;
+              saveAllData();
+              runCodePreview();
+            }
+          }
+        ]
+      );
+    }
+
+    // Indentation automatique avec la touche Tab dans les éditeurs de code
+    function enableTabIndentation(textarea) {
+      textarea.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + 2;
+          saveAllData();
+          runCodePreview();
+        }
+      });
+    }
+
+    // Sauvegarde et restauration automatique dans LocalStorage
+    function saveAllData() {
+      const data = {};
+      document.querySelectorAll('[data-save]').forEach(el => {
+        const key = el.getAttribute('data-save');
+        if (el.type === 'checkbox') {
+          data[key] = el.checked;
+        } else {
+          data[key] = el.value;
+        }
+      });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('save-status').innerHTML =
+          `<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> Sauvegardé à ${timeStr}`;
+      } catch (e) {
+        // Ignorer si le stockage local est restreint
+      }
+    }
+
+    function loadSavedData() {
+      let data = {};
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) data = JSON.parse(raw);
+      } catch (e) {}
+
+      document.querySelectorAll('[data-save]').forEach(el => {
+        const key = el.getAttribute('data-save');
+        if (data[key] !== undefined) {
+          if (el.type === 'checkbox') {
+            el.checked = data[key];
+          } else {
+            el.value = data[key];
+          }
+        }
+      });
+
+      // Initialiser le code de départ s'il n'y a rien de sauvegardé
+      const htmlEd = document.getElementById('html-editor');
+      const cssEd = document.getElementById('css-editor');
+      if (!htmlEd.value.trim()) htmlEd.value = STARTER_HTML;
+      if (!cssEd.value.trim()) cssEd.value = STARTER_CSS;
+
+      // Mettre la date du jour par défaut si vide
+      const dateInput = document.getElementById('exam-date');
+      if (!dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+    }
+
+    // Échapper le HTML pour le rapport de soumission
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // Télécharger la copie complète de l'élève (Critère A + Critère C + Rendu)
+    function exportSubmission() {
+      const getVal = (k) => {
+        const el = document.querySelector(`[data-save="${k}"]`);
+        return el ? el.value : '';
+      };
+
+      const lastName = getVal('student_lastname') || 'Eleve';
+      const firstName = getVal('student_firstname') || 'PEI1';
+      const studentClass = getVal('student_class') || 'PEI 1';
+      const examDate = getVal('exam_date') || '';
+
+      const reportHtml = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Copie Évaluation Sommative PEI 1 — ${escapeHtml(firstName)} ${escapeHtml(lastName)}</title>
+<style>
+  body { font-family: Arial, sans-serif; color: #1e293b; max-width: 900px; margin: 24px auto; padding: 20px; line-height: 1.5; }
+  .header { border-bottom: 3px solid #0f2c59; padding-bottom: 12px; margin-bottom: 20px; }
+  .header h1 { color: #0f2c59; margin: 0; font-size: 20px; }
+  .header p { color: #b45309; font-weight: bold; margin: 4px 0 0 0; font-size: 13px; }
+  .meta { background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+  h2 { background: #0f2c59; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 16px; margin-top: 28px; }
+  h3 { color: #0f2c59; border-bottom: 1px solid #d99b26; padding-bottom: 4px; font-size: 14px; }
+  .ans { background: #f8fafc; border-left: 4px solid #0f2c59; padding: 10px 14px; margin-bottom: 12px; white-space: pre-wrap; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; }
+  th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+  th { background: #e2e8f0; color: #0f2c59; }
+  pre { background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Groupe scolaire Kiddy Planet - Elite International School</h1>
+    <p>Évaluation Sommative PEI 1 — Chronologie HTML/CSS Coder | Teacher: John Christ Bouma</p>
+  </div>
+  <div class="meta">
+    <strong>Élève :</strong> ${escapeHtml(firstName)} ${escapeHtml(lastName)} &nbsp;|&nbsp;
+    <strong>Classe :</strong> ${escapeHtml(studentClass)} &nbsp;|&nbsp;
+    <strong>Date :</strong> ${escapeHtml(examDate)}
+  </div>
+
+  <h2>PARTIE 1 — CRITÈRE A : RECHERCHE ET ANALYSE (0–8)</h2>
+  <h3>Tâche A.1 — Expliquer et justifier le besoin (Aspect i)</h3>
+  <div class="ans"><strong>1. Problème identifié :</strong>\n${escapeHtml(getVal('a1_q1'))}</div>
+  <div class="ans"><strong>2. Justification de la chronologie Web :</strong>\n${escapeHtml(getVal('a1_q2'))}</div>
+
+  <h3>Tâche A.2 — Plan de recherche priorisé (Aspect ii)</h3>
+  <table>
+    <tr><th>Domaine</th><th>Priorité</th><th>Source</th><th>Justification</th></tr>
+    <tr><td>Dates et pionniers</td><td>${escapeHtml(getVal('a2_p1'))}</td><td>${escapeHtml(getVal('a2_s1'))}</td><td>${escapeHtml(getVal('a2_j1'))}</td></tr>
+    <tr><td>Balises sémantiques HTML5</td><td>${escapeHtml(getVal('a2_p2'))}</td><td>${escapeHtml(getVal('a2_s2'))}</td><td>${escapeHtml(getVal('a2_j2'))}</td></tr>
+    <tr><td>Propriétés CSS</td><td>${escapeHtml(getVal('a2_p3'))}</td><td>${escapeHtml(getVal('a2_s3'))}</td><td>${escapeHtml(getVal('a2_j3'))}</td></tr>
+    <tr><td>Couleurs & Polices</td><td>${escapeHtml(getVal('a2_p4'))}</td><td>${escapeHtml(getVal('a2_s4'))}</td><td>${escapeHtml(getVal('a2_j4'))}</td></tr>
+  </table>
+
+  <h3>Tâche A.3 — Analyse comparative de code HTML (Aspect iii)</h3>
+  <div class="ans"><strong>1. Deux avantages du Code B sémantique :</strong>\n${escapeHtml(getVal('a3_q1'))}</div>
+  <div class="ans"><strong>2. Défauts du Code A :</strong>\n${escapeHtml(getVal('a3_q2'))}</div>
+
+  <h3>Tâche A.4 — Cahier des charges (Aspect iv)</h3>
+  <div class="ans">
+    1. Contenu : ${escapeHtml(getVal('a4_c1'))}\n
+    2. HTML5 : ${escapeHtml(getVal('a4_c2'))}\n
+    3. CSS : ${escapeHtml(getVal('a4_c3'))}\n
+    4. Lisibilité : ${escapeHtml(getVal('a4_c4'))}
+  </div>
+
+  <h2>PARTIE 2 — CRITÈRE C : CRÉATION DE LA SOLUTION (0–8)</h2>
+  <h3>Tâche C.1 — Planification des 5 jalons historiques (Aspect i)</h3>
+  <table>
+    <tr><th>#</th><th>Année</th><th>Invention / Événement</th><th>Pionnier(s)</th><th>Impact</th></tr>
+    <tr><td>1</td><td>${escapeHtml(getVal('c1_y1'))}</td><td>${escapeHtml(getVal('c1_t1'))}</td><td>${escapeHtml(getVal('c1_p1'))}</td><td>${escapeHtml(getVal('c1_d1'))}</td></tr>
+    <tr><td>2</td><td>${escapeHtml(getVal('c1_y2'))}</td><td>${escapeHtml(getVal('c1_t2'))}</td><td>${escapeHtml(getVal('c1_p2'))}</td><td>${escapeHtml(getVal('c1_d2'))}</td></tr>
+    <tr><td>3</td><td>${escapeHtml(getVal('c1_y3'))}</td><td>${escapeHtml(getVal('c1_t3'))}</td><td>${escapeHtml(getVal('c1_p3'))}</td><td>${escapeHtml(getVal('c1_d3'))}</td></tr>
+    <tr><td>4</td><td>${escapeHtml(getVal('c1_y4'))}</td><td>${escapeHtml(getVal('c1_t4'))}</td><td>${escapeHtml(getVal('c1_p4'))}</td><td>${escapeHtml(getVal('c1_d4'))}</td></tr>
+    <tr><td>5</td><td>${escapeHtml(getVal('c1_y5'))}</td><td>${escapeHtml(getVal('c1_t5'))}</td><td>${escapeHtml(getVal('c1_p5'))}</td><td>${escapeHtml(getVal('c1_d5'))}</td></tr>
+  </table>
+
+  <h3>Tâche C.2 & C.3 — Code source de l'élève (index.html & style.css)</h3>
+  <p><strong>Fichier index.html :</strong></p>
+  <pre>${escapeHtml(getVal('student_html_code'))}</pre>
+  <p><strong>Fichier style.css :</strong></p>
+  <pre>${escapeHtml(getVal('student_css_code'))}</pre>
+
+  <h3>Tâche C.4 — Justification des modifications (Aspect iv)</h3>
+  <div class="ans"><strong>Modification 1 :</strong>\n${escapeHtml(getVal('c4_m1'))}</div>
+  <div class="ans"><strong>Modification 2 :</strong>\n${escapeHtml(getVal('c4_m2'))}</div>
+
+  <h2>NOTATION DE L'ENSEIGNANT (Teacher: John Christ Bouma)</h2>
+  <table>
+    <tr><th>Critère A (0–8)</th><th>Critère C (0–8)</th><th>Total (0–16)</th></tr>
+    <tr><td>______ / 8 (Auto-éval: ${escapeHtml(getVal('self_eval_a'))})</td><td>______ / 8 (Auto-éval: ${escapeHtml(getVal('self_eval_c'))})</td><td>______ / 16</td></tr>
+  </table>
+</body>
+</html>`;
+
+      const blob = new Blob([reportHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = `${lastName}_${firstName}_PEI1_Evaluation_HTML_CSS.html`.replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.href = url;
+      a.download = safeName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showModal(
+        'Copie téléchargée avec succès !',
+        `Ton fichier "${safeName}" a été téléchargé sur ton ordinateur. Tu peux maintenant le remettre à Teacher John Christ Bouma.`,
+        [{ label: 'Parfait !' }]
+      );
+    }
+
+    // Télécharger uniquement la page Web créée par l'élève
+    function downloadStudentWebPageOnly() {
+      const lastName = document.querySelector('[data-save="student_lastname"]').value || 'Eleve';
+      const firstName = document.querySelector('[data-save="student_firstname"]').value || 'PEI1';
+      const fullWebPage = buildStudentDocument();
+      const blob = new Blob([fullWebPage], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${lastName}_${firstName}_Chronologie_Informatique.html`.replace(/[^a-zA-Z0-9_-]/g, '_');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialisation au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+      runCodePreview();
+
+      document.querySelectorAll('[data-save]').forEach(el => {
+        el.addEventListener('input', () => {
+          saveAllData();
+          if (el.id === 'html-editor' || el.id === 'css-editor') {
+            runCodePreview();
+          }
+        });
+        el.addEventListener('change', saveAllData);
+      });
+
+      enableTabIndentation(document.getElementById('html-editor'));
+      enableTabIndentation(document.getElementById('css-editor'));
+    });
+  </script>
+</body>
+</html>
